@@ -33,6 +33,7 @@ class Tracer
   end
 
   def start_tracing
+    set_traced_method command[:binding]
     set_trace_func method(:tracer).to_proc
   end
 
@@ -43,9 +44,6 @@ class Tracer
   def process_command(command = {})
     @times = (command[:times] || 1).to_i
     @times = 1 if @times <= 0
-
-    set_traced_method command[:binding]
-
     @action = command[:action]
     [:step, :next, :finish].include? @action
   end
