@@ -22,6 +22,16 @@ module PryNav
       run 'exit-all'
     end
 
+    alias_command 'c', 'continue'
+    alias_command 's', 'step'
+    alias_command 'n', 'next'
+    alias_command 'f', 'finish'
+
+    # Hit Enter to repeat last command
+    command /^$/, "repeat last command" do
+      _pry_.run_command Pry.history.to_a.last
+    end
+
     helpers do
       def breakout_navigation(action, times)
         _pry_.binding_stack.clear     # Clear the binding stack.
@@ -43,3 +53,6 @@ module PryNav
 end
 
 Pry.commands.import PryNav::Commands
+
+Pry.commands.alias_command 'bt', 'pry-backtrace'
+Pry.commands.alias_command '!', '!!!'
