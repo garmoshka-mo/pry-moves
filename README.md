@@ -1,13 +1,21 @@
-### Using MRI? We recommend [**pry-byebug**][pry-byebug] instead!
+### Using [**pry-byebug**][pry-byebug] and not happy with commands behavior? We recommend this project instead
 
 # pry-nav
 
-_A simple execution control add-on for [Pry][pry]._
+_An execution control add-on for [Pry][pry]._
 
-Compatible with ![JRuby](https://raw.githubusercontent.com/jruby/collateral/master/logos/PNGs/logo-with-type/full-color/jruby-logo-logo-with-type-small.png) >= 9.1.3.0.
 
-Teaches [Pry][pry] about `step`, `next`, and `continue` to create a simple
-debugger.
+## Commands:
+
+* `s` - **step** into function execution
+* `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
+* `f` - **finish** execution of current frame and stop at next line on higher level
+* `c` - **continue**
+* `bt` - backtrace
+* `!` - exit
+
+
+## Examples
 
 To use, invoke `pry` normally:
 
@@ -18,10 +26,7 @@ def some_method
 end
 ```
 
-When using JRuby, you also need to run it with the `--debug` flag. You can
-also add the flag to your `JRUBY_OPTS` environment variable for it to apply
-when running any ruby command, but do note that even when not making use of
-`pry` this has a big impact on JRuby performance.
+## Technical info
 
 `pry-nav` is not yet thread-safe, so only use in single-threaded environments.
 
@@ -33,14 +38,6 @@ Ensure `pry-remote` is loaded or required before `pry-nav`. For example, in a
 gem 'pry'
 gem 'pry-remote'
 gem 'pry-nav'
-```
-
-Stepping through code often? Add the following shortcuts to `~/.pryrc`:
-
-```ruby
-Pry.commands.alias_command 'c', 'continue'
-Pry.commands.alias_command 's', 'step'
-Pry.commands.alias_command 'n', 'next'
 ```
 
 Please note that debugging functionality is implemented through
@@ -61,6 +58,7 @@ file an [issue][issues]. [Project changelog][changelog].
 
 ## Acknowledgments
 
+* Gopal Patel's [pry-nav](https://github.com/nixme/pry-nav)
 * Ruby stdlib's [debug.rb][debug.rb]
 * [@Mon-Ouie][Mon-Ouie]'s [pry_debug][pry_debug]
 
