@@ -21,13 +21,22 @@ class << Pry
   alias_method :start, :start_with_pry_nav
 end
 
-
 Binding.class_eval do
 
   alias original_pry pry
 
   def pry
     original_pry unless Pry.config.disable_breakpoints
+  end
+
+end
+
+require 'pry-stack_explorer'
+
+PryStackExplorer::WhenStartedHook.class_eval do
+
+  def remove_debugger_frames(bindings)
+    bindings.drop_while { |b| b.eval("__FILE__") =~ /\/pry-/ }
   end
 
 end

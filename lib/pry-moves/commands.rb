@@ -2,19 +2,19 @@ require 'pry' unless defined? Pry
 
 module PryNav
   Commands = Pry::CommandSet.new do
-    block_command 'step', 'Step execution into the next line or method.' do |times|
+    block_command 'step', 'Step execution into the next line or method.' do |param|
       check_file_context
-      breakout_navigation :step, times
+      breakout_navigation :step, param
     end
 
-    block_command 'finish', 'Finish xule tut neponyatnogo.' do |times|
+    block_command 'finish', 'Finish xule tut neponyatnogo.' do |param|
       check_file_context
-      breakout_navigation :finish, times
+      breakout_navigation :finish, param
     end
 
-    block_command 'next', 'Execute the next line within the same stack frame.' do |times|
+    block_command 'next', 'Execute the next line within the same stack frame.' do |param|
       check_file_context
-      breakout_navigation :next, times
+      breakout_navigation :next, param
     end
 
     block_command 'continue', 'Continue program execution and end the Pry session.' do
@@ -33,11 +33,11 @@ module PryNav
     end
 
     helpers do
-      def breakout_navigation(action, times)
+      def breakout_navigation(action, param)
         _pry_.binding_stack.clear     # Clear the binding stack.
         throw :breakout_nav, {        # Break out of the REPL loop and
           :action => action,          #   signal the tracer.
-          :times =>  times,
+          :param =>  param,
           :binding => target
         }
       end

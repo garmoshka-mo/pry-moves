@@ -7,8 +7,9 @@ _An execution control add-on for [Pry][pry]._
 
 ## Commands:
 
-* `s` - **step** into function execution
 * `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
+* `s` - **step** into function execution
+  * `s func_name` - steps into first method called by name `func_name`
 * `f` - **finish** execution of current frame and stop at next line on higher level
 * `c` - **continue**
 * `bt` - backtrace

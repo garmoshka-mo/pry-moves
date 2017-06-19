@@ -3,7 +3,6 @@ require 'pry' unless defined? Pry
 module PryNav
 class Tracer
   def initialize(pry_start_options = {}, &block)
-    @frames = 0                              # Traced stack frame level
     @pry_start_options = pry_start_options   # Options to use for Pry.start
   end
 
@@ -35,6 +34,10 @@ class Tracer
   def start_tracing(command)
     Pry.config.disable_breakpoints = true
     set_traced_method command[:binding]
+    case @action
+      when :finish
+        @method_to_finish = @method
+    end
     set_trace_func method(:tracer).to_proc
   end
 
@@ -44,9 +47,18 @@ class Tracer
   end
 
   def process_command(command = {})
-    @times = (command[:times] || 1).to_i
-    @times = 1 if @times <= 0
     @action = command[:action]
+
+    case @action
+      when :step
+        @step_info_funcs = nil
+        if command[:param]
+          func = command[:param].to_sym
+          @step_info_funcs = [func]
+          @step_info_funcs << :initialize if func == :new
+        end
+    end
+
     [:step, :next, :finish].include? @action
   end
 
@@ -57,15 +69,20 @@ class Tracer
     @recursion_level = 0
 
     method = binding.eval 'method(__method__) if __method__'
-    return @method = {file: binding.eval('__FILE__')} unless method
+    return set_method({file: binding.eval('__FILE__')}) unless method
 
     source = method.source_location
-    @method = {
+    set_method({
         file: source[0],
         start: source[1],
         end: (source[1] + method.source.count("\n") - 1)
         #thread: binding.eval 'Thread.current' # todo: Нужна проверка по треду?
-    }
+    })
+  end
+
+  def set_method(method)
+    #puts "set_traced_method #{method}"
+    @method = method
   end
 
   def tracer(event, file, line, id, binding_, klass)
@@ -74,28 +91,35 @@ class Tracer
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
     traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
+    # Set new traced method, because we left previous one
     set_traced_method binding_ if traced_method_exit
 
     case event
       when 'line'
-        Pry.start(binding_, @pry_start_options) if break_here?(file, line, traced_method_exit)
+        #debug_info file, line, id
+        if break_here?(file, line, binding_, traced_method_exit)
+          Pry.start(binding_, @pry_start_options)
+        end
       when 'call', 'return'
-        recursion_step event if within_current_method?(file, line)
+        if within_current_method?(file, line) and !traced_method_exit
+          recursion_step event
+        end
     end
   end
 
   def debug_info(file, line, id)
-    puts "Break here? #{@action}"
-    puts "#{@method[:file]}:#{file}"
+    puts "📽  Action:#{@action}; recur:#{@recursion_level}; #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 
-  def break_here?(file, line, traced_method_exit)
+  def break_here?(file, line, binding_, traced_method_exit)
     case @action
       when :step
-        true
+        @step_info_funcs ?
+            @step_info_funcs.include?(binding_.eval('__callee__'))
+            : true
       when :finish
-        traced_method_exit
+        @method_to_finish = @method if @method_to_finish != @method
       when :next
         @recursion_level == 0 and within_current_method?(file, line)
     end
