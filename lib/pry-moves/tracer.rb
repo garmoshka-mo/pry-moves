@@ -33,11 +33,13 @@ class Tracer
   end
 
   def start_tracing(command)
+    Pry.config.disable_breakpoints = true
     set_traced_method command[:binding]
     set_trace_func method(:tracer).to_proc
   end
 
   def stop_tracing
+    Pry.config.disable_breakpoints = false
     set_trace_func nil
   end
 
@@ -67,6 +69,7 @@ class Tracer
   end
 
   def tracer(event, file, line, id, binding_, klass)
+    #printf "%8s %s:%-2d %10s %8s\n", event, file, line, id, klass
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
@@ -79,6 +82,12 @@ class Tracer
       when 'call', 'return'
         recursion_step event if within_current_method?(file, line)
     end
+  end
+
+  def debug_info(file, line, id)
+    puts "Break here? #{@action}"
+    puts "#{@method[:file]}:#{file}"
+    puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 
   def break_here?(file, line, traced_method_exit)
