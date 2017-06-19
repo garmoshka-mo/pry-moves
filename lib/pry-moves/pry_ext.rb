@@ -1,5 +1,5 @@
 require 'pry' unless defined? Pry
-require 'pry-nav/tracer'
+require 'pry-moves/tracer'
 
 class << Pry
   alias_method :start_without_pry_nav, :start

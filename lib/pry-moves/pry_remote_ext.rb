@@ -4,7 +4,7 @@ require 'pry-remote'
 module PryRemote
   class Server
     # Override the call to Pry.start to save off current Server, pass a
-    # pry_remote flag so pry-nav knows this is a remote session, and not kill
+    # pry_remote flag so pry-moves knows this is a remote session, and not kill
     # the server right away
     def run
       if PryNav.current_remote_server

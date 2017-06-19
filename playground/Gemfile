@@ -2,5 +2,5 @@ source 'https://rubygems.org'
 
 gem 'pry'
 gem 'pry-stack_explorer'
-gem 'pry-nav', path: '../'
+gem 'pry-moves', path: '../'
 

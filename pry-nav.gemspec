@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 
-require File.expand_path('../lib/pry-nav/version', __FILE__)
+require File.expand_path('../lib/pry-moves/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = 'pry-nav'
+  gem.name          = 'pry-moves'
   gem.version       = PryNav::VERSION
   gem.author        = 'Gopal Patel'
   gem.email         = 'nixme@stillhope.com'
   gem.license       = 'MIT'
-  gem.homepage      = 'https://github.com/nixme/pry-nav'
+  gem.homepage      = 'https://github.com/garmoshka-mo/pry-moves'
   gem.summary       = 'Simple execution navigation for Pry.'
   gem.description   = "Turn Pry into a primitive debugger. Adds 'step' and 'next' commands to control execution."
 

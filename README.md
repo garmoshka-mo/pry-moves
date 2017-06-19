@@ -1,6 +1,6 @@
 ### Using [**pry-byebug**][pry-byebug] and not happy with commands behavior? We recommend this project instead
 
-# pry-nav
+# pry-moves
 
 _An execution control add-on for [Pry][pry]._
 
@@ -28,16 +28,16 @@ end
 
 ## Technical info
 
-`pry-nav` is not yet thread-safe, so only use in single-threaded environments.
+`pry-moves` is not yet thread-safe, so only use in single-threaded environments.
 
 Rudimentary support for [`pry-remote`][pry-remote] (>= 0.1.1) is also included.
-Ensure `pry-remote` is loaded or required before `pry-nav`. For example, in a
+Ensure `pry-remote` is loaded or required before `pry-moves`. For example, in a
 `Gemfile`:
 
 ```ruby
 gem 'pry'
 gem 'pry-remote'
-gem 'pry-nav'
+gem 'pry-moves'
 ```
 
 Please note that debugging functionality is implemented through
@@ -65,9 +65,9 @@ file an [issue][issues]. [Project changelog][changelog].
 [pry]:            http://pryrepl.org/
 [pry-remote]:     https://github.com/Mon-Ouie/pry-remote
 [set_trace_func]: http://www.ruby-doc.org/core-1.9.3/Kernel.html#method-i-set_trace_func
-[pullrequests]:   https://github.com/nixme/pry-nav/pulls
-[issues]:         https://github.com/nixme/pry-nav/issues
-[changelog]:      https://github.com/nixme/pry-nav/blob/master/CHANGELOG.md
+[pullrequests]:   https://github.com/garmoshka-mo/pry-moves/pulls
+[issues]:         https://github.com/garmoshka-mo/pry-moves/issues
+[changelog]:      https://github.com/garmoshka-mo/pry-moves/blob/master/CHANGELOG.md
 [debug.rb]:       https://github.com/ruby/ruby/blob/trunk/lib/debug.rb
 [Mon-Ouie]:       https://github.com/Mon-Ouie
 [pry_debug]:      https://github.com/Mon-Ouie/pry_debug

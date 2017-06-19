@@ -21,7 +21,7 @@ class Tracer
 
     # Adjust tracer based on command
     if process_command(command)
-      start_tracing
+      start_tracing command
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
       if @pry_start_options[:pry_remote] && PryNav.current_remote_server
@@ -32,7 +32,7 @@ class Tracer
     return_value
   end
 
-  def start_tracing
+  def start_tracing(command)
     set_traced_method command[:binding]
     set_trace_func method(:tracer).to_proc
   end
@@ -67,7 +67,7 @@ class Tracer
   end
 
   def tracer(event, file, line, id, binding_, klass)
-    # Ignore traces inside pry-nav code
+    # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
     traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
