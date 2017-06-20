@@ -15,6 +15,7 @@ _An execution control add-on for [Pry][pry]._
 * `f` - **finish** execution of current frame and stop at next line on higher level
 * `c` - **continue**
 * `bt` - backtrace
+* `up`/`down` - move over call stack
 * `!` - exit
 
 
@@ -68,6 +69,7 @@ file an [issue][issues]. [Project changelog][changelog].
 ## Acknowledgments
 
 * Gopal Patel's [pry-nav](https://github.com/nixme/pry-nav)
+* John Mair's [pry-stack_explorer](https://github.com/pry/pry-stack_explorer)
 * Ruby stdlib's [debug.rb][debug.rb]
 * [@Mon-Ouie][Mon-Ouie]'s [pry_debug][pry_debug]
 
