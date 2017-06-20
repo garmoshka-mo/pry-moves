@@ -1,4 +1,3 @@
-require 'pry'
 require 'pry-moves'
 
 class A

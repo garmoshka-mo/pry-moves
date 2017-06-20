@@ -4,6 +4,8 @@
 
 _An execution control add-on for [Pry][pry]._
 
+* Install: `gem 'pry-moves'`
+* For non-rails (without auto-require), add to your script: `require 'pry-moves'`
 
 ## Commands:
 
