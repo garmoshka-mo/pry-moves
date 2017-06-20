@@ -14,7 +14,9 @@ _An execution control add-on for [Pry][pry]._
   * `s func_name` - steps into first method called by name `func_name`
 * `f` - **finish** execution of current frame and stop at next line on higher level
 * `c` - **continue**
-* `bt` - backtrace
+* `bt` - shows latest 5 lines from backtrace 
+  * `bt 10` - latest 10 lines
+  * `bt all`- full backtrace
 * `up`/`down` - move over call stack
 * `!` - exit
 
@@ -35,6 +37,19 @@ end
 <img src="https://user-images.githubusercontent.com/2452269/27320748-37afe7de-55a0-11e7-8b8f-ae05bcb02f37.jpg" width="377">
 
 _Demo class source [here](https://github.com/garmoshka-mo/pry-moves/issues/1)_
+
+## Configuration
+
+Here is default configuration, you can override it:
+
+```ruby
+PryMoves::Backtrace::lines_count = 5
+PryMoves::Backtrace::filter =
+  /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/|\/pry-moves\/)/
+PryMoves::Backtrace::format do |line|
+    defined?(Rails) : line.gsub( /^#{Rails.root.to_s}/, '') : line
+  end
+```
 
 ## Technical info
 

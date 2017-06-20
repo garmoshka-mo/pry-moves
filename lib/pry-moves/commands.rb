@@ -22,6 +22,10 @@ module PryMoves
       run 'exit-all'
     end
 
+    block_command 'bt', 'Backtrace' do |param|
+      PryMoves::Backtrace.new(target).print param
+    end
+
     alias_command 'c', 'continue'
     alias_command 's', 'step'
     alias_command 'n', 'next'
@@ -54,5 +58,4 @@ end
 
 Pry.commands.import PryMoves::Commands
 
-Pry.commands.alias_command 'bt', 'pry-backtrace'
 Pry.commands.alias_command '!', '!!!'
