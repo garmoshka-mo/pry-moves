@@ -27,6 +27,12 @@ def some_method
 end
 ```
 
+### Advanced example
+
+<img src="https://user-images.githubusercontent.com/2452269/27320748-37afe7de-55a0-11e7-8b8f-ae05bcb02f37.jpg" width="377">
+
+_Demo class source [here](https://github.com/garmoshka-mo/pry-moves/issues/1)_
+
 ## Technical info
 
 `pry-moves` is not yet thread-safe, so only use in single-threaded environments.

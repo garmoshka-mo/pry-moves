@@ -12,8 +12,11 @@ class A
   end
 
   def bb
-    c = :some_code
-    d = :other_code
+    block do
+      c = :some_code
+    end
+    d = :some_code
+    e = :some_code
     self
   end
 
@@ -26,8 +29,5 @@ class A
 end
 
 binding.pry
-a = A.new.aa.bb
-a.block do
-  b = :some_code
-end
+A.new.aa.bb
 c = :some_code
