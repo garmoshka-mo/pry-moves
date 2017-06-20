@@ -16,7 +16,8 @@ _An execution control add-on for [Pry][pry]._
 * `c` - **continue**
 * `bt` - shows latest 5 lines from backtrace 
   * `bt 10` - latest 10 lines
-  * `bt all`- full backtrace
+  * `bt all` - full backtrace
+  * `bt >foo` - write backtrace to file `log/backtrace_foo.log`
 * `up`/`down` - move over call stack
 * `!` - exit
 

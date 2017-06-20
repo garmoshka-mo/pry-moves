@@ -23,7 +23,7 @@ module PryMoves
     end
 
     block_command 'bt', 'Backtrace' do |param|
-      PryMoves::Backtrace.new(target).print param
+      PryMoves::Backtrace.new(target).run_command param
     end
 
     alias_command 'c', 'continue'
