@@ -7,10 +7,10 @@ module PryRemote
     # pry_remote flag so pry-moves knows this is a remote session, and not kill
     # the server right away
     def run
-      if PryNav.current_remote_server
+      if PryMoves.current_remote_server
         raise 'Already running a pry-remote session!'
       else
-        PryNav.current_remote_server = self
+        PryMoves.current_remote_server = self
       end
 
       setup
@@ -25,7 +25,7 @@ module PryRemote
     alias_method :teardown_without_pry_nav, :teardown
     def teardown_with_pry_nav
       teardown_without_pry_nav
-      PryNav.current_remote_server = nil
+      PryMoves.current_remote_server = nil
     end
     alias_method :teardown, :teardown_with_pry_nav
   end
@@ -33,10 +33,10 @@ end
 
 # Ensure cleanup when a program finishes without another break. For example,
 # 'next' on the last line of a program never hits the tracer proc, and thus
-# PryNav::Tracer#run doesn't have a chance to cleanup.
+# PryMoves::Tracer#run doesn't have a chance to cleanup.
 at_exit do
   set_trace_func nil
-  if PryNav.current_remote_server
-    PryNav.current_remote_server.teardown
+  if PryMoves.current_remote_server
+    PryMoves.current_remote_server.teardown
   end
 end

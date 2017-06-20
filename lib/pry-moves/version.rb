@@ -1,3 +1,3 @@
-module PryNav
-  VERSION = '0.2.4'
+module PryMoves
+  VERSION = '0.1.0'
 end

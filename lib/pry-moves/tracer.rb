@@ -1,6 +1,6 @@
 require 'pry' unless defined? Pry
 
-module PryNav
+module PryMoves
 class Tracer
   def initialize(pry_start_options = {}, &block)
     @pry_start_options = pry_start_options   # Options to use for Pry.start
@@ -13,7 +13,7 @@ class Tracer
     stop_tracing unless RUBY_VERSION == '1.9.2'
 
     return_value = nil
-    command = catch(:breakout_nav) do      # Coordinates with PryNav::Commands
+    command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
       return_value = yield
       {}    # Nothing thrown == no navigational command
     end
@@ -23,8 +23,8 @@ class Tracer
       start_tracing command
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
-      if @pry_start_options[:pry_remote] && PryNav.current_remote_server
-        PryNav.current_remote_server.teardown
+      if @pry_start_options[:pry_remote] && PryMoves.current_remote_server
+        PryMoves.current_remote_server.teardown
       end
     end
 
@@ -133,6 +133,7 @@ class Tracer
   end
 
   def recursion_step(event)
+    #puts "recursion_step #{event} #{'call' ? 1 : -1}"
     @recursion_level += event == 'call' ? 1 : -1
   end
 

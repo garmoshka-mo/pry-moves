@@ -1,6 +1,6 @@
 require 'pry' unless defined? Pry
 
-module PryNav
+module PryMoves
   Commands = Pry::CommandSet.new do
     block_command 'step', 'Step execution into the next line or method.' do |param|
       check_file_context
@@ -44,7 +44,7 @@ module PryNav
 
       # Ensures that a command is executed in a local file context.
       def check_file_context
-        unless PryNav.check_file_context(target)
+        unless PryMoves.check_file_context(target)
           raise Pry::CommandError, 'Cannot find local context. Did you use `binding.pry`?'
         end
       end
@@ -52,7 +52,7 @@ module PryNav
   end
 end
 
-Pry.commands.import PryNav::Commands
+Pry.commands.import PryMoves::Commands
 
 Pry.commands.alias_command 'bt', 'pry-backtrace'
 Pry.commands.alias_command '!', '!!!'

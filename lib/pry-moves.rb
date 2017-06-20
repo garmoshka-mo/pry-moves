@@ -6,7 +6,7 @@ require 'pry-moves/tracer'
 # Optionally load pry-remote monkey patches
 require 'pry-moves/pry_remote_ext' if defined? PryRemote
 
-module PryNav
+module PryMoves
   TRACE_IGNORE_FILES = Dir[File.join(File.dirname(__FILE__), '**', '*.rb')].map { |f| File.expand_path(f) }
 
   extend self
