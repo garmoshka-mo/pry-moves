@@ -1,4 +1,3 @@
-require 'pry'
 require 'pry-moves'
 #require 'pry-nav'
 require './tracer.rb'
@@ -39,7 +38,7 @@ puts :prepare
 
 binding.pry
 
-A.new.aa.bb.cc
+a = A.new.aa.bb.cc
 
 bb = 1
 

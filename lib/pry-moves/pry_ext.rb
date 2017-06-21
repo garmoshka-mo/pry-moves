@@ -31,6 +31,43 @@ Binding.class_eval do
 
 end
 
+Pry::Command::Whereami.class_eval do
+  # Negligent function from Pry - evidently poor output format
+  # would be wanted to be changed often by developers,
+  # but definition so long... :(
+  def process
+    if bad_option_combination?
+      raise CommandError, "Only one of -m, -c, -f, and  LINES may be specified."
+    end
+
+    if nothing_to_do?
+      return
+    elsif internal_binding?(target)
+      handle_internal_binding
+      return
+    end
+
+    set_file_and_dir_locals(@file)
+
+    _pry_.pager.page build_output
+  end
+
+  def build_output
+    lines = []
+    lines << "#{text.bold('From:')} #{location}"
+    lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
+    lines << ''
+    lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+    lines << ''
+    lines.join "\n"
+  end
+
+  def location
+    file = defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
+    "#{file}:#{@line} #{@method && @method.name_with_owner}"
+  end
+end
+
 require 'pry-stack_explorer'
 
 PryStackExplorer::WhenStartedHook.class_eval do

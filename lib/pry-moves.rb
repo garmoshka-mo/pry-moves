@@ -3,6 +3,7 @@ require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
 require 'pry-moves/tracer'
 require 'pry-moves/backtrace'
+require 'pry-moves/watch'
 
 # Optionally load pry-remote monkey patches
 require 'pry-moves/pry_remote_ext' if defined? PryRemote

@@ -22,6 +22,10 @@ module PryMoves
       run 'exit-all'
     end
 
+    block_command 'watch', 'Display value of expression on every move' do |param|
+      PryMoves::Watch.instance.process_cmd param, target
+    end
+
     block_command 'bt', 'Backtrace' do |param|
       PryMoves::Backtrace.new(target).run_command param
     end
