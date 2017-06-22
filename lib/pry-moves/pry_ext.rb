@@ -67,18 +67,3 @@ Pry::Command::Whereami.class_eval do
     "#{file}:#{@line} #{@method && @method.name_with_owner}"
   end
 end
-
-=begin
-require 'pry-stack_explorer'
-
-PryStackExplorer::WhenStartedHook.class_eval do
-
-  def remove_debugger_frames(bindings)
-    bindings.drop_while { |b| b.eval("__FILE__") =~ /\/pry-/ }
-  end
-
-end
-
-b.eval('"#{__FILE__}:#{__LINE__}"') =~ regex
-
-=end

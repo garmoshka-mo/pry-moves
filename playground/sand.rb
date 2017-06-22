@@ -33,6 +33,7 @@ end
 #trace_events
 
 a = 1123
+b = binding
 
 puts :prepare
 

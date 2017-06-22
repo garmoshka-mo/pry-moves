@@ -84,31 +84,16 @@ module PryStackExplorer
       end
     end
 
-    #  Regexp.new(args[0])
     def find_frame_by_regex(regex, up_or_down)
       frame_index = find_frame_by_block(up_or_down) do |b|
-        b.eval("__method__").to_s =~ regex
+        (b.eval('"#{__FILE__}:#{__LINE__}"') =~ regex) or
+          (b.eval("__method__").to_s =~ regex)
       end
 
       if frame_index
         frame_index
       else
         raise Pry::CommandError, "No frame that matches #{regex.source} found!"
-      end
-    end
-
-    def find_frame_by_object_regex(class_regex, method_regex, up_or_down)
-      frame_index = find_frame_by_block(up_or_down) do |b|
-        class_match = b.eval("self.class").to_s =~ class_regex
-        meth_match = b.eval("__method__").to_s =~ method_regex
-
-        class_match && meth_match
-      end
-
-      if frame_index
-        frame_index
-      else
-        raise Pry::CommandError, "No frame that matches #{class_regex.source}" + '#' + "#{method_regex.source} found!"
       end
     end
 
@@ -144,18 +129,15 @@ module PryStackExplorer
       BANNER
 
       def process
-        inc = args.first.nil? ? "1" : args.first
+        param = args.first.nil? ? "1" : args.first
 
         if !frame_manager
           raise Pry::CommandError, "Nowhere to go!"
         else
-          if inc =~ /\d+/
-            frame_manager.change_frame_to frame_manager.binding_index + inc.to_i
-          elsif match = /^([A-Z]+[^#.]*)(#|\.)(.+)$/.match(inc)
-            new_frame_index = find_frame_by_object_regex(Regexp.new(match[1]), Regexp.new(match[3]), :up)
-            frame_manager.change_frame_to new_frame_index
-          elsif inc =~ /^[^-].*$/
-            new_frame_index = find_frame_by_regex(Regexp.new(inc), :up)
+          if param =~ /^\d+$/
+            frame_manager.change_frame_to frame_manager.binding_index + param.to_i
+          else
+            new_frame_index = find_frame_by_regex(Regexp.new(param), :up)
             frame_manager.change_frame_to new_frame_index
           end
         end
@@ -175,22 +157,19 @@ module PryStackExplorer
       BANNER
 
       def process
-        inc = args.first.nil? ? "1" : args.first
+        param = args.first.nil? ? "1" : args.first
 
         if !frame_manager
           raise Pry::CommandError, "Nowhere to go!"
         else
-          if inc =~ /\d+/
-            if frame_manager.binding_index - inc.to_i < 0
+          if param =~ /^\d+$/
+            if frame_manager.binding_index - param.to_i < 0
               raise Pry::CommandError, "At bottom of stack, cannot go further!"
             else
-              frame_manager.change_frame_to frame_manager.binding_index - inc.to_i
+              frame_manager.change_frame_to frame_manager.binding_index - param.to_i
             end
-          elsif match = /^([A-Z]+[^#.]*)(#|\.)(.+)$/.match(inc)
-            new_frame_index = find_frame_by_object_regex(Regexp.new(match[1]), Regexp.new(match[3]), :down)
-            frame_manager.change_frame_to new_frame_index
-          elsif inc =~ /^[^-].*$/
-            new_frame_index = find_frame_by_regex(Regexp.new(inc), :down)
+          else
+            new_frame_index = find_frame_by_regex(Regexp.new(param), :down)
             frame_manager.change_frame_to new_frame_index
           end
         end
