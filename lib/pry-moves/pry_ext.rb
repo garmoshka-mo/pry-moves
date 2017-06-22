@@ -23,10 +23,10 @@ end
 
 Binding.class_eval do
 
-  alias original_pry pry
+  alias pry_forced pry
 
   def pry
-    original_pry unless Pry.config.disable_breakpoints
+    pry_forced unless Pry.config.disable_breakpoints
   end
 
 end
@@ -68,6 +68,7 @@ Pry::Command::Whereami.class_eval do
   end
 end
 
+=begin
 require 'pry-stack_explorer'
 
 PryStackExplorer::WhenStartedHook.class_eval do
@@ -77,3 +78,7 @@ PryStackExplorer::WhenStartedHook.class_eval do
   end
 
 end
+
+b.eval('"#{__FILE__}:#{__LINE__}"') =~ regex
+
+=end

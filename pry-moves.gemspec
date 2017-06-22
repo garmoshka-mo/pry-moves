@@ -20,6 +20,6 @@ Gem::Specification.new do |gem|
   # Dependencies
   gem.required_ruby_version = '>= 1.8.7'
   gem.add_runtime_dependency 'pry', '>= 0.9.10', '< 0.11.0'
-  gem.add_runtime_dependency 'pry-stack_explorer', '~> 0.4.9'
+  gem.add_runtime_dependency 'binding_of_caller', '>= 0.7'
   gem.add_development_dependency 'pry-remote', '~> 0.1.6'
 end
