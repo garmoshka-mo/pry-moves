@@ -52,9 +52,21 @@ PryMoves::Backtrace::format do |line|
   end
 ```
 
-## Technical info
+## Threads
 
-`pry-moves` is not yet thread-safe, so only use in single-threaded environments.
+`pry-moves` can't stop other threads on `binding.pry`, so they will continue to run.
+This makes `pry-moves` not always suitable for debugging of multi-thread projects.
+
+Though you can pause other threads with helper which will suspend execution on current line,
+until ongoing debug session will be finished with `continue`:
+
+```ruby
+PryMoves.synchronize_threads
+```
+
+_For example, you can put it into function which periodically reports status of thread (if you have such)_
+
+## pry-remote
 
 Rudimentary support for [`pry-remote`][pry-remote] (>= 0.1.1) is also included.
 Ensure `pry-remote` is loaded or required before `pry-moves`. For example, in a
@@ -66,9 +78,10 @@ gem 'pry-remote'
 gem 'pry-moves'
 ```
 
+## Performance
+
 Please note that debugging functionality is implemented through
-[`set_trace_func`][set_trace_func], which imposes a large performance
-penalty.
+[`set_trace_func`][set_trace_func], which imposes certain performance penalty.
 
 ## Contributors
 

@@ -7,6 +7,7 @@ class Tracer
   end
 
   def run(&block)
+    PryMoves.semaphore.lock unless PryMoves.semaphore.locked?
     # For performance, disable any tracers while in the console.
     # Unfortunately doesn't work in 1.9.2 because of
     # http://redmine.ruby-lang.org/issues/3921. Works fine in 1.8.7 and 1.9.3.
@@ -23,6 +24,7 @@ class Tracer
       start_tracing command
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
+      PryMoves.semaphore.unlock
       if @pry_start_options[:pry_remote] && PryMoves.current_remote_server
         PryMoves.current_remote_server.teardown
       end

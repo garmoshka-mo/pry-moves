@@ -26,7 +26,10 @@ Binding.class_eval do
   alias pry_forced pry
 
   def pry
-    pry_forced unless Pry.config.disable_breakpoints
+    unless Pry.config.disable_breakpoints
+      PryMoves.synchronize_threads
+      pry_forced
+    end
   end
 
 end
