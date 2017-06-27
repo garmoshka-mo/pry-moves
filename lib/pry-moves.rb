@@ -15,6 +15,8 @@ module PryMoves
 
   extend self
 
+  attr_accessor :open
+
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
   def check_file_context(target)
@@ -24,6 +26,14 @@ module PryMoves
 
   def semaphore
     @semaphore ||= Mutex.new
+  end
+
+  def lock
+    semaphore.lock unless semaphore.locked?
+  end
+
+  def open?
+    @open
   end
 
   def synchronize_threads

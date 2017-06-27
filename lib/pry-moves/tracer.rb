@@ -7,17 +7,19 @@ class Tracer
   end
 
   def run(&block)
-    PryMoves.semaphore.lock unless PryMoves.semaphore.locked?
+    PryMoves.lock
     # For performance, disable any tracers while in the console.
     # Unfortunately doesn't work in 1.9.2 because of
     # http://redmine.ruby-lang.org/issues/3921. Works fine in 1.8.7 and 1.9.3.
     stop_tracing unless RUBY_VERSION == '1.9.2'
 
     return_value = nil
+    PryMoves.open = true
     command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
       return_value = yield
       {}    # Nothing thrown == no navigational command
     end
+    PryMoves.open = false
 
     # Adjust tracer based on command
     if process_command(command)

@@ -52,7 +52,7 @@ PryMoves::Backtrace::format do |line|
   end
 ```
 
-## Threads
+## Threads, helpers
 
 `pry-moves` can't stop other threads on `binding.pry`, so they will continue to run.
 This makes `pry-moves` not always suitable for debugging of multi-thread projects.
@@ -65,6 +65,9 @@ PryMoves.synchronize_threads
 ```
 
 _For example, you can put it into function which periodically reports status of thread (if you have such)_
+
+Other helpers:
+* `PryMoves.open?` - if pry input dialog active. Can be used to suppress output from ongoing parallel threads 
 
 ## pry-remote
 
