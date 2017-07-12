@@ -54,13 +54,10 @@ module PryStackExplorer
     # @param [Fixnum] index The index.
     def set_binding_index_safely(index)
       if index > bindings.size - 1
-        raise Pry::CommandError, "At top of stack, cannot go further!"
-      elsif index < -bindings.size
-        raise Pry::CommandError, "At bottom of stack, cannot go further!"
+        raise Pry::CommandError, "At top of stack, cannot go further"
+      elsif index < 0
+        raise Pry::CommandError, "At bottom of stack, cannot go further"
       else
-        # wrap around negative indices
-        index = (bindings.size - 1) + index + 1 if index < 0
-
         self.binding_index = index
       end
     end
@@ -69,7 +66,6 @@ module PryStackExplorer
     # Note that indexing base is `0`
     # @param [Fixnum] index The index of the frame.
     def change_frame_to(index, run_whereami=true)
-
       set_binding_index_safely(index)
 
       if @pry.binding_stack.empty?

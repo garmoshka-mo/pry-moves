@@ -90,18 +90,15 @@ module PryStackExplorer
           (b.eval("__method__").to_s =~ regex)
       end
 
-      if frame_index
-        frame_index
-      else
-        raise Pry::CommandError, "No frame that matches #{regex.source} found!"
-      end
+      frame_index || raise(Pry::CommandError, "No frame that matches #{regex.source} found")
     end
 
     def find_frame_by_block(up_or_down)
       start_index = frame_manager.binding_index
 
       if up_or_down == :down
-        enum = frame_manager.bindings[0..start_index - 1].reverse_each
+        enum = start_index == 0 ? [].each :
+            frame_manager.bindings[0..start_index - 1].reverse_each
       else
         enum = frame_manager.bindings[start_index + 1..-1]
       end
@@ -111,6 +108,28 @@ module PryStackExplorer
       end
 
       frame_manager.bindings.index(new_frame)
+    end
+
+    def find_frame_by_direction(up_or_down, step_into_vapid: false)
+      frame_index = find_frame_by_block(up_or_down) do |b|
+          step_into_vapid or
+            not b.local_variable_defined?(:vapid_frame)
+        end
+
+      frame_index ||
+        raise(Pry::CommandError, "At #{up_or_down == :up ? 'top' : 'bottom'} of stack, cannot go further")
+    end
+
+    def move(direction, param)
+      raise Pry::CommandError, "Nowhere to go" unless frame_manager
+
+      if param == '+' or param.nil?
+        index = find_frame_by_direction direction, step_into_vapid: param == '+'
+        frame_manager.change_frame_to index
+      else
+        index = find_frame_by_regex(Regexp.new(param), direction)
+        frame_manager.change_frame_to index
+      end
     end
   end
 
@@ -123,24 +142,13 @@ module PryStackExplorer
         Usage: up [OPTIONS]
           Go up to the caller's context. Accepts optional numeric parameter for how many frames to move up.
           Also accepts a string (regex) instead of numeric; for jumping to nearest parent method frame which matches the regex.
-          e.g: up      #=> Move up 1 stack frame.
-          e.g: up 3    #=> Move up 2 stack frames.
+          e.g: up      #=> Move up normally
+          e.g: up +    #=> Move up including vapid frames
           e.g: up meth #=> Jump to nearest parent stack frame whose method matches /meth/ regex, i.e `my_method`.
       BANNER
 
       def process
-        param = args.first.nil? ? "1" : args.first
-
-        if !frame_manager
-          raise Pry::CommandError, "Nowhere to go!"
-        else
-          if param =~ /^\d+$/
-            frame_manager.change_frame_to frame_manager.binding_index + param.to_i
-          else
-            new_frame_index = find_frame_by_regex(Regexp.new(param), :up)
-            frame_manager.change_frame_to new_frame_index
-          end
-        end
+        move :up, args.first
       end
     end
 
@@ -151,28 +159,13 @@ module PryStackExplorer
         Usage: down [OPTIONS]
           Go down to the callee's context. Accepts optional numeric parameter for how many frames to move down.
           Also accepts a string (regex) instead of numeric; for jumping to nearest child method frame which matches the regex.
-          e.g: down      #=> Move down 1 stack frame.
-          e.g: down 3    #=> Move down 2 stack frames.
+          e.g: down      #=> Move down normally
+          e.g: down +    #=> Move down including vapid frames
           e.g: down meth #=> Jump to nearest child stack frame whose method matches /meth/ regex, i.e `my_method`.
       BANNER
 
       def process
-        param = args.first.nil? ? "1" : args.first
-
-        if !frame_manager
-          raise Pry::CommandError, "Nowhere to go!"
-        else
-          if param =~ /^\d+$/
-            if frame_manager.binding_index - param.to_i < 0
-              raise Pry::CommandError, "At bottom of stack, cannot go further!"
-            else
-              frame_manager.change_frame_to frame_manager.binding_index - param.to_i
-            end
-          else
-            new_frame_index = find_frame_by_regex(Regexp.new(param), :down)
-            frame_manager.change_frame_to new_frame_index
-          end
-        end
+        move :down, args.first
       end
     end
 

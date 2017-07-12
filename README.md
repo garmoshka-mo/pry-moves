@@ -19,6 +19,8 @@ _An execution control add-on for [Pry][pry]._
   * `bt all` - full backtrace
   * `bt >foo` - write backtrace to file `log/backtrace_foo.log`
 * `up`/`down` - move over call stack
+  * `up +` - move up, including vapid frames (block callers)
+  * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
 * `!` - exit
 
 

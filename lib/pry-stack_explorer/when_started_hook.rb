@@ -9,6 +9,8 @@ module PryStackExplorer
       bindings = remove_debugger_frames(bindings)
       bindings = bindings.drop(1) if pry_method_frame?(bindings.first)
 
+      mark_vapid_frames(bindings)
+
       bindings
     end
 
@@ -35,6 +37,25 @@ module PryStackExplorer
     end
 
     private
+
+    def mark_vapid_frames(bindings)
+      stepped_out = false
+      actual_file, actual_method = nil, nil
+
+      bindings.each do |binding|
+        if stepped_out
+          if actual_file == binding.eval("__FILE__") and actual_method == binding.eval("__method__")
+            stepped_out = false
+          else
+            binding.local_variable_set :vapid_frame, true
+          end
+        elsif binding.frame_type == :block
+          stepped_out = true
+          actual_file = binding.eval("__FILE__")
+          actual_method = binding.eval("__method__")
+        end
+      end
+    end
 
     # remove internal frames related to setting up the session
     def remove_internal_frames(bindings)
