@@ -34,6 +34,8 @@ Binding.class_eval do
 
 end
 
+Pry.config.pager = false
+
 Pry::Command::Whereami.class_eval do
   # Negligent function from Pry - evidently poor output format
   # would be wanted to be changed often by developers,
