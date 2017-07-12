@@ -9,14 +9,6 @@ module PryStackExplorer
       bindings = remove_debugger_frames(bindings)
       bindings = bindings.drop(1) if pry_method_frame?(bindings.first)
 
-      # Use the binding returned by #of_caller if possible (as we get
-      # access to frame_type).
-      # Otherwise stick to the given binding (target).
-      if !PryStackExplorer.bindings_equal?(target, bindings.first)
-        bindings.shift
-        bindings.unshift(target)
-      end
-
       bindings
     end
 
