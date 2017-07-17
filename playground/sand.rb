@@ -2,7 +2,7 @@ require 'pry-moves'
 #require 'pry-nav'
 require './tracer.rb'
 
-def debug?
+def debucher?
   binding.pry
   true
 end
@@ -45,8 +45,8 @@ bb = 1
 
 exit
 
-pp = 123 if debug?
-binding.pry if debug?
+pp = 123 if debucher?
+binding.pry if debucher?
 
 binding.pry
 

@@ -54,6 +54,10 @@ module PryStackExplorer
           actual_file = binding.eval("__FILE__")
           actual_method = binding.eval("__method__")
         end
+
+        if binding.local_variable_defined? :hide_from_stack
+          binding.local_variable_set :vapid_frame, true
+        end
       end
     end
 
