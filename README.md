@@ -18,8 +18,8 @@ _An execution control add-on for [Pry][pry]._
   * `bt 10` - latest 10 lines
   * `bt all` - full backtrace
   * `bt >foo` - write backtrace to file `log/backtrace_foo.log`
-* `up`/`down` - move over call stack
-  * `up +` - move up, including vapid frames (block callers)
+* `up`/`down`/`top`/`bottom` - move over call stack
+  * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
 * `!` - exit
 
@@ -40,6 +40,18 @@ end
 <img src="https://user-images.githubusercontent.com/2452269/27320748-37afe7de-55a0-11e7-8b8f-ae05bcb02f37.jpg" width="377">
 
 _Demo class source [here](https://github.com/garmoshka-mo/pry-moves/issues/1)_
+
+## Backtrace and call stack
+
+You can explicitly hide frames from backtrace and call stack by defining `hide_from_stack` variable:
+
+```ruby
+def insignificant_method
+  hide_from_stack = true
+  something_insignificant
+  yield
+end
+```
 
 ## Configuration
 

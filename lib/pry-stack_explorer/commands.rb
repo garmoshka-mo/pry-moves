@@ -146,6 +146,20 @@ module PryStackExplorer
       end
     end
 
+    create_command "top", "Top" do
+      include FrameHelpers
+      def process
+        frame_manager.change_frame_to frame_manager.bindings.size - 1
+      end
+    end
+
+    create_command "bottom", "Bottom" do
+      include FrameHelpers
+      def process
+        frame_manager.change_frame_to 0
+      end
+    end
+
     create_command "frame", "Switch to a particular frame." do
       include FrameHelpers
 
