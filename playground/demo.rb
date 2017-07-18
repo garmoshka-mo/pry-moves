@@ -21,6 +21,11 @@ class A
   end
 
   def cc
+    dd_vapid
+  end
+
+  def dd_vapid
+    hide_from_stack = true
     ee
   end
 

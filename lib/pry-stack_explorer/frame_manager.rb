@@ -33,6 +33,13 @@ module PryStackExplorer
       @prior_backtrace   = _pry_.backtrace
     end
 
+    def filter_bindings(vapid_frames: false)
+      bindings.reject do |binding|
+        !vapid_frames and
+          binding.local_variable_defined?(:vapid_frame)
+      end
+    end
+
     # Iterate over all frames
     def each(&block)
       bindings.each(&block)

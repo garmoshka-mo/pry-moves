@@ -28,10 +28,11 @@ class PryMoves::Backtrace
 
   def build(lines_count = nil)
     result = []
-
-    stack = stack_bindings.reverse.reject do |binding|
-              binding.eval('__FILE__').match self.class::filter
-            end
+    show_vapid = lines_count == 'all'
+    stack = stack_bindings(show_vapid)
+              .reverse.reject do |binding|
+                binding.eval('__FILE__').match self.class::filter
+              end
 
     if lines_count.is_a? String and lines_count.match /\d+/
       lines_count = lines_count.to_i
@@ -59,9 +60,9 @@ class PryMoves::Backtrace
     stack.each do |binding|
       obj = binding.eval 'self'
       if current_object != obj
-        formatted_obj = ""
-        Pry::ColorPrinter.pp obj, formatted_obj
-        result << "\t#{formatted_obj.chomp}:"
+        colored_obj = ""
+        Pry::ColorPrinter.pp obj, colored_obj
+        result << "#{colored_obj.chomp}:"
         current_object = obj
       end
 
@@ -76,14 +77,19 @@ class PryMoves::Backtrace
 
     signature = PryMoves::Helpers.method_signature_with_owner binding
 
-    "#{file}:#{binding.eval('__LINE__')} "+
-      " #{signature} :#{binding.frame_type}"
+    indent = frame_manager.current_frame == binding ?
+        ' => ': '    '
 
-    #self.class::formatter stack_location, binding
+    "#{indent}#{file}:#{binding.eval('__LINE__')} "+
+      " #{signature} :#{binding.frame_type}"
   end
 
-  def stack_bindings
-    PryStackExplorer.frame_manager(@pry).bindings
+  def frame_manager
+    PryStackExplorer.frame_manager(@pry)
+  end
+
+  def stack_bindings(vapid_frames)
+    frame_manager.filter_bindings vapid_frames: vapid_frames
   end
 
   def write_to_file(lines, file_suffix)
