@@ -46,13 +46,10 @@ module PryStackExplorer
     # @param [Boolean] verbose Whether to generate a verbose description.
     # @return [String] The description of the binding.
     def frame_info(b, verbose = false)
-      meth = b.eval('__method__')
       b_self = b.eval('self')
-      meth_obj = Pry::Method.from_binding(b) if meth
-
       type = b.frame_type ? "[#{b.frame_type}]".ljust(9) : ""
       desc = b.frame_description ? "#{b.frame_description}" : "#{frame_description(b)}"
-      sig = meth_obj ? "<#{signature_with_owner(meth_obj)}>" : ""
+      sig = PryMoves::Helpers.method_signature_with_owner b
 
       self_clipped = "#{Pry.view_clip(b_self)}"
       path = "@ #{b.eval('__FILE__')}:#{b.eval('__LINE__')}"
@@ -61,26 +58,6 @@ module PryStackExplorer
         "#{type} #{desc} #{sig}"
       else
         "#{type} #{desc} #{sig}\n      in #{self_clipped} #{path}"
-      end
-    end
-
-    # @param [Pry::Method] meth_obj The method object.
-    # @return [String] Signature for the method object in Class#method format.
-    def signature_with_owner(meth_obj)
-      if !meth_obj.undefined?
-        args = meth_obj.parameters.inject([]) do |arr, (type, name)|
-          name ||= (type == :block ? 'block' : "arg#{arr.size + 1}")
-          arr << case type
-                 when :req   then name.to_s
-                 when :opt   then "#{name}=?"
-                 when :rest  then "*#{name}"
-                 when :block then "&#{name}"
-                 else '?'
-                 end
-        end
-        "#{meth_obj.name_with_owner}(#{args.join(', ')})"
-      else
-        "#{meth_obj.name_with_owner}(UNKNOWN) (undefined method)"
       end
     end
 

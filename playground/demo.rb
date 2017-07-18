@@ -12,6 +12,7 @@ class A
 
   def bb
     block do
+      cc
       c = :some_code
     end
     d = :some_code
@@ -19,14 +20,26 @@ class A
     self
   end
 
+  def cc
+    ee
+  end
+
+  def ee
+    binding.pry
+  end
+
   def block
     e = :some_code
-    yield
+    [1].each do
+      yield
+    end
     f = :other_code
   end
 
 end
 
-binding.pry
+#binding.pry
+puts :aaa
 A.new.aa.bb
 c = :some_code
+puts :zzz

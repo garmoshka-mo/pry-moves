@@ -49,9 +49,6 @@ Here is default configuration, you can override it:
 PryMoves::Backtrace::lines_count = 5
 PryMoves::Backtrace::filter =
   /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/|\/pry-moves\/)/
-PryMoves::Backtrace::format do |line|
-    defined?(Rails) : line.gsub( /^#{Rails.root.to_s}/, '') : line
-  end
 ```
 
 ## Threads, helpers
