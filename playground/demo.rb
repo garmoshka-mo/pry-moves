@@ -10,10 +10,19 @@ class A
     self
   end
 
+  def pre_bb
+    [1,2,3].each do
+      bb
+    end
+    puts :prebb
+  end
+
   def bb
-    block do
-      cc
-      c = :some_code
+    binding.pry
+    block_func do
+      #cc
+      ff
+      a = :some_code
     end
     d = :some_code
     e = :some_code
@@ -33,9 +42,13 @@ class A
     binding.pry
   end
 
-  def block
+  def ff
+    e = :ff
+  end
+
+  def block_func
     e = :some_code
-    [1].each do
+    [1,1].each do
       yield
     end
     f = :other_code
@@ -45,6 +58,6 @@ end
 
 #binding.pry
 puts :aaa
-A.new.aa.bb
+A.new.aa.pre_bb
 c = :some_code
 puts :zzz

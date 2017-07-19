@@ -79,10 +79,10 @@ class Tracer
     if method
       source = method.source_location
       set_method({
-                     file: source[0],
-                     start: source[1],
-                     end: (source[1] + method.source.count("\n") - 1)
-                 })
+       file: source[0],
+       start: source[1],
+       end: (source[1] + method.source.count("\n") - 1)
+     })
     else
       set_method({file: binding.eval('__FILE__')})
     end
@@ -100,54 +100,54 @@ class Tracer
 
   def tracer(event, file, line, id, binding_, klass)
     #printf "%8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
+
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
-    if @action == :next
-      traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
-      if traced_method_exit
-        # Set new traced method, because we left previous one
-        set_traced_method binding_
-        return if event == 'call'
+    catch (:skip) do
+      if send "trace_#{@action}", event, file, line, binding_
+        Pry.start(binding_, @pry_start_options)
+
+      # for cases when currently traced method called more times recursively
+      elsif %w(call return).include?(event) and within_current_method?(file, line)
+        @recursion_level += event == 'call' ? 1 : -1
       end
     end
+  end
 
-    case event
-      when 'line'
-        #debug_info file, line, id
-        if break_here?(file, line, binding_)
-          Pry.start(binding_, @pry_start_options)
-        end
-      when 'call', 'return'
-        # for cases when currently traced method called more times recursively
-        if within_current_method?(file, line)
-          @recursion_level += event == 'call' ? 1 : -1
-        end
+  def trace_step(event, file, line, binding_)
+    event == 'line' and (@step_info_funcs ?
+      @step_info_funcs.include?(binding_.eval('__callee__'))
+      : true)
+  end
+
+  def trace_next(event, file, line, binding_)
+    traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
+    if traced_method_exit
+      # Set new traced method, because we left previous one
+      set_traced_method binding_
+      throw :skip if event == 'call'
+    end
+
+    event == 'line' and
+      @recursion_level == 0 and
+      within_current_method?(file, line)
+  end
+
+  def trace_finish(event, file, line, binding_)
+    return unless event == 'line'
+    return true if @recursion_level < 0 or @method_to_finish != @method
+
+    # for finishing blocks inside current method
+    if @block_to_finish
+      within_current_method?(file, line) and
+          @block_to_finish != frame_digest(binding_.of_caller(3))
     end
   end
 
   def debug_info(file, line, id)
     puts "📽  Action:#{@action}; recur:#{@recursion_level}; #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
-  end
-
-  def break_here?(file, line, binding_)
-    case @action
-      when :step
-        @step_info_funcs ?
-            @step_info_funcs.include?(binding_.eval('__callee__'))
-            : true
-      when :finish
-        return true if @recursion_level < 0 or @method_to_finish != @method
-
-        # for finishing blocks inside current method
-        if @block_to_finish
-          within_current_method?(file, line) and
-            @block_to_finish != frame_digest(binding_.of_caller(2))
-        end
-      when :next
-        @recursion_level == 0 and within_current_method?(file, line)
-    end
   end
 
   def within_current_method?(file, line)
