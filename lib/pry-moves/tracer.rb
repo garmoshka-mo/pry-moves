@@ -37,10 +37,13 @@ class Tracer
 
   def start_tracing(command)
     Pry.config.disable_breakpoints = true
-    set_traced_method command[:binding]
-    case @action
-      when :finish
-        @method_to_finish = @method
+
+    binding_ = command[:binding]
+    set_traced_method binding_
+    if @action == :finish
+      @method_to_finish = @method
+      @block_to_finish = (binding_.frame_type == :block) &&
+          frame_digest(binding_)
     end
     set_trace_func method(:tracer).to_proc
   end
@@ -73,15 +76,16 @@ class Tracer
     @recursion_level = 0
 
     method = binding.eval 'method(__method__) if __method__'
-    return set_method({file: binding.eval('__FILE__')}) unless method
-
-    source = method.source_location
-    set_method({
-        file: source[0],
-        start: source[1],
-        end: (source[1] + method.source.count("\n") - 1)
-        #thread: binding.eval 'Thread.current' # todo: Нужна проверка по треду?
-    })
+    if method
+      source = method.source_location
+      set_method({
+                     file: source[0],
+                     start: source[1],
+                     end: (source[1] + method.source.count("\n") - 1)
+                 })
+    else
+      set_method({file: binding.eval('__FILE__')})
+    end
   end
 
   def set_method(method)
@@ -89,24 +93,35 @@ class Tracer
     @method = method
   end
 
+  def frame_digest(binding_)
+    #puts "frame_digest for: #{binding_.eval '__callee__'}"
+    Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
+  end
+
   def tracer(event, file, line, id, binding_, klass)
-    #printf "%8s %s:%-2d %10s %8s\n", event, file, line, id, klass
+    #printf "%8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
-    traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
-    # Set new traced method, because we left previous one
-    set_traced_method binding_ if traced_method_exit
+    if @action == :next
+      traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
+      if traced_method_exit
+        # Set new traced method, because we left previous one
+        set_traced_method binding_
+        return if event == 'call'
+      end
+    end
 
     case event
       when 'line'
         #debug_info file, line, id
-        if break_here?(file, line, binding_, traced_method_exit)
+        if break_here?(file, line, binding_)
           Pry.start(binding_, @pry_start_options)
         end
       when 'call', 'return'
-        if within_current_method?(file, line) and !traced_method_exit
-          recursion_step event
+        # for cases when currently traced method called more times recursively
+        if within_current_method?(file, line)
+          @recursion_level += event == 'call' ? 1 : -1
         end
     end
   end
@@ -116,14 +131,20 @@ class Tracer
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 
-  def break_here?(file, line, binding_, traced_method_exit)
+  def break_here?(file, line, binding_)
     case @action
       when :step
         @step_info_funcs ?
             @step_info_funcs.include?(binding_.eval('__callee__'))
             : true
       when :finish
-        @method_to_finish = @method if @method_to_finish != @method
+        return true if @recursion_level < 0 or @method_to_finish != @method
+
+        # for finishing blocks inside current method
+        if @block_to_finish
+          within_current_method?(file, line) and
+            @block_to_finish != frame_digest(binding_.of_caller(2))
+        end
       when :next
         @recursion_level == 0 and within_current_method?(file, line)
     end
@@ -134,11 +155,6 @@ class Tracer
       @method[:start].nil? or
       line.between?(@method[:start], @method[:end])
     )
-  end
-
-  def recursion_step(event)
-    #puts "recursion_step #{event} #{'call' ? 1 : -1}"
-    @recursion_level += event == 'call' ? 1 : -1
   end
 
 end
