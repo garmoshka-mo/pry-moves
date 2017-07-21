@@ -60,9 +60,9 @@ class Tracer
       when :step
         @step_info_funcs = nil
         if command[:param]
-          func = command[:param].to_sym
+          func = command[:param]
           @step_info_funcs = [func]
-          @step_info_funcs << :initialize if func == :new
+          @step_info_funcs << 'initialize' if func == 'new'
         end
     end
 
@@ -116,9 +116,13 @@ class Tracer
   end
 
   def trace_step(event, file, line, binding_)
-    event == 'line' and (@step_info_funcs ?
-      @step_info_funcs.include?(binding_.eval('__callee__'))
-      : true)
+    return unless event == 'line'
+    if @step_info_funcs
+      method = binding_.eval('__callee__').to_s
+      @step_info_funcs.any? {|pattern| method.include? pattern}
+    else
+      true
+    end
   end
 
   def trace_next(event, file, line, binding_)
