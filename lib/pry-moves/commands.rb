@@ -22,6 +22,11 @@ module PryMoves
       run 'exit-all'
     end
 
+    alias_command 'c', 'continue'
+    alias_command 's', 'step'
+    alias_command 'n', 'next'
+    alias_command 'f', 'finish'
+
     block_command 'watch', 'Display value of expression on every move' do |param|
       PryMoves::Watch.instance.process_cmd param, target
     end
@@ -29,11 +34,6 @@ module PryMoves
     block_command 'bt', 'Backtrace' do |param|
       PryMoves::Backtrace.new(target, _pry_).run_command param
     end
-
-    alias_command 'c', 'continue'
-    alias_command 's', 'step'
-    alias_command 'n', 'next'
-    alias_command 'f', 'finish'
 
     # Hit Enter to repeat last command
     command /^$/, "repeat last command" do

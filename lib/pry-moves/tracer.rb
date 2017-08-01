@@ -15,15 +15,16 @@ class Tracer
 
     return_value = nil
     PryMoves.open = true
-    command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
+    @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
       return_value = yield
       {}    # Nothing thrown == no navigational command
     end
     PryMoves.open = false
 
     # Adjust tracer based on command
-    if process_command(command)
-      start_tracing command
+    if @command
+      init_command
+      start_tracing
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
       PryMoves.semaphore.unlock
@@ -35,14 +36,17 @@ class Tracer
     return_value
   end
 
-  def start_tracing(command)
+  private
+
+  def start_tracing
     Pry.config.disable_breakpoints = true
 
-    binding_ = command[:binding]
+    binding_ = @command[:binding]
     set_traced_method binding_
     if @action == :finish
       @method_to_finish = @method
-      @block_to_finish = (binding_.frame_type == :block) &&
+      @block_to_finish =
+          (binding_.frame_type == :block) &&
           frame_digest(binding_)
     end
     set_trace_func method(:tracer).to_proc
@@ -53,24 +57,18 @@ class Tracer
     set_trace_func nil
   end
 
-  def process_command(command = {})
-    @action = command[:action]
+  def init_command
+    @action = @command[:action]
 
     case @action
-      when :step
-        @step_info_funcs = nil
-        if command[:param]
-          func = command[:param]
-          @step_info_funcs = [func]
-          @step_info_funcs << 'initialize' if func == 'new'
-        end
+    when :step
+      @step_info_funcs = nil
+      if (func = @command[:param])
+        @step_info_funcs = [func]
+        @step_info_funcs << 'initialize' if func == 'new'
+      end
     end
-
-    [:step, :next, :finish].include? @action
   end
-
-
-  private
 
   def set_traced_method(binding)
     @recursion_level = 0
