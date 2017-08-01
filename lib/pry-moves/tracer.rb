@@ -25,6 +25,7 @@ class Tracer
     if @command
       init_command
       start_tracing
+      post_action
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
       PryMoves.semaphore.unlock
@@ -67,6 +68,13 @@ class Tracer
         @step_info_funcs = [func]
         @step_info_funcs << 'initialize' if func == 'new'
       end
+    end
+  end
+
+  def post_action
+    if @action == :debug
+      #puts "CALLER:\n#{caller.join "\n"}\n"
+      @command[:binding].eval @command[:param]
     end
   end
 
@@ -145,6 +153,10 @@ class Tracer
       within_current_method?(file, line) and
           @block_to_finish != frame_digest(binding_.of_caller(3))
     end
+  end
+
+  def trace_debug(event, file, line, binding_)
+    event == 'line' and file == 'sand.rb' and line != 47
   end
 
   def debug_info(file, line, id)

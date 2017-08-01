@@ -21,6 +21,8 @@ _An execution control add-on for [Pry][pry]._
 * `up`/`down`/`top`/`bottom` - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
+* `debug some_method(param, param2)` - call `some_method(param, param2)` and interactively step into it
+... this can add "debug of dynamic calls," to project description
 * `!` - exit
 
 

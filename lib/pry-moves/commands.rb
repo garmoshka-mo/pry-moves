@@ -35,6 +35,12 @@ module PryMoves
       PryMoves::Backtrace.new(target, _pry_).run_command param
     end
 
+    block_command 'debug', '' do |*command_parts|
+      check_file_context
+      cmd = command_parts.join ' '
+      breakout_navigation :debug, cmd
+    end
+
     # Hit Enter to repeat last command
     command /^$/, "repeat last command" do
       _pry_.run_command Pry.history.to_a.last
