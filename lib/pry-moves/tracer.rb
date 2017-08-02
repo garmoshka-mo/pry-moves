@@ -2,71 +2,45 @@ require 'pry' unless defined? Pry
 
 module PryMoves
 class Tracer
-  def initialize(pry_start_options = {})
-    @pry_start_options = pry_start_options   # Options to use for Pry.start
+
+  def initialize(command, pry_start_options)
+    @command = command
+    @pry_start_options = pry_start_options
+
+    @action = @command[:action]
+    binding_ = @command[:binding]
+    set_traced_method binding_
+
+    case @action
+      when :step
+        @step_info_funcs = nil
+        if (func = @command[:param])
+          @step_info_funcs = [func]
+          @step_info_funcs << 'initialize' if func == 'new'
+        end
+      when :finish
+        @method_to_finish = @method
+        @block_to_finish =
+            (binding_.frame_type == :block) &&
+                frame_digest(binding_)
+    end
   end
 
-  def run(&block)
-    PryMoves.lock
-    # For performance, disable any tracers while in the console.
-    # Unfortunately doesn't work in 1.9.2 because of
-    # http://redmine.ruby-lang.org/issues/3921. Works fine in 1.8.7 and 1.9.3.
-    stop_tracing unless RUBY_VERSION == '1.9.2'
-
-    return_value = nil
-    PryMoves.is_open = true
-    @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
-      return_value = yield
-      nil    # Nothing thrown == no navigational command
-    end
-    PryMoves.is_open = false
-
-    # Adjust tracer based on command
-    if @command
-      init_command
-      start_tracing
-      post_action
-    else
-      stop_tracing if RUBY_VERSION == '1.9.2'
-      PryMoves.semaphore.unlock
-      if @pry_start_options[:pry_remote] && PryMoves.current_remote_server
-        PryMoves.current_remote_server.teardown
-      end
-    end
-
-    return_value
+  def trace
+    start_tracing
+    post_action
   end
 
   private
 
   def start_tracing
     Pry.config.disable_breakpoints = true
-    Thread.current.set_trace_func method(:tracer).to_proc
+    Thread.current.set_trace_func method(:tracing_func).to_proc
   end
 
   def stop_tracing
     Pry.config.disable_breakpoints = false
     Thread.current.set_trace_func nil
-  end
-
-  def init_command
-    @action = @command[:action]
-    binding_ = @command[:binding]
-    set_traced_method binding_
-
-    case @action
-    when :step
-      @step_info_funcs = nil
-      if (func = @command[:param])
-        @step_info_funcs = [func]
-        @step_info_funcs << 'initialize' if func == 'new'
-      end
-    when :finish
-      @method_to_finish = @method
-      @block_to_finish =
-          (binding_.frame_type == :block) &&
-              frame_digest(binding_)
-    end
   end
 
   def post_action
@@ -102,7 +76,7 @@ class Tracer
     Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
   end
 
-  def tracer(event, file, line, id, binding_, klass)
+  def tracing_func(event, file, line, id, binding_, klass)
     #printf "%8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
 
     # Ignore traces inside pry-moves code

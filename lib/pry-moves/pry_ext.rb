@@ -9,7 +9,7 @@ class << Pry
 
     if target.is_a?(Binding) && PryMoves.check_file_context(target)
       # Wrap the tracer around the usual Pry.start
-      PryMoves::Tracer.new(options).run do
+      PryMoves::PryWrapper.new(options).run do
         start_without_pry_nav(target, old_options)
       end
     else

@@ -1,6 +1,7 @@
 require 'pry-moves/version'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
+require 'pry-moves/pry_wrapper'
 require 'pry-moves/tracer'
 require 'pry-moves/backtrace'
 require 'pry-moves/watch'
