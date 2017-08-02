@@ -2,7 +2,7 @@ require 'pry' unless defined? Pry
 
 module PryMoves
 class Tracer
-  def initialize(pry_start_options = {}, &block)
+  def initialize(pry_start_options = {})
     @pry_start_options = pry_start_options   # Options to use for Pry.start
   end
 
@@ -14,12 +14,12 @@ class Tracer
     stop_tracing unless RUBY_VERSION == '1.9.2'
 
     return_value = nil
-    PryMoves.open = true
+    PryMoves.is_open = true
     @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
       return_value = yield
-      {}    # Nothing thrown == no navigational command
+      nil    # Nothing thrown == no navigational command
     end
-    PryMoves.open = false
+    PryMoves.is_open = false
 
     # Adjust tracer based on command
     if @command
@@ -41,25 +41,18 @@ class Tracer
 
   def start_tracing
     Pry.config.disable_breakpoints = true
-
-    binding_ = @command[:binding]
-    set_traced_method binding_
-    if @action == :finish
-      @method_to_finish = @method
-      @block_to_finish =
-          (binding_.frame_type == :block) &&
-          frame_digest(binding_)
-    end
-    set_trace_func method(:tracer).to_proc
+    Thread.current.set_trace_func method(:tracer).to_proc
   end
 
   def stop_tracing
     Pry.config.disable_breakpoints = false
-    set_trace_func nil
+    Thread.current.set_trace_func nil
   end
 
   def init_command
     @action = @command[:action]
+    binding_ = @command[:binding]
+    set_traced_method binding_
 
     case @action
     when :step
@@ -68,6 +61,11 @@ class Tracer
         @step_info_funcs = [func]
         @step_info_funcs << 'initialize' if func == 'new'
       end
+    when :finish
+      @method_to_finish = @method
+      @block_to_finish =
+          (binding_.frame_type == :block) &&
+              frame_digest(binding_)
     end
   end
 

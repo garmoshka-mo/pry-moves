@@ -16,7 +16,7 @@ module PryMoves
 
   extend self
 
-  attr_accessor :open
+  attr_accessor :is_open
 
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
@@ -34,7 +34,7 @@ module PryMoves
   end
 
   def open?
-    @open
+    @is_open
   end
 
   def synchronize_threads
