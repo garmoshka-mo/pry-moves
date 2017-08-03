@@ -6,48 +6,50 @@ class Tracer
   def initialize(command, pry_start_options)
     @command = command
     @pry_start_options = pry_start_options
+  end
 
+  def trace
     @action = @command[:action]
     binding_ = @command[:binding]
     set_traced_method binding_
 
     case @action
-      when :step
-        @step_info_funcs = nil
-        if (func = @command[:param])
-          @step_info_funcs = [func]
-          @step_info_funcs << 'initialize' if func == 'new'
-        end
-      when :finish
-        @method_to_finish = @method
-        @block_to_finish =
-            (binding_.frame_type == :block) &&
-                frame_digest(binding_)
+    when :step
+      @step_info_funcs = nil
+      if (func = @command[:param])
+        @step_info_funcs = [func]
+        @step_info_funcs << 'initialize' if func == 'new'
+      end
+    when :finish
+      @method_to_finish = @method
+      @block_to_finish =
+          (binding_.frame_type == :block) &&
+              frame_digest(binding_)
     end
-  end
 
-  def trace
     start_tracing
-    post_action
   end
 
   private
 
   def start_tracing
+    puts "##trace_obj #{trace_obj}"
     Pry.config.disable_breakpoints = true
-    Thread.current.set_trace_func method(:tracing_func).to_proc
+    trace_obj.set_trace_func method(:tracing_func).to_proc
   end
 
   def stop_tracing
     Pry.config.disable_breakpoints = false
-    Thread.current.set_trace_func nil
+    trace_obj.set_trace_func nil
   end
 
-  def post_action
-    if @action == :debug
-      #puts "CALLER:\n#{caller.join "\n"}\n"
-      @command[:binding].eval @command[:param]
-    end
+  # You can't call set_trace_func or Thread.current.set_trace_func recursively
+  # even in different threads 😪
+  # But! 💡
+  # The hack is - you can call Thread.current.set_trace_func
+  # from inside of set_trace_func! 🤗
+  def trace_obj
+    @action == :debug ? Thread.current : Kernel
   end
 
   def set_traced_method(binding)
@@ -77,7 +79,8 @@ class Tracer
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    #printf "%8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
+    return if @action != :debug and $debug_mode
+    #printf "#{trace_obj}: %8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
@@ -128,7 +131,8 @@ class Tracer
   end
 
   def trace_debug(event, file, line, binding_)
-    event == 'line' and file == 'sand.rb' and line != 47
+    event == 'line' and file == 'sand.rb' and
+        not [47, 48, 49, 50].include?(line)
   end
 
   def debug_info(file, line, id)

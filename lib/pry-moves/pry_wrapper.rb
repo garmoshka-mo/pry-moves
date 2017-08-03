@@ -15,15 +15,14 @@ class PryWrapper
 
     return_value = nil
     PryMoves.is_open = true
-    command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
+    @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
       return_value = yield
       nil    # Nothing thrown == no navigational command
     end
     PryMoves.is_open = false
 
-    if command
-      @tracer = PryMoves::Tracer.new command, @pry_start_options
-      @tracer.trace
+    if @command
+      trace_command
     else
       stop_tracing if RUBY_VERSION == '1.9.2'
       PryMoves.semaphore.unlock
@@ -36,6 +35,32 @@ class PryWrapper
   end
 
   private
+
+  def trace_command
+    if @command[:action] == :debug
+      wrap_debug
+    else
+      start_tracing
+    end
+  end
+
+  def wrap_debug
+    #puts "##wrap debug"
+    #puts "CALLER:\n#{caller.join "\n"}\n"
+    #      Thread.abort_on_exception=true
+    $debug_mode = true
+    Thread.new do
+      #@command[:binding].eval 'puts "###########"'
+      start_tracing
+      @command[:binding].eval @command[:param]
+    end.join
+    $debug_mode = false
+  end
+
+  def start_tracing
+    @tracer = PryMoves::Tracer.new @command, @pry_start_options
+    @tracer.trace
+  end
 
   def stop_tracing
     @tracer.stop_tracing if @tracer
