@@ -87,6 +87,7 @@ class Tracer
 
     catch (:skip) do
       if send "trace_#{@action}", event, file, line, binding_
+        stop_tracing
         Pry.start(binding_, @pry_start_options)
 
       # for cases when currently traced method called more times recursively
