@@ -33,7 +33,7 @@ class Tracer
   private
 
   def start_tracing
-    puts "##trace_obj #{trace_obj}"
+    #puts "##trace_obj #{trace_obj}"
     Pry.config.disable_breakpoints = true
     trace_obj.set_trace_func method(:tracing_func).to_proc
   end
@@ -49,7 +49,8 @@ class Tracer
   # The hack is - you can call Thread.current.set_trace_func
   # from inside of set_trace_func! 🤗
   def trace_obj
-    @action == :debug ? Thread.current : Kernel
+    Thread.current[:pry_moves_debug] ?
+        Thread.current : Kernel
   end
 
   def set_traced_method(binding)
@@ -79,7 +80,6 @@ class Tracer
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    return if @action != :debug and $debug_mode
     #printf "#{trace_obj}: %8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
 
     # Ignore traces inside pry-moves code

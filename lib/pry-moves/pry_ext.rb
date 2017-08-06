@@ -9,7 +9,7 @@ class << Pry
 
     if target.is_a?(Binding) && PryMoves.check_file_context(target)
       # Wrap the tracer around the usual Pry.start
-      PryMoves::PryWrapper.new(options).run do
+      PryMoves::PryWrapper.new(target, options).run do
         start_without_pry_nav(target, old_options)
       end
     else
@@ -68,7 +68,13 @@ Pry::Command::Whereami.class_eval do
   end
 
   def location
+    me = target.eval 'self' rescue nil
+    if me
+      colored_str = ''
+      Pry::ColorPrinter.pp me, colored_str
+      me = colored_str.chomp
+    end
     file = defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
-    "#{file}:#{@line} #{@method && @method.name_with_owner}"
+    "#{file}:#{@line} #{me}"
   end
 end
