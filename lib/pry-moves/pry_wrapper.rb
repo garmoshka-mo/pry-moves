@@ -21,9 +21,7 @@ class PryWrapper
     if @command
       trace_command
     else
-      unless Thread.current[:pry_moves_debug]
-        PryMoves.semaphore.unlock
-      end
+      PryMoves.unlock
       if @pry_start_options[:pry_remote] && PryMoves.current_remote_server
         PryMoves.current_remote_server.teardown
       end

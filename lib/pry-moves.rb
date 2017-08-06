@@ -34,12 +34,16 @@ module PryMoves
     semaphore.lock unless semaphore.locked?
   end
 
+  def unlock
+    semaphore.unlock unless Thread.current[:pry_moves_debug]
+  end
+
   def open?
     @is_open
   end
 
   def synchronize_threads
-    semaphore.synchronize {}
+    semaphore.synchronize {} unless Thread.current[:pry_moves_debug]
   end
 
   # Reference to currently running pry-remote server. Used by the tracer.
