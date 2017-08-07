@@ -11,10 +11,10 @@ _An execution control add-on for [Pry][pry]._
 
 * `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
 * `s` - **step** into function execution
-  * `s func_name` - steps into first method called by name `func_name`
-* `f` - **finish** execution of current frame and stop at next line on higher level
+  * `s func_name` - step into first method called by name `func_name`
+* `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `c` - **continue**
-* `bt` - shows latest 5 lines from backtrace 
+* `bt` - show latest 5 lines from backtrace
   * `bt 10` - latest 10 lines
   * `bt all` - full backtrace
   * `bt >foo` - write backtrace to file `log/backtrace_foo.log`
@@ -22,7 +22,6 @@ _An execution control add-on for [Pry][pry]._
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
 * `debug some_method(param, param2)` - call `some_method(param, param2)` and interactively step into it
-... this can add "debug of dynamic calls," to project description
 * `!` - exit
 
 
