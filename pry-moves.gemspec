@@ -5,12 +5,12 @@ require File.expand_path('../lib/pry-moves/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.name          = 'pry-moves'
   gem.version       = PryMoves::VERSION
-  gem.author        = 'Garmoshka Mo'
+  gem.author        = 'garmoshka-mo'
   gem.email         = 'dan@coav.ru'
   gem.license       = 'MIT'
   gem.homepage      = 'https://github.com/garmoshka-mo/pry-moves'
-  gem.summary       = 'Simple execution navigation for Pry.'
-  gem.description   = "Turn Pry into a primitive debugger. Adds 'step' and 'next' commands to control execution."
+  gem.summary       = 'Debugger for ruby'
+  gem.description   = "Advanced debugger for ruby with natural `next` across blocks, debug of dynamic calls, stepping into function by name, etc.."
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
