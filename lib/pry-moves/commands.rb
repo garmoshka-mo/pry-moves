@@ -41,6 +41,11 @@ module PryMoves
       breakout_navigation :debug, cmd
     end
 
+    block_command '!', 'exit' do
+      Pry.config.exit_requested = true
+      run '!!!'
+    end
+
     # Hit Enter to repeat last command
     command /^$/, "repeat last command" do
       _pry_.run_command Pry.history.to_a.last
@@ -67,5 +72,3 @@ module PryMoves
 end
 
 Pry.commands.import PryMoves::Commands
-
-Pry.commands.alias_command '!', '!!!'
