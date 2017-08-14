@@ -35,10 +35,8 @@ module PryMoves
       PryMoves::Backtrace.new(target, _pry_).run_command param
     end
 
-    block_command 'debug', '' do |*command_parts|
-      check_file_context
-      cmd = command_parts.join ' '
-      breakout_navigation :debug, cmd
+    block_command 'debug', '' do
+      debug
     end
 
     block_command '!', 'exit' do
@@ -59,6 +57,12 @@ module PryMoves
           :param =>  param,
           :binding => target
         }
+      end
+
+      def debug
+        check_file_context
+        cmd = arg_string.gsub(/^debug/, '').strip
+        breakout_navigation :debug, cmd
       end
 
       # Ensures that a command is executed in a local file context.

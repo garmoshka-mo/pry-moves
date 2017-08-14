@@ -132,8 +132,13 @@ class Tracer
   end
 
   def trace_debug(event, file, line, binding_)
-    event == 'line' and file == 'sand.rb' and
-        not [47, 48, 49, 50].include?(line)
+    return unless event == 'line'
+    if @first_line_skipped
+      true
+    else
+      @first_line_skipped = true
+      false
+    end
   end
 
   def debug_info(file, line, id)
