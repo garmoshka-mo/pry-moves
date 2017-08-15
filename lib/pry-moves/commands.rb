@@ -31,8 +31,8 @@ module PryMoves
       PryMoves::Watch.instance.process_cmd param, target
     end
 
-    block_command 'bt', 'Backtrace' do |param|
-      PryMoves::Backtrace.new(target, _pry_).run_command param
+    block_command 'bt', 'Backtrace' do |param, param2|
+      PryMoves::Backtrace.new(target, _pry_).run_command param, param2
     end
 
     block_command 'debug', '' do

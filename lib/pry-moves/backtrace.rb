@@ -45,9 +45,10 @@ class PryMoves::Backtrace
     build_result stack, result
   end
 
-  def run_command(param)
+  def run_command(param, param2)
     if param.is_a?(String) and (match = param.match /^>(.*)/)
-      write_to_file build, match[1]
+      suffix = match[1].size > 0 ? match[1] : param2
+      write_to_file build, suffix
     else
       puts build(param || PryMoves::Backtrace::lines_count)
     end
