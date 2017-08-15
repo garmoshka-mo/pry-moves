@@ -26,50 +26,60 @@ class PryMoves::Backtrace
      @binding, @pry = binding, pry
   end
 
-  def build(lines_count = nil)
-    result = []
-    show_vapid = lines_count == 'all'
-    stack = stack_bindings(show_vapid)
-              .reverse.reject do |binding|
-                binding.eval('__FILE__').match self.class::filter
-              end
-
-    if lines_count.is_a? String and lines_count.match /\d+/
-      lines_count = lines_count.to_i
-    end
-    if lines_count.is_a?(Numeric) and stack.count > lines_count
-      result << "Latest #{lines_count} lines: (`bt all` for full tracing)"
-      stack = stack.last(lines_count)
-    end
-
-    build_result stack, result
-  end
-
   def run_command(param, param2)
     if param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
       write_to_file build, suffix
     else
-      puts build(param || PryMoves::Backtrace::lines_count)
+      @colorize = true
+      if param.is_a? String and param.match /\d+/
+        param = param.to_i
+      end
+      @lines_count = param || PryMoves::Backtrace::lines_count
+      puts build
     end
   end
 
   private
+
+  def build
+    result = []
+    show_vapid = @lines_count == 'all'
+    stack = stack_bindings(show_vapid)
+              .reverse.reject do |binding|
+                binding.eval('__FILE__').match self.class::filter
+              end
+
+    if @lines_count.is_a?(Numeric) and stack.count > @lines_count
+      result << "Latest #{@lines_count} lines: (`bt all` for full tracing)"
+      stack = stack.last(@lines_count)
+    end
+
+    build_result stack, result
+  end
 
   def build_result(stack, result)
     current_object = nil
     stack.each do |binding|
       obj = binding.eval 'self'
       if current_object != obj
-        colored_obj = ""
-        Pry::ColorPrinter.pp obj, colored_obj
-        result << "#{colored_obj.chomp}:"
+        result << "#{format_obj(obj)}:"
         current_object = obj
       end
 
       result << build_line(binding)
     end
     result
+  end
+
+  def format_obj(obj)
+    if @colorize
+      colored_obj = ""
+      Pry::ColorPrinter.pp obj, colored_obj
+      colored_obj.chomp
+    else
+      obj
+    end
   end
 
   def build_line(binding)
