@@ -78,7 +78,7 @@ class PryMoves::Backtrace
       Pry::ColorPrinter.pp obj, colored_obj
       colored_obj.chomp
     else
-      obj
+      obj.inspect
     end
   end
 
