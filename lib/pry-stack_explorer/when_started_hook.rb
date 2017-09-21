@@ -4,13 +4,8 @@ module PryStackExplorer
 
     def caller_bindings(target)
       bindings = binding.callers
-
       bindings = remove_internal_frames(bindings)
-      bindings = remove_debugger_frames(bindings)
-      bindings = bindings.drop(1) if pry_method_frame?(bindings.first)
-
       mark_vapid_frames(bindings)
-
       bindings
     end
 
@@ -63,47 +58,24 @@ module PryStackExplorer
 
     # remove internal frames related to setting up the session
     def remove_internal_frames(bindings)
-      start_frames = internal_frames_with_indices(bindings)
-      start_frame_index = start_frames.first.last
+      i = top_internal_frame_index(bindings)
+      # DEBUG:
+      #bindings.each_with_index do |b, index|
+      #  puts "#{index}: #{b.eval("self.class")} #{b.eval("__method__")}"
+      #end
+      #puts "FOUND top internal frame: #{bindings.size} => #{i}"
 
-      if start_frames.size >= 2
-        # god knows what's going on in here
-        idx1, idx2 = start_frames.take(2).map(&:last)
-        start_frame_index = idx2 if !nested_session?(bindings[idx1..idx2])
-      end
-
-      bindings.drop(start_frame_index + 1)
+      bindings.drop i+1
     end
 
-    # remove pry-nav / pry-debugger / pry-byebug frames
-    def remove_debugger_frames(bindings)
-      bindings.drop_while { |b| b.eval("__FILE__") =~ /\/pry-/ }
-    end
-
-    # binding.pry frame
-    # @return [Boolean]
-    def pry_method_frame?(binding)
-      safe_send(binding.eval("__method__"), :==, :pry)
-    end
-
-    # When a pry session is started within a pry session
-    # @return [Boolean]
-    def nested_session?(bindings)
-      bindings.detect do |b|
-        safe_send(b.eval("__method__"), :==, :re) &&
-          safe_send(b.eval("self.class"), :equal?, Pry)
-      end
-    end
-
-    # @return [Array<Array<Binding, Fixnum>>]
-    def internal_frames_with_indices(bindings)
-      bindings.each_with_index.select do |b, i|
-        b.frame_type == :method and (
-          safe_send(b.eval("self"), :equal?, Pry) and
-            safe_send(b.eval("__method__"), :==, :start) or
-          safe_send(b.eval("self"), :equal?, Binding) and
-            safe_send(b.eval("__method__"), :==, :pry)
-        )
+    def top_internal_frame_index(bindings)
+      bindings.rindex do |b|
+        if b.frame_type == :method
+          self_, method = b.eval("self"), b.eval("__method__")
+          self_.equal?(Pry) && method == :start ||
+            self_.class == Binding && method == :pry ||
+            self_.class == PryMoves::Tracer && method == :tracing_func
+        end
       end
     end
 
