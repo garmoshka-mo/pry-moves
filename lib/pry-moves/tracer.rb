@@ -62,6 +62,7 @@ class Tracer
       set_method({
        file: source[0],
        start: source[1],
+       name: method.name,
        end: (source[1] + method.source.count("\n") - 1)
      })
     else
@@ -91,8 +92,11 @@ class Tracer
         Pry.start(binding_, @pry_start_options)
 
       # for cases when currently traced method called more times recursively
-      elsif %w(call return).include?(event) and within_current_method?(file, line)
-        @recursion_level += event == 'call' ? 1 : -1
+      elsif %w(call return).include?(event) and within_current_method?(file, line) and
+          @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
+        delta = event == 'call' ? 1 : -1
+        #puts "recursion #{event}: #{delta}; changed: #{@recursion_level} => #{@recursion_level + delta}"
+        @recursion_level += delta
       end
     end
   end
