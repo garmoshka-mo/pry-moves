@@ -1,47 +1,24 @@
-require 'pry'
-require_relative 'mocks'
-require_relative 'pry_debugger'
-require_relative '../playground/playground.rb'
+require_relative 'spec_helper'
 
 describe 'PryMoves Commands' do
 
-  it 'sepa' do
-    puts :a
-    binding.pry
-    puts :a
+  include PryDebugger::Breakpoints
+
+  it 'should make one step next' do
+    breakpoints [
+      [nil, 'basic next stop'],
+      ['n', 'next step'],
+    ]
+    Playground.new.basic_next
   end
 
-  it 'should work' do
-    PryDebugger.reset
-
-    PryDebugger.on_next_breakpoint do |binding_|
-      puts :first
-      puts binding_.eval('__FILE__')
-      puts binding_.eval('__LINE__')
-
-      #'bt'
-      'up'
-    end
-
-    PryDebugger.on_next_breakpoint do |binding_|
-      puts :second
-      puts binding_.eval('__FILE__')
-      puts binding_.eval('__LINE__')
-
-      'n'
-    end
-
-    PryDebugger.on_next_breakpoint do |binding_|
-      puts :third
-      puts binding_.eval('__FILE__')
-      puts binding_.eval('__LINE__')
-
-      'c'
-    end
-
-    i = Playground.new
-    i.basic_breakpoint
-    puts :ok
+  it 'should step into func' do
+    breakpoints [
+      [nil, 'step_into stop'],
+      ['s', 'point to step inside'],
+      ['s', 'some internal line']
+    ]
+    Playground.new.step_into
   end
 
 end

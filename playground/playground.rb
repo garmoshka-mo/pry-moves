@@ -6,13 +6,15 @@ end
 
 class Playground
 
-  def basic_breakpoint
-    puts :basic_1
-    binding.pry
-    puts :basic_2
-    puts :basic_3
-    puts :basic_4
-    #binding.pry
+  def basic_next
+    :basic_1
+    binding.pry # basic next stop
+    :basic_2 # next step
+  end
+
+  def step_into
+    binding.pry # step_into stop
+    something_inside # point to step inside
   end
 
   def recursion(depth = 0)
@@ -21,6 +23,12 @@ class Playground
     recursion depth + 1 if depth < 2
     :ok # should stop here after 2 next-s
     # todo: and depth should be 0
+  end
+
+  private
+
+  def something_inside
+    :something # some internal line
   end
 
 end

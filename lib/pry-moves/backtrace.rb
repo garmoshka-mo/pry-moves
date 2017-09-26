@@ -7,7 +7,7 @@ class PryMoves::Backtrace
     def lines_count=(f); @lines_count = f; end
 
     def filter
-      @filter || /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/|\/pry-moves\/)/
+      @filter || /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/)/
     end
     def filter=(f); @filter = f; end
 
@@ -36,7 +36,7 @@ class PryMoves::Backtrace
         param = param.to_i
       end
       @lines_count = param || PryMoves::Backtrace::lines_count
-      puts build
+      @pry.output.puts build
     end
   end
 
