@@ -25,10 +25,10 @@ describe 'PryMoves Commands' do
       ['s', 'some internal line'],
       ['up', 'point to step inside'],
       ['up', nil ],
-      ['up', {out_include: 'top of stack'} ],
+      ['up', {out_includes: 'top of stack'} ],
       ['down', nil ],
       ['down', 'some internal line'],
-      ['down', {out_include: 'bottom of stack'} ],
+      ['down', {out_includes: 'bottom of stack'} ],
     ]
     Playground.new.step_into
   end

@@ -99,6 +99,14 @@ Please note that debugging functionality is implemented through
 [`set_trace_func`][set_trace_func], which imposes heavy performance penalty while tracing
 (while running code within `next`/`step`/`finish` commands).
 
+# Development
+
+## Testing
+
+```
+bundle exec rspec
+```
+
 ## Contributors
 
 * Gopal Patel ([@nixme](https://github.com/nixme))
