@@ -5,14 +5,19 @@ require_relative '../playground/playground.rb'
 PryDebugger.inject unless ENV['DEBUG']
 
 RSpec.configure do |config|
+
+  config.include PryDebugger::Breakpoints
+
   config.before(:example) do
     PryMoves.unlock if PryMoves.semaphore.locked?
   end
+
   config.after(:example) do |example|
     unless example.exception
       expect(PryDebugger.breakpoints.count).to be(0), "not all breakpoints launched"
     end
   end
+
 end
 
 RSpec::Core::BacktraceFormatter.class_eval do

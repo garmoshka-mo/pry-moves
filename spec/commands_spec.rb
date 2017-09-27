@@ -2,8 +2,6 @@ require_relative 'spec_helper'
 
 describe 'PryMoves Commands' do
 
-  include PryDebugger::Breakpoints
-
   it 'should make one step next' do
     breakpoints [
       [nil, 'basic next stop'],
@@ -38,7 +36,6 @@ describe 'PryMoves Commands' do
   it 'should step into func by name' do
     breakpoints [
       [nil, 'stop in step_by_name'],
-      ['n', nil],
       ['s level_c', 'stop in level_c'],
       ['param', {out: '=> :target'}],
       ['n', nil],
@@ -46,49 +43,12 @@ describe 'PryMoves Commands' do
     Playground.new.step_by_name
   end
 
-  it 'should go next over blocks' do
+  it 'should stop after inability to step into func by name' do
     breakpoints [
-      [nil, 'stop in zaloop'],
-      ['n', ''],
-      # repeat commands
-      ['', 'inside block'],
-      ['', nil],
-
-      ['s', 'stop in zaloop'],
-      ['n', nil],
-      ['', 'inside block'],
-      ['pass', {out: '=> 0'}],
-
-      ['f', 'after block'],
-      ['pass', {out: '=> 0'}],
-
-      ['f', 'post_yield'], # Тут хорошо бы, чтобы сразу шёл на "after block",
-                           # но пока и не понятно, как это угадать
-      ['f', 'after block'],
-      ['pass', {out: '=> :root'}],
+      [nil, 'stop in step_by_name'],
+      ['s absent_function', 'after_step_by_name'],
     ]
-    Playground.new.zaloop
-  end
-
-  it 'should finish simple block' do
-    breakpoints [
-      [nil, 'stop in with_simple_block'],
-      ['n', ''],
-      ['', 'inside block'],
-      ['f', 'after block']
-    ]
-    Playground.new.with_simple_block
-  end
-
-  it 'should finish block with sub-calls' do
-    breakpoints [
-      [nil, 'stop in zaloop'],
-      ['n', ''],
-      ['', 'inside block'],
-      ['f', 'after block'],
-      ['pass', {out: '=> :root'}],
-    ]
-    Playground.new.zaloop
+    Playground.new.step_by_name_wrap
   end
 
   it 'should go next over recursion calls' do
@@ -101,35 +61,6 @@ describe 'PryMoves Commands' do
     Playground.new.recursion
   end
 
-  it 'should backtrace' do
-    breakpoints [
-      [nil, 'stop in level_c'],
-      ['bt', lambda{|b, out|
-        lines = out.split("\n").reverse
-        expect(lines[0]).to end_with 'Playground#level_c(param=?) :method'
-        expect(lines[1]).to end_with 'Playground#level_a() :method'
-        expect(lines[2]).to include 'Playground:'
-        expect(lines[3]).to end_with ':block'
-        expect(lines[4]).to include 'RSpec::ExampleGroups'
-        expect(lines.count).to be 5
-      }],
-      ['bt all', lambda{|b, out|
-        lines = out.split("\n").reverse
-        # show hidden frame
-        expect(lines[1]).to end_with 'Playground#level_b() :method'
-        expect(lines.count).to be 6
-      }],
-      ['bt 2', lambda{|b, out|
-        lines = out.split("\n").reverse
-        expect(lines[0]).to end_with 'Playground#level_c(param=?) :method'
-        expect(lines[1]).to end_with 'Playground#level_a() :method'
-        expect(lines[3]).to start_with 'Latest 2 lines'
-        expect(lines.count).to be 4
-      }],
-    ]
-    Playground.new.level_a
-  end
-
   it 'should debug' do
     breakpoints [
       [nil, 'basic next stop'],
@@ -138,6 +69,5 @@ describe 'PryMoves Commands' do
     ]
     Playground.new.basic_next
   end
-
 
 end
