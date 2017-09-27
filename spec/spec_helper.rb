@@ -2,7 +2,13 @@ require 'pry'
 require_relative 'pry_debugger'
 require_relative '../playground/playground.rb'
 
-PryDebugger.inject
+PryDebugger.inject unless ENV['DEBUG']
+
+RSpec.configure do |config|
+  config.before(:example) do
+    PryMoves.unlock if PryMoves.semaphore.locked?
+  end
+end
 
 RSpec::Core::BacktraceFormatter.class_eval do
 

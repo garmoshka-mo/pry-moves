@@ -18,11 +18,10 @@ class Playground
   end
 
   def recursion(depth = 0)
-    str = 3.to_s # here fired "return" event when "to_s" patched
+    str = 3.to_s # here fired event "return" if "to_s" patched
     binding.pry if depth == 0
-    recursion depth + 1 if depth < 2
+    recursion depth + 1 if depth < 2 # next step
     :ok # should stop here after 2 next-s
-    # todo: and depth should be 0
   end
 
   private
