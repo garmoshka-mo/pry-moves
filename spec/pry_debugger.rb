@@ -68,12 +68,18 @@ module PryDebugger
     Pry.config.output = @output
   end
 
+  def breakpoints
+    @breakpoints_procs
+  end
+
   def breakpoints=(breakpoints)
     @breakpoints_procs = breakpoints
+    @breakpoint_call = 0
   end
 
   def enter_breakpoint(binding_)
     raise 'Next breakpoint handler missing' if @breakpoints_procs.size == 0
+    puts (@breakpoint_call += 1)
     output = @output.take_away
     output.match(/^ => .*#(.*)/)
     label = ($1 || '').strip

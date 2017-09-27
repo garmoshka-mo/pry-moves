@@ -8,21 +8,30 @@ RSpec.configure do |config|
   config.before(:example) do
     PryMoves.unlock if PryMoves.semaphore.locked?
   end
+  config.after(:example) do |example|
+    unless example.exception
+      expect(PryDebugger.breakpoints.count).to be(0), "not all breakpoints launched"
+    end
+  end
 end
 
 RSpec::Core::BacktraceFormatter.class_eval do
 
-  alias :native_format_backtrace :format_backtrace
   alias :native_backtrace_line :backtrace_line
 
   def format_backtrace(backtrace, options={})
+    return [] unless backtrace
+    return backtrace if options[:full_backtrace] || backtrace.empty?
+
     @lines = 0
-    native_format_backtrace backtrace, options
+    backtrace.map { |l| backtrace_line(l) }.compact
   end
 
+  FILTER = /(\/gems\/|\/lib\/pry\/|spec\/pry_debugger\.rb)/
   def backtrace_line(line)
     return if @lines == 3 and not ENV['TRACE']
-    return if line.include? '/gems/' or line.include? '/treat/'
+    #return if line.match FILTER
+    return unless line.include? '/playground.rb'
 
     result = native_backtrace_line(line)
     if result
