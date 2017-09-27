@@ -96,7 +96,8 @@ gem 'pry-moves'
 ## Performance
 
 Please note that debugging functionality is implemented through
-[`set_trace_func`][set_trace_func], which imposes certain performance penalty.
+[`set_trace_func`][set_trace_func], which imposes heavy performance penalty while tracing
+(while running code within `next`/`step`/`finish` commands).
 
 ## Contributors
 

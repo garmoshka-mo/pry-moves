@@ -30,6 +30,16 @@ class Playground
     :ok # should stop here after 2 next-s
   end
 
+  def step_by_name
+    binding.pry # stop in step_by_name
+    level_a.level_c(:target)
+  end
+
+  def step_by_name_wrap
+    step_by_name
+    :after_step_by_name # after_step_by_name
+  end
+
   def level_a
     level_b # inside of level_a
   end
@@ -39,7 +49,7 @@ class Playground
     level_c
   end
 
-  def level_c
+  def level_c(param = nil)
     binding.pry # stop in level_c
     self
   end

@@ -35,6 +35,17 @@ describe 'PryMoves Commands' do
     Playground.new.step_into
   end
 
+  it 'should step into func by name' do
+    breakpoints [
+      [nil, 'stop in step_by_name'],
+      ['n', nil],
+      ['s level_c', 'stop in level_c'],
+      ['param', {out: '=> :target'}],
+      ['n', nil],
+    ]
+    Playground.new.step_by_name
+  end
+
   it 'should go next over blocks' do
     breakpoints [
       [nil, 'stop in zaloop'],
@@ -95,7 +106,7 @@ describe 'PryMoves Commands' do
       [nil, 'stop in level_c'],
       ['bt', lambda{|b, out|
         lines = out.split("\n").reverse
-        expect(lines[0]).to end_with 'Playground#level_c() :method'
+        expect(lines[0]).to end_with 'Playground#level_c(param=?) :method'
         expect(lines[1]).to end_with 'Playground#level_a() :method'
         expect(lines[2]).to include 'Playground:'
         expect(lines[3]).to end_with ':block'
@@ -110,7 +121,7 @@ describe 'PryMoves Commands' do
       }],
       ['bt 2', lambda{|b, out|
         lines = out.split("\n").reverse
-        expect(lines[0]).to end_with 'Playground#level_c() :method'
+        expect(lines[0]).to end_with 'Playground#level_c(param=?) :method'
         expect(lines[1]).to end_with 'Playground#level_a() :method'
         expect(lines[3]).to start_with 'Latest 2 lines'
         expect(lines.count).to be 4

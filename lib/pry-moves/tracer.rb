@@ -20,6 +20,7 @@ class Tracer
       if (func = @command[:param])
         @step_info_funcs = [func]
         @step_info_funcs << 'initialize' if func == 'new'
+        @caller_digest = frame_digest(binding_)
       end
     when :finish
       @method_to_finish = @method
@@ -105,8 +106,13 @@ class Tracer
   def trace_step(event, file, line, binding_)
     return unless event == 'line'
     if @step_info_funcs
+      if @recursion_level < 0
+        pry_puts "⚠️  Unable to find function with name #{@step_info_funcs.join(',')}"
+        return true
+      end
       method = binding_.eval('__callee__').to_s
-      @step_info_funcs.any? {|pattern| method.include? pattern}
+      @step_info_funcs.any? {|pattern| method.include? pattern} and
+        @caller_digest == frame_digest(binding_.of_caller(3 + 1))
     else
       true
     end
@@ -157,6 +163,10 @@ class Tracer
       @method[:start].nil? or
       line.between?(@method[:start], @method[:end])
     )
+  end
+
+  def pry_puts(text)
+    @command[:pry].output.puts text
   end
 
 end
