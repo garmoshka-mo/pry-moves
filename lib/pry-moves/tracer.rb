@@ -10,6 +10,7 @@ class Tracer
 
   def trace
     @action = @command[:action]
+    #puts "COMMAND: #{@action}"
     binding_ = @command[:binding]
     set_traced_method binding_
 
@@ -130,8 +131,9 @@ class Tracer
 
     # for finishing blocks inside current method
     if @block_to_finish
-      within_current_method?(file, line) and
-          @block_to_finish != frame_digest(binding_.of_caller(3))
+      @recursion_level == 0 and
+        within_current_method?(file, line) and
+        @block_to_finish != frame_digest(binding_.of_caller(3))
     end
   end
 

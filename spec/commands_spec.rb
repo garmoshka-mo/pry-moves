@@ -51,10 +51,22 @@ describe 'PryMoves Commands' do
       ['f', 'after block'],
       ['pass', {out: '=> 0'}],
 
-      ['f', 'after block'], # 11
+      ['f', 'post_yield'], # Тут хорошо бы, чтобы сразу шёл на "after block",
+                           # но пока и не понятно, как это угадать
+      ['f', 'after block'],
       ['pass', {out: '=> :root'}],
     ]
     Playground.new.zaloop
+  end
+
+  it 'should finish simple block' do
+    breakpoints [
+      [nil, 'stop in with_simple_block'],
+      ['n', ''],
+      ['', 'inside block'],
+      ['f', 'after block']
+    ]
+    Playground.new.with_simple_block
   end
 
   it 'should finish block with sub-calls' do

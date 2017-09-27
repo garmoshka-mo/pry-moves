@@ -44,6 +44,15 @@ class Playground
     self
   end
 
+  def with_simple_block
+    binding.pry # stop in with_simple_block
+    iterator do |i|
+      dummy = 1 # inside block
+      dummy = 2
+    end
+    :after_block # after block
+  end
+
   def zaloop(pass = :root)
     binding.pry if pass == :root # stop in zaloop
     iterator do |i|
