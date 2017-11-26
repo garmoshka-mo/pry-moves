@@ -6,6 +6,7 @@ require 'pry-moves/tracer'
 require 'pry-moves/backtrace'
 require 'pry-moves/watch'
 require 'pry-moves/helpers'
+require 'pry-moves/painter'
 
 require 'pry-stack_explorer/pry-stack_explorer'
 

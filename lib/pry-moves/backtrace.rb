@@ -74,9 +74,7 @@ class PryMoves::Backtrace
 
   def format_obj(obj)
     if @colorize
-      colored_obj = ""
-      Pry::ColorPrinter.pp obj, colored_obj
-      colored_obj.chomp
+      PryMoves::Painter.colorize obj
     else
       obj.inspect
     end

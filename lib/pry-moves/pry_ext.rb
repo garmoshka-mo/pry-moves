@@ -69,11 +69,7 @@ Pry::Command::Whereami.class_eval do
 
   def location
     me = target.eval 'self' rescue nil
-    if me
-      colored_str = ''
-      Pry::ColorPrinter.pp me, colored_str
-      me = colored_str.chomp
-    end
+    me = PryMoves::Painter.colorize me if me
     file = defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
     "#{file}:#{@line} #{me}"
   end
