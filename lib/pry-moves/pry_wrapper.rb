@@ -44,7 +44,16 @@ class PryWrapper
     #puts "##wrap debug"
     #puts "CALLER:\n#{caller.join "\n"}\n"
     #      Thread.abort_on_exception=true
+    parent_thread = Thread.current
     Thread.new do
+
+      # copy non-pry thread's properties
+      parent_thread.keys.select do |k|
+        !k.to_s.include?('pry')
+      end.each do |k|
+        Thread.current[k] = parent_thread[k]
+      end
+
       Thread.current[:pry_moves_debug] = true
       #@command[:binding].eval 'puts "###########"'
       start_tracing
