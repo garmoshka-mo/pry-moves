@@ -74,3 +74,14 @@ Pry::Command::Whereami.class_eval do
     "#{file}:#{@line} #{me}"
   end
 end
+
+Pry.config.marker = "=>"
+Pry::Code::LOC.class_eval do
+
+  def add_marker(marker_lineno)
+    marker = lineno == marker_lineno ?
+       Pry.config.marker : "  "
+    tuple[0] = " #{marker} #{ line }"
+  end
+
+end

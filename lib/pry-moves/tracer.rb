@@ -14,6 +14,8 @@ class Tracer
     binding_ = @command[:binding]
     set_traced_method binding_
 
+    @recursion_level -= 1 if @pry_start_options.delete :exit_from_method
+
     case @action
     when :step
       @step_info_funcs = nil
@@ -126,9 +128,16 @@ class Tracer
       throw :skip if event == 'call'
     end
 
-    event == 'line' and
-      @recursion_level == 0 and
+    if @recursion_level == 0 and
       within_current_method?(file, line)
+
+      return true if event == 'line'
+
+      if event == 'return' and before_end?(line)
+        @pry_start_options[:exit_from_method] = true
+        true
+      end
+    end
   end
 
   def trace_finish(event, file, line, binding_)
@@ -163,6 +172,10 @@ class Tracer
       @method[:start].nil? or
       line.between?(@method[:start], @method[:end])
     )
+  end
+
+  def before_end?(line)
+    @method[:end] and line < @method[:end]
   end
 
   def pry_puts(text)
