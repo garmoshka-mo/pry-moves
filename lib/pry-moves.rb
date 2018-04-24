@@ -44,7 +44,13 @@ module PryMoves
   end
 
   def synchronize_threads
-    semaphore.synchronize {} unless Thread.current[:pry_moves_debug]
+    return if Thread.current[:pry_moves_debug]
+
+    semaphore.synchronize {}
+  rescue ThreadError => e
+    puts e.backtrace.reverse
+    puts e
+    raise e
   end
 
   # Reference to currently running pry-remote server. Used by the tracer.
