@@ -84,13 +84,14 @@ class PryMoves::Backtrace
     file = "#{binding.eval('__FILE__')}"
     file.gsub!( /^#{Rails.root.to_s}/, '') if defined? Rails
 
-    signature = PryMoves::Helpers.method_signature_with_owner binding
+    signature = PryMoves::Helpers.method_signature binding
+    signature = signature.presence || ":#{binding.frame_type}"
 
     indent = frame_manager.current_frame == binding ?
         ' => ': '    '
 
-    "#{indent}#{file}:#{binding.eval('__LINE__')} "+
-      " #{signature} :#{binding.frame_type}"
+    line = binding.eval('__LINE__')
+    "#{indent}#{file}:#{line} #{signature}"
   end
 
   def frame_manager
