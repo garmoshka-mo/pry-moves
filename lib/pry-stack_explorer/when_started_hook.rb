@@ -4,6 +4,8 @@ module PryStackExplorer
 
     def caller_bindings(target)
       bindings = binding.callers
+      pre_callers = Thread.current[:pre_callers]
+      bindings = bindings + pre_callers if pre_callers
       bindings = remove_internal_frames(bindings)
       mark_vapid_frames(bindings)
       bindings
