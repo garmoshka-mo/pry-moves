@@ -1,5 +1,3 @@
-### Using [**pry-byebug**][pry-byebug] and not happy with commands behavior? We recommend this project instead
-
 # pry-moves
 
 _An execution control add-on for [Pry][pry]._
@@ -21,7 +19,8 @@ _An execution control add-on for [Pry][pry]._
 * `up`/`down`/`top`/`bottom` - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
-* `debug some_method(param, param2)` - call `some_method(param, param2)` and interactively step into it
+* `debug some_method(some_param)` - call `some_method(some_param)` and interactively step into it. This way you can virtually "step back" by executing previous pieces of code from current method
+* `watch variable` - display variable's value on each step
 * `!` - exit
 
 
