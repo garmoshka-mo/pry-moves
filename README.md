@@ -1,5 +1,7 @@
 # pry-moves
 
+![](https://ruby-gem-downloads-badge.herokuapp.com/pry-moves?type=total)
+
 _An execution control add-on for [Pry][pry]._
 
 * Install: `gem 'pry-moves'`
@@ -9,7 +11,7 @@ _An execution control add-on for [Pry][pry]._
 
 * `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
 * `s` - **step** into function execution
-  * `s func_name` - step into first method called by name `func_name`
+  * `s method_name` - step into method `method_name` (For example from `User.new.method_name`). Partial name match supported.
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `c` - **continue**
 * `bt` - show latest 5 lines from backtrace
