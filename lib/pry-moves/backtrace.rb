@@ -104,7 +104,7 @@ class PryMoves::Backtrace
 
   def write_to_file(lines, file_suffix)
     log_path = log_path file_suffix
-    File.write log_path, lines
+    File.write log_path, lines.join("\n")
     puts "Backtrace logged to #{log_path}"
   end
 
