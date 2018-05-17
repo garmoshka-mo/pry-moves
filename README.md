@@ -13,6 +13,7 @@ _An execution control add-on for [Pry][pry]._
   * `nn` - **next** line in current frame, skipping block lines
 * `s` - **step** into function execution
   * `s method_name` - step into method `method_name` (For example from `User.new.method_name`). Partial name match supported.
+  * `s +` - step into function, including hidden frames
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `c` - **continue**
 * `bt` - show latest 5 lines from backtrace

@@ -19,7 +19,10 @@ class Tracer
     case @action
     when :step
       @step_into_funcs = nil
-      if (func = @command[:param])
+      func = @command[:param]
+      if func == '+'
+        @show_hidden = true
+      elsif func
         @step_into_funcs = [func]
         @step_into_funcs << 'initialize' if func == 'new'
         @caller_digest = frame_digest(binding_)
@@ -120,7 +123,8 @@ class Tracer
       @step_into_funcs.any? {|pattern| method.include? pattern} and
         @caller_digest == frame_digest(binding_.of_caller(3 + 1))
     else
-      true
+      @show_hidden or
+        not binding_.local_variable_defined? :hide_from_stack
     end
   end
 
