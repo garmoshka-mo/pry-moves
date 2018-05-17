@@ -85,7 +85,7 @@ class PryMoves::Backtrace
     file.gsub!( /^#{Rails.root.to_s}/, '') if defined? Rails
 
     signature = PryMoves::Helpers.method_signature binding
-    signature = signature.presence || ":#{binding.frame_type}"
+    signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
     indent = frame_manager.current_frame == binding ?
         ' => ': '    '
