@@ -18,10 +18,10 @@ class Tracer
 
     case @action
     when :step
-      @step_info_funcs = nil
+      @step_into_funcs = nil
       if (func = @command[:param])
-        @step_info_funcs = [func]
-        @step_info_funcs << 'initialize' if func == 'new'
+        @step_into_funcs = [func]
+        @step_into_funcs << 'initialize' if func == 'new'
         @caller_digest = frame_digest(binding_)
       end
     when :finish
@@ -29,6 +29,10 @@ class Tracer
       @block_to_finish =
           (binding_.frame_type == :block) &&
               frame_digest(binding_)
+    when :next
+      if @command[:param] == 'blockless'
+        @stay_at_frame = frame_digest(binding_)
+      end
     end
 
     start_tracing
@@ -107,13 +111,13 @@ class Tracer
 
   def trace_step(event, file, line, binding_)
     return unless event == 'line'
-    if @step_info_funcs
+    if @step_into_funcs
       if @recursion_level < 0
-        pry_puts "⚠️  Unable to find function with name #{@step_info_funcs.join(',')}"
+        pry_puts "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
         return true
       end
       method = binding_.eval('__callee__').to_s
-      @step_info_funcs.any? {|pattern| method.include? pattern} and
+      @step_into_funcs.any? {|pattern| method.include? pattern} and
         @caller_digest == frame_digest(binding_.of_caller(3 + 1))
     else
       true
@@ -131,7 +135,12 @@ class Tracer
     if @recursion_level == 0 and
       within_current_method?(file, line)
 
-      return true if event == 'line'
+      if event == 'line'
+        return (
+          not @stay_at_frame or
+          @stay_at_frame == frame_digest(binding_.of_caller(3))
+        )
+      end
 
       if event == 'return' and before_end?(line)
         @pry_start_options[:exit_from_method] = true

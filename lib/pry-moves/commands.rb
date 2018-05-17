@@ -12,9 +12,14 @@ module PryMoves
       breakout_navigation :finish, param
     end
 
-    block_command 'next', 'Execute the next line within the same stack frame.' do |param|
+    block_command 'next', 'Execute the next line stepping into blocks' do |param|
       check_file_context
       breakout_navigation :next, param
+    end
+
+    block_command 'nn', 'Execute the next line skipping blocks.' do |param|
+      check_file_context
+      breakout_navigation :next, 'blockless'
     end
 
     block_command 'continue', 'Continue program execution and end the Pry session.' do

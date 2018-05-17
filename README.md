@@ -10,6 +10,7 @@ _An execution control add-on for [Pry][pry]._
 ## Commands:
 
 * `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
+  * `nn` - **next** line in current frame, skipping block lines
 * `s` - **step** into function execution
   * `s method_name` - step into method `method_name` (For example from `User.new.method_name`). Partial name match supported.
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
