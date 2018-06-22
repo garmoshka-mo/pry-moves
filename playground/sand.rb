@@ -1,10 +1,10 @@
 require 'pry-moves'
-#require 'pry-nav'
 require './tracer.rb'
 
-def debucher?
-  binding.pry
-  true
+
+def fi(param)
+  a = 2 + 1
+  puts param
 end
 
 class A
@@ -14,32 +14,36 @@ class A
   end
 
   def aa
-    self
+    puts :ko
+    puts :ki
   end
 
   def bb
-    #binding.pry
+    debug_redirect = :aa
+    hide_from_stack = true
     a = 1
-    a = 1
-    self
+    b = 1
+    aa
   end
 
   def cc
-    self
+    koko = :love
+    binding.pry
+    bb
+    (2..4).each do |i|
+      puts i
+    end
+    puts :two
   end
+  alias cc_al cc
 
 end
 
-#trace_events
-
-a = 1123
-b = binding
-
 puts :prepare
 
-binding.pry
+A.new.cc_al
+A.new.cc_al
 
-a = A.new.aa.bb.cc
 
 bb = 1
 
