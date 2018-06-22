@@ -114,6 +114,7 @@ class Tracer
 
   def trace_step(event, file, line, binding_)
     return unless event == 'line'
+
     if @step_into_funcs
       if @recursion_level < 0
         pry_puts "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
@@ -121,7 +122,12 @@ class Tracer
       end
       method = binding_.eval('__callee__').to_s
       @step_into_funcs.any? {|pattern| method.include? pattern} and
-        @caller_digest == frame_digest(binding_.of_caller(3 + 1))
+        (not @caller_digest or # if we want to step-in only into straight descendant
+          @caller_digest == frame_digest(binding_.of_caller(3 + 1)))
+    elsif binding_.local_variable_defined? :debug_redirect
+      debug_redirect = binding_.local_variable_get(:debug_redirect)
+      @step_into_funcs = [debug_redirect.to_s] if debug_redirect
+      false
     else
       @show_hidden or
         not binding_.local_variable_defined? :hide_from_stack

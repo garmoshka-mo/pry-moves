@@ -14,15 +14,15 @@ class A
   end
 
   def aa
-    puts :ko
-    puts :ki
+    puts 'aa: step 1'
+    puts 'aa: step 2'
   end
 
   def bb
     debug_redirect = :aa
     hide_from_stack = true
-    a = 1
-    b = 1
+    puts 'bb: step 1'
+    puts 'bb: step 2'
     aa
   end
 
