@@ -1,8 +1,11 @@
+require 'pry' unless defined? Pry
+
 require 'pry-moves/version'
+require 'pry-moves/trace_commands'
+require 'pry-moves/tracer'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
 require 'pry-moves/pry_wrapper'
-require 'pry-moves/tracer'
 require 'pry-moves/backtrace'
 require 'pry-moves/watch'
 require 'pry-moves/helpers'
