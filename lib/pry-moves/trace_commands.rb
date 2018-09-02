@@ -66,10 +66,9 @@ module PryMoves::TraceCommands
 
     # for finishing blocks inside current method
     if @block_to_finish
-      result = @recursion_level == 0 and
+      @recursion_level == 0 and
         within_current_method?(file, line) and
         @block_to_finish != frame_digest(binding_.of_caller(3))
-      result
     end
   end
 
