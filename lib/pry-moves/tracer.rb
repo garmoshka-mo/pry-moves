@@ -23,7 +23,7 @@ class Tracer
       @step_into_funcs = nil
       func = @command[:param]
       if func == '+'
-        @show_hidden = true
+        @step_in_everywhere = true
       elsif func
         @step_into_funcs = [func]
         @step_into_funcs << '=initialize' if func == 'new' or func == '=new'

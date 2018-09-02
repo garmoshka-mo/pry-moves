@@ -5,7 +5,9 @@ module PryMoves::TraceCommands
   def trace_step(event, file, line, binding_)
     return unless event == 'line'
 
-    if @step_into_funcs
+    if @step_in_everywhere
+      true
+    elsif @step_into_funcs
 
       if @recursion_level < 0
         pry_puts "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
@@ -23,8 +25,7 @@ module PryMoves::TraceCommands
     elsif redirect_step_into? binding_
       false
     else
-      @show_hidden or
-        not binding_.local_variable_defined? :hide_from_stack
+      not binding_.local_variable_defined? :hide_from_stack
     end
   end
 
@@ -55,13 +56,20 @@ module PryMoves::TraceCommands
 
   def trace_finish(event, file, line, binding_)
     return unless event == 'line'
-    return true if @recursion_level < 0 or @method_to_finish != @method
+    if @recursion_level < 0 or @method_to_finish != @method
+      if redirect_step_into?(binding_)
+        @action = :step
+        return false
+      end
+      return true
+    end
 
     # for finishing blocks inside current method
     if @block_to_finish
-      @recursion_level == 0 and
+      result = @recursion_level == 0 and
         within_current_method?(file, line) and
         @block_to_finish != frame_digest(binding_.of_caller(3))
+      result
     end
   end
 
@@ -75,5 +83,11 @@ module PryMoves::TraceCommands
     end
   end
 
+  def trace_iteration(event, file, line, binding_)
+    raise 'not implemented'
+    # implementation:
+    # 1) ставить метки там, где происходит сама итерация?
+    # 2) можно догадываться по имени методов в стеке вверху: each / each_with_index
+  end
 
 end

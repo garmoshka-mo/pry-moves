@@ -3,23 +3,23 @@ require 'pry' unless defined? Pry
 module PryMoves
   Commands = Pry::CommandSet.new do
     block_command 'step', 'Step execution into the next line or method.' do |param|
-      check_file_context
       breakout_navigation :step, param
     end
 
-    block_command 'finish', 'Finish xule tut neponyatnogo.' do |param|
-      check_file_context
+    block_command 'finish', 'Finish - xule tut neponyatnogo.' do |param|
       breakout_navigation :finish, param
     end
 
     block_command 'next', 'Execute the next line stepping into blocks' do |param|
-      check_file_context
       breakout_navigation :next, param
     end
 
     block_command 'nn', 'Execute the next line skipping blocks.' do |param|
-      check_file_context
       breakout_navigation :next, 'blockless'
+    end
+
+    block_command 'iterate', 'Stop on next iteration of this method.' do |param|
+      breakout_navigation :iterate, param
     end
 
     block_command 'continue', 'Continue program execution and end the Pry session.' do
@@ -56,6 +56,7 @@ module PryMoves
 
     helpers do
       def breakout_navigation(action, param)
+        check_file_context
         _pry_.binding_stack.clear     # Clear the binding stack.
         throw :breakout_nav, {        # Break out of the REPL loop and
           action: action,          #   signal the tracer.
@@ -66,7 +67,6 @@ module PryMoves
       end
 
       def debug
-        check_file_context
         cmd = arg_string.gsub(/^debug/, '').strip
         breakout_navigation :debug, cmd
       end
