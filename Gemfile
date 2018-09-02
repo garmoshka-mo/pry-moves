@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
-  gem 'pry', path: '../pry'
+  gem 'pry'
   gem 'rspec'
 end
