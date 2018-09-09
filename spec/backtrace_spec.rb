@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe 'PryMoves Commands' do
+describe 'backtrace' do
 
   it 'should backtrace' do
     breakpoints [

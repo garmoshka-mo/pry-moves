@@ -1,7 +1,6 @@
 require_relative 'spec_helper'
 
-describe 'PryMoves Commands' do
-
+describe 'blocks' do
 
   it 'should go next over blocks' do
     breakpoints [

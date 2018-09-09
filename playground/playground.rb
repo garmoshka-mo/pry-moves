@@ -72,6 +72,16 @@ class Playground
     :after_block # after block
   end
 
+  def method_with_redirection
+    debug_redirect = '=level_a'
+    level_a
+  end
+
+  def redirection_host
+    binding.pry # redirection host
+    method_with_redirection
+  end
+
   private
 
   def iterator

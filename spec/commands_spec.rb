@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe 'PryMoves Commands' do
+describe 'PryMoves commands' do
 
   it 'should make one step next' do
     breakpoints [
