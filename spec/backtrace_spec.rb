@@ -5,8 +5,8 @@ describe 'backtrace' do
   it 'should backtrace' do
     breakpoints [
       [nil, 'stop in level_c'],
-      ['bt', lambda{|b, out|
-        lines = out.split("\n").reverse
+      ['bt', lambda{|b, output|
+        lines = output.split("\n").reverse
         expect(lines[0]).to end_with 'level_c(param=?)'
         expect(lines[1]).to end_with 'level_a()'
         expect(lines[2]).to include 'Playground:'
@@ -14,14 +14,14 @@ describe 'backtrace' do
         expect(lines[4]).to include 'RSpec::ExampleGroups'
         expect(lines.count).to be 5
       }],
-      ['bt all', lambda{|b, out|
-        lines = out.split("\n").reverse
+      ['bt all', lambda{|b, output|
+        lines = output.split("\n").reverse
         # show hidden frame
         expect(lines[1]).to end_with 'level_b()'
         expect(lines.count).to be 6
       }],
-      ['bt 2', lambda{|b, out|
-        lines = out.split("\n").reverse
+      ['bt 2', lambda{|b, output|
+        lines = output.split("\n").reverse
         expect(lines[0]).to end_with 'level_c(param=?)'
         expect(lines[1]).to end_with 'level_a()'
         expect(lines[3]).to start_with 'Latest 2 lines'

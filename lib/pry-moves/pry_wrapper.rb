@@ -59,13 +59,14 @@ class PryWrapper
 
       Thread.current[:pry_moves_debug] = true
       #@command[:binding].eval 'puts "###########"'
-      start_tracing
+      tracer = start_tracing
       begin
         @command[:binding].eval @command[:param]
       rescue => e
         Thread.current.set_trace_func nil
         puts e
       end
+      tracer.stop_tracing
     end.join
     binding_ = @last_runtime_binding || @init_binding
     Pry.start(binding_, @pry_start_options)
@@ -73,8 +74,9 @@ class PryWrapper
 
   def start_tracing
     @last_runtime_binding = @command[:binding]
-    @tracer = PryMoves::Tracer.new @command, @pry_start_options
-    @tracer.trace
+    tracer = PryMoves::Tracer.new @command, @pry_start_options
+    tracer.trace
+    tracer
   end
 
 end

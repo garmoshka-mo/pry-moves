@@ -25,10 +25,10 @@ describe 'PryMoves commands' do
       ['s', 'some internal line'],
       ['up', 'point to step inside'],
       ['up', nil ],
-      ['up', {out_includes: 'top of stack'} ],
+      ['up', {output_includes: 'top of stack'} ],
       ['down', nil ],
       ['down', 'some internal line'],
-      ['down', {out_includes: 'bottom of stack'} ],
+      ['down', {output_includes: 'bottom of stack'} ],
     ]
     Playground.new.step_into
   end
@@ -37,7 +37,7 @@ describe 'PryMoves commands' do
     breakpoints [
       [nil, 'stop in step_by_name'],
       ['s level_c', 'stop in level_c'],
-      ['param', {out: '=> :target'}],
+      ['param', {output: '=> :target'}],
       ['n', nil],
     ]
     Playground.new.step_by_name
@@ -56,7 +56,7 @@ describe 'PryMoves commands' do
       [nil, nil],
       ['n', 'next step'],
       ['n', 'should stop here after 2 next-s'],
-      ['depth', {out: '=> 0'}],
+      ['depth', {output: '=> 0'}],
     ]
     Playground.new.recursion
   end
@@ -65,7 +65,7 @@ describe 'PryMoves commands' do
     breakpoints [
       [nil, 'basic next stop'],
       ['debug level_a', 'inside of level_a'],
-      ['n', 'basic next stop'],
+      ['n', 'basic next stop']
     ]
     Playground.new.basic_next
   end

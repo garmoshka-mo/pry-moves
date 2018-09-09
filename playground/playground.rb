@@ -73,7 +73,7 @@ class Playground
   end
 
   def method_with_redirection
-    debug_redirect = '=level_a'
+    debug_redirect = '=level_a' # at method_with_redirection
     level_a
   end
 

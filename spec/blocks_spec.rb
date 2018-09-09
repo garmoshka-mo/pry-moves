@@ -13,15 +13,15 @@ describe 'blocks' do
       ['s', 'stop in zaloop'],
       ['n', nil],
       ['', 'inside block'],
-      ['pass', {out: '=> 0'}],
+      ['pass', {output: '=> 0'}],
 
       ['f', 'after block'],
-      ['pass', {out: '=> 0'}],
+      ['pass', {output: '=> 0'}],
 
       ['f', 'post_yield'], # Тут хорошо бы, чтобы сразу шёл на "after block",
       # но пока и не понятно, как это угадать
       ['f', 'after block'],
-      ['pass', {out: '=> :root'}],
+      ['pass', {output: '=> :root'}],
     ]
     Playground.new.zaloop
   end
@@ -42,7 +42,7 @@ describe 'blocks' do
       ['n', ''],
       ['', 'inside block'],
       ['f', 'after block'],
-      ['pass', {out: '=> :root'}],
+      ['pass', {output: '=> :root'}],
     ]
     Playground.new.zaloop
   end

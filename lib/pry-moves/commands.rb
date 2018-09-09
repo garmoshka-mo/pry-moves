@@ -41,7 +41,8 @@ module PryMoves
     end
 
     block_command 'debug', '' do
-      debug
+      cmd = arg_string.gsub(/^debug/, '').strip
+      breakout_navigation :debug, cmd
     end
 
     block_command '!', 'exit' do
@@ -64,11 +65,6 @@ module PryMoves
           binding: target,
           pry: _pry_
         }
-      end
-
-      def debug
-        cmd = arg_string.gsub(/^debug/, '').strip
-        breakout_navigation :debug, cmd
       end
 
       # Ensures that a command is executed in a local file context.

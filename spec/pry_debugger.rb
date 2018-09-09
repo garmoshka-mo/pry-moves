@@ -20,10 +20,10 @@ module PryDebugger
       if subj.is_a? Proc
         subj.call binding_, output
       elsif subj.is_a? Hash
-        if subj[:out_includes]
-          expect(output).to include subj[:out_includes]
+        if subj[:output_includes]
+          expect(output).to include subj[:output_includes]
         else
-          expect(output).to eq subj[:out]
+          expect(output).to eq subj[:output]
         end
       elsif not subj.nil?
         expect(label).to eq subj

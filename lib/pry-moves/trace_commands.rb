@@ -17,10 +17,14 @@ module PryMoves::TraceCommands
       method = binding_.eval('__callee__').to_s
       return false unless method_matches?(method)
 
-      return false if redirect_step_into? binding_
-
-      (not @caller_digest or # if we want to step-in only into straight descendant
+      func_reached = (not @caller_digest or
+        # if we want to step-in only into straight descendant
         @caller_digest == frame_digest(binding_.of_caller(3 + 1)))
+
+      if func_reached
+        @caller_digest = nil
+        not redirect_step_into? binding_
+      end
 
     elsif redirect_step_into? binding_
       false

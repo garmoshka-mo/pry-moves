@@ -43,17 +43,17 @@ class Tracer
     start_tracing
   end
 
+  def stop_tracing
+    trace_obj.set_trace_func nil
+    Pry.config.disable_breakpoints = false
+  end
+
   private
 
   def start_tracing
     #puts "##trace_obj #{trace_obj}"
     Pry.config.disable_breakpoints = true
     trace_obj.set_trace_func method(:tracing_func).to_proc
-  end
-
-  def stop_tracing
-    Pry.config.disable_breakpoints = false
-    trace_obj.set_trace_func nil
   end
 
   # You can't call set_trace_func or Thread.current.set_trace_func recursively
