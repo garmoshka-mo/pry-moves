@@ -38,6 +38,9 @@ class Tracer
       if @command[:param] == 'blockless'
         @stay_at_frame = frame_digest(binding_)
       end
+    when :iterate
+      @iteration_start_line = binding_.eval('__LINE__')
+      @caller_digest = frame_digest(binding_)
     end
 
     start_tracing
@@ -152,5 +155,10 @@ class Tracer
     @command[:pry].output.puts text
   end
 
+  def exit_from_method
+    @pry_start_options[:exit_from_method] = true
+    true
+  end
+  
 end
 end

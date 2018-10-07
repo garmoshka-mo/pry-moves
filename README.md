@@ -15,6 +15,7 @@ _An execution control add-on for [Pry][pry]._
   * `s method_name` - step into method `method_name` (For example from `User.new.method_name`). Partial name match supported.
   * `s +` - step into function, including hidden frames
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
+* `iterate` - go to next iteration of current block
 * `c` - **continue**
 * `bt` - show latest 5 lines from backtrace
   * `bt 10` - latest 10 lines

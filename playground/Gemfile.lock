@@ -1,14 +1,14 @@
 PATH
   remote: ..
   specs:
-    pry-moves (0.1.6)
+    pry-moves (0.1.7)
       binding_of_caller (~> 0.7)
       pry (>= 0.9.10, < 0.11.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    binding_of_caller (0.7.2)
+    binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     coderay (1.1.1)
     debug_inspector (0.0.3)
@@ -26,4 +26,4 @@ DEPENDENCIES
   pry-moves!
 
 BUNDLED WITH
-   1.14.5
+   1.16.6
