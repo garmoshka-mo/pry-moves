@@ -111,6 +111,10 @@ Please note that debugging functionality is implemented through
 bundle exec rspec
 ```
 
+## ToDo
+
+* `iterate` - steps in into child sub-block - should skip
+
 ## Contributors
 
 * Gopal Patel ([@nixme](https://github.com/nixme))

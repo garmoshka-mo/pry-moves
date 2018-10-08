@@ -45,10 +45,14 @@ module PryMoves::TraceCommands
       within_current_method?(file, line)
 
       if event == 'line'
-        return (
-        not @stay_at_frame or
-          @stay_at_frame == frame_digest(binding_.of_caller(3))
-        )
+        if @stay_at_frame
+          return (
+            @stay_at_frame == frame_digest(binding_.of_caller(3)) or
+            @c_stack_level < 0
+          )
+        else
+          return true
+        end
       end
 
       exit_from_method if event == 'return' and before_end?(line)

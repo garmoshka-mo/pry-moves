@@ -71,6 +71,8 @@ class Tracer
 
   def set_traced_method(binding)
     @recursion_level = 0
+    @c_stack_level = 0
+    @stay_at_frame = nil # reset tracked digest
 
     method = binding.eval 'method(__method__) if __method__'
     if method
@@ -97,7 +99,7 @@ class Tracer
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    #printf "#{trace_obj}: %8s %s:%-2d %10s %8s rec:#{@recursion_level}\n", event, file, line, id, klass
+    #printf "#{trace_obj}: %8s %s:%-2d %10s %8s rec:#{@recursion_level} st:#{@c_stack_level}\n", event, file, line, id, klass
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
@@ -113,6 +115,9 @@ class Tracer
         delta = event == 'call' ? 1 : -1
         #puts "recursion #{event}: #{delta}; changed: #{@recursion_level} => #{@recursion_level + delta}"
         @recursion_level += delta
+      elsif %w(c-call c-return).include?(event)
+        delta = event == 'c-call' ? 1 : -1
+        @c_stack_level += delta
       end
     end
   end
