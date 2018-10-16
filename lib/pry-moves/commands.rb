@@ -6,7 +6,7 @@ module PryMoves
       breakout_navigation :step, param
     end
 
-    block_command 'finish', 'Finish - xule tut neponyatnogo.' do |param|
+    block_command 'finish', 'Finish - xule tut neponyatnogo' do |param|
       breakout_navigation :finish, param
     end
 
@@ -14,15 +14,15 @@ module PryMoves
       breakout_navigation :next, param
     end
 
-    block_command 'nn', 'Execute the next line skipping blocks.' do |param|
+    block_command 'nn', 'Execute the next line skipping blocks' do |param|
       breakout_navigation :next, 'blockless'
     end
 
-    block_command 'iterate', 'Stop on next iteration of this method.' do |param|
+    block_command 'iterate', 'Go to next iteration of current block' do |param|
       breakout_navigation :iterate, param
     end
 
-    block_command 'continue', 'Continue program execution and end the Pry session.' do
+    block_command 'continue', 'Continue program execution and end the Pry session' do
       check_file_context
       run 'exit-all'
     end

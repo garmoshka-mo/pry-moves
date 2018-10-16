@@ -54,11 +54,20 @@ class Playground
     self
   end
 
-  def with_simple_block
-    binding.pry # stop in with_simple_block
-    iterator do |i|
+  def nested_block(early_return: false)
+    binding.pry # stop in nested_block
+    iterator do |i| # iterator line
       dummy = 1 # inside block
-      dummy = 2
+      return if early_return
+    end
+    :after_block # after block
+  end
+
+  def native_block(early_return: false)
+    binding.pry # stop in native_block
+    2.times do |i| # iterator line
+      dummy = 1 # inside block
+      return if early_return
     end
     :after_block # after block
   end

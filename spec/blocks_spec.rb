@@ -28,12 +28,12 @@ describe 'blocks' do
 
   it 'should finish simple block' do
     breakpoints [
-      [nil, 'stop in with_simple_block'],
-      ['n', ''],
+      [nil, 'stop in nested_block'],
+      ['n', 'iterator line'],
       ['', 'inside block'],
       ['f', 'after block']
     ]
-    Playground.new.with_simple_block
+    Playground.new.nested_block
   end
 
   it 'should finish block with sub-calls' do
@@ -47,5 +47,54 @@ describe 'blocks' do
     Playground.new.zaloop
   end
 
+  it 'should iterate over native block' do
+    breakpoints [
+      [nil, 'stop in native_block'],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['i', {output: '=> 0'}],
+      ['iterate', 'inside block'],
+      ['i', {output: '=> 1'}],
+      ['iterate', 'after block'],
+    ]
+    Playground.new.native_block
+  end
 
+  it 'should iterate over nested block' do
+    breakpoints [
+      [nil, 'stop in nested_block'],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['i', {output: '=> 0'}],
+      ['iterate', 'inside block'],
+      ['i', {output: '=> 1'}],
+      ['iterate', 'after block'],
+    ]
+    Playground.new.nested_block
+  end
+
+  it 'should return during iterating native block' do
+    breakpoints [
+      [nil, 'stop in native_block'],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['iterate', 'iterator line'],
+      ['n', 'exit'],
+    ]
+    Playground.new.native_block early_return: true
+    :exit # exit
+  end
+
+  it 'should return during iterating nested block' do
+    breakpoints [
+      [nil, 'stop in nested_block'],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['iterate', 'iterator line'],
+      ['n', 'exit'],
+    ]
+    Playground.new.nested_block early_return: true
+    :exit # exit
+  end
+  
 end

@@ -10,7 +10,7 @@ class PryWrapper
   def run(&block)
     PryMoves.lock
 
-    Pry.config.marker = "⛔️ " if @pry_start_options[:exit_from_method]
+    Pry.config.marker = "⛔️" if @pry_start_options[:exit_from_method]
 
     return_value = nil
     PryMoves.is_open = true

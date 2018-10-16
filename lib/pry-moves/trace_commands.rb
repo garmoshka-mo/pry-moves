@@ -45,16 +45,17 @@ module PryMoves::TraceCommands
       within_current_method?(file, line)
 
       if event == 'line'
-        return (
-        not @stay_at_frame or
-          @stay_at_frame == frame_digest(binding_.of_caller(3))
-        )
+        if @stay_at_frame
+          return (
+            @stay_at_frame == frame_digest(binding_.of_caller(3)) or
+            @c_stack_level < 0
+          )
+        else
+          return true
+        end
       end
 
-      if event == 'return' and before_end?(line)
-        @pry_start_options[:exit_from_method] = true
-        true
-      end
+      exit_from_method if event == 'return' and before_end?(line)
     end
   end
 
@@ -86,11 +87,18 @@ module PryMoves::TraceCommands
     end
   end
 
-  def trace_iteration(event, file, line, binding_)
-    raise 'not implemented'
-    # implementation:
-    # 1) ставить метки там, где происходит сама итерация?
-    # 2) можно догадываться по имени методов в стеке вверху: each / each_with_index
+  def trace_iterate(event, file, line, binding_)
+    return exit_from_method if event == 'return' and
+      within_current_method?(file, line)
+
+    # промотка итерации -
+    # попасть на ту же или предыдущую строку или выйти из дайджеста
+    # будучи в том же методе
+    event == 'line' and @recursion_level == 0 and
+      within_current_method?(file, line) and
+      (line <= @iteration_start_line or
+        @caller_digest != frame_digest(binding_.of_caller(3))
+      )
   end
 
 end

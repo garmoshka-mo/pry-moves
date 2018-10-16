@@ -2,31 +2,41 @@ module PryDebugger
 
   module Breakpoints
     def breakpoints(breakpoints)
+      steps = []
       breakpoints.each_with_index do |b, index|
         next_b = breakpoints[index+1]
-        b[0] = next_b ? next_b[0] : nil
+        steps << {
+          cmd: b[0],
+          expected: b[1],
+          next_cmd: next_b ? next_b[0] : nil,
+          index: index
+        }
       end
 
       PryDebugger.breakpoints =
-          breakpoints.map do |b|
+          steps.map do |step|
             Proc.new do |label, binding_, output|
-              compare(b[1], label, binding_, output)
-              b[0]
+              compare(step, label, binding_, output)
+              step[:next_cmd]
             end
           end
     end
 
-    def compare(subj, label, binding_, output)
-      if subj.is_a? Proc
-        subj.call binding_, output
-      elsif subj.is_a? Hash
-        if subj[:output_includes]
-          expect(output).to include subj[:output_includes]
+    def compare(step, label, binding_, output)
+      exp = step[:expected]
+      if exp.is_a? Proc
+        exp.call binding_, output
+      elsif exp.is_a? Hash
+        if exp[:output_includes]
+          expect(output).to include exp[:output_includes]
         else
-          expect(output).to eq subj[:output]
+          expect(output).to eq exp[:output]
         end
-      elsif not subj.nil?
-        expect(label).to eq subj
+      elsif not exp.nil?
+        err = <<-TEXT
+[#{step[:index]}] #{step[:cmd]} => '#{exp}', got '#{label}'
+        TEXT
+        expect(label).to eq(exp), err
       end
     end
   end
@@ -81,8 +91,8 @@ module PryDebugger
     raise 'Next breakpoint handler missing' if @breakpoints_procs.size == 0
     #puts (@breakpoint_call += 1)
     output = @output.take_away
-    output.match(/^ => .*#(.*)/)
-    label = ($1 || '').strip
+    output.match(/^ (=>|⛔️) .*#(.*)/)
+    label = ($2 || '').strip
     @breakpoints_procs.shift.call label, binding_, output.strip
   end
 
