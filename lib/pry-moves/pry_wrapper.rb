@@ -58,7 +58,6 @@ class PryWrapper
       end
 
       Thread.current[:pry_moves_debug] = true
-      #@command[:binding].eval 'puts "###########"'
       tracer = start_tracing
       begin
         @command[:binding].eval @command[:param]

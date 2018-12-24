@@ -44,7 +44,7 @@ class PryMoves::Backtrace
 
   def build
     result = []
-    show_vapid = @lines_count == 'all'
+    show_vapid = %w(+ all hidden vapid).include? @lines_count
     stack = stack_bindings(show_vapid)
               .reverse.reject do |binding|
                 binding.eval('__FILE__').match self.class::filter
@@ -99,7 +99,10 @@ class PryMoves::Backtrace
   end
 
   def stack_bindings(vapid_frames)
-    frame_manager.filter_bindings vapid_frames: vapid_frames
+    bindings = frame_manager.filter_bindings vapid_frames: vapid_frames
+    pre_callers = Thread.current[:pre_callers]
+    bindings = bindings + pre_callers if pre_callers
+    bindings
   end
 
   def write_to_file(lines, file_suffix)
