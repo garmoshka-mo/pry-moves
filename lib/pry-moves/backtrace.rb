@@ -99,10 +99,7 @@ class PryMoves::Backtrace
   end
 
   def stack_bindings(vapid_frames)
-    bindings = frame_manager.filter_bindings vapid_frames: vapid_frames
-    pre_callers = Thread.current[:pre_callers]
-    bindings = bindings + pre_callers if pre_callers
-    bindings
+    frame_manager.filter_bindings vapid_frames: vapid_frames
   end
 
   def write_to_file(lines, file_suffix)
