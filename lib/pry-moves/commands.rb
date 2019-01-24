@@ -46,6 +46,7 @@ module PryMoves
     end
 
     block_command '!', 'exit' do
+      PryMoves.unlock
       Pry.config.exit_requested = true
       run '!!!'
     end

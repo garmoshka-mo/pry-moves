@@ -24,12 +24,8 @@ Binding.class_eval do
 
   def pry
     unless Pry.config.disable_breakpoints
-      begin
-        PryMoves.synchronize_threads
-      rescue ThreadError
-        # Don't start binding.pry when semaphore locked by current thread
-        return
-      end
+      PryMoves.synchronize_threads ||
+        return # Don't start binding.pry when semaphore locked by current thread
       pry_forced
     end
   end

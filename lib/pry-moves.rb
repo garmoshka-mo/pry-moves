@@ -34,6 +34,10 @@ module PryMoves
     @semaphore ||= Mutex.new
   end
 
+  def locked?
+    semaphore.locked?
+  end
+
   def lock
     semaphore.lock unless semaphore.locked?
   end
@@ -47,9 +51,10 @@ module PryMoves
   end
 
   def synchronize_threads
-    return if Thread.current[:pry_moves_debug]
+    return true if Thread.current[:pry_moves_debug]
 
-    semaphore.synchronize {}
+    semaphore.synchronize {} rescue return
+    true
   end
 
   # Reference to currently running pry-remote server. Used by the tracer.
