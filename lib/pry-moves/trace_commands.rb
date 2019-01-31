@@ -2,7 +2,7 @@ module PryMoves::TraceCommands
 
   private
 
-  def trace_step(event, file, line, binding_)
+  def trace_step(event, file, line, method, binding_)
     return unless event == 'line'
 
     if @step_in_everywhere
@@ -33,7 +33,7 @@ module PryMoves::TraceCommands
     end
   end
 
-  def trace_next(event, file, line, binding_)
+  def trace_next(event, file, line, method, binding_)
     traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
     if traced_method_exit
       # Set new traced method, because we left previous one
@@ -55,11 +55,12 @@ module PryMoves::TraceCommands
         end
       end
 
-      exit_from_method if event == 'return' and before_end?(line)
+       exit_from_method if event == 'return' and
+         method != :to_s and before_end?(line)
     end
   end
 
-  def trace_finish(event, file, line, binding_)
+  def trace_finish(event, file, line, method, binding_)
     return unless event == 'line'
     if @recursion_level < 0 or @method_to_finish != @method
       if redirect_step_into?(binding_)
@@ -77,7 +78,7 @@ module PryMoves::TraceCommands
     end
   end
 
-  def trace_debug(event, file, line, binding_)
+  def trace_debug(event, file, line, method, binding_)
     return unless event == 'line'
     if @first_line_skipped
       true
@@ -87,7 +88,7 @@ module PryMoves::TraceCommands
     end
   end
 
-  def trace_iterate(event, file, line, binding_)
+  def trace_iterate(event, file, line, method, binding_)
     return exit_from_method if event == 'return' and
       within_current_method?(file, line)
 

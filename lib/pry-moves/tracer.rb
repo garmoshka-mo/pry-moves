@@ -99,13 +99,13 @@ class Tracer
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    #printf "#{trace_obj}: %8s %s:%-2d %10s %8s rec:#{@recursion_level} st:#{@c_stack_level}\n", event, file, line, id, klass
+    #printf ": %8s %s:%-2d %10s %8s rec:#{@recursion_level} st:#{@c_stack_level}\n", event, file, line, id, klass
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
     catch (:skip) do
-      if send "trace_#{@action}", event, file, line, binding_
+      if send "trace_#{@action}", event, file, line, id, binding_
         stop_tracing
         Pry.start(binding_, @pry_start_options)
 
