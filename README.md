@@ -71,6 +71,16 @@ PryMoves::Backtrace::filter =
 
 ## Threads, helpers
 
+To allow traveling to parent thread, use:
+
+```ruby
+pre_callers = binding.callers
+Thread.new do
+  Thread.current[:pre_callers] = pre_callers
+  #...
+end
+```
+
 `pry-moves` can't stop other threads on `binding.pry`, so they will continue to run.
 This makes `pry-moves` not always suitable for debugging of multi-thread projects.
 

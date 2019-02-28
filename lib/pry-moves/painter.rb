@@ -14,6 +14,7 @@ module PryMoves::Painter
 
   def self.colorize(obj)
     colored_str = Canvas.new
+    obj = obj.class if obj.inspect.start_with? "#<"
     catch (:cut) do
       Pry::ColorPrinter.pp obj, colored_str
     end
