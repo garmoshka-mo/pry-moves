@@ -41,6 +41,8 @@ class Tracer
     when :iterate
       @iteration_start_line = binding_.eval('__LINE__')
       @caller_digest = frame_digest(binding_)
+    when :goto
+      @goto_line = @command[:param].to_i
     end
 
     start_tracing

@@ -102,4 +102,8 @@ module PryMoves::TraceCommands
       )
   end
 
+  def trace_goto(event, file, line, method, binding_)
+    event == 'line' && @goto_line == line and @method[:file] == file
+  end
+
 end

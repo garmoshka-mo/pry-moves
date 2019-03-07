@@ -17,6 +17,7 @@ _An execution control add-on for [Pry][pry]._
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `iterate` - go to next iteration of current block
 * `c` - **continue**
+* `g 10` - **goto** line 10
 * `bt` - show latest 5 lines from backtrace
   * `bt 10` - latest 10 lines
   * `bt full` - full backtrace

@@ -5,14 +5,17 @@ module PryMoves
     block_command 'step', 'Step execution into the next line or method.' do |param|
       breakout_navigation :step, param
     end
+    alias_command 's', 'step'
 
     block_command 'finish', 'Finish - xule tut neponyatnogo' do |param|
       breakout_navigation :finish, param
     end
+    alias_command 'f', 'finish'
 
     block_command 'next', 'Execute the next line stepping into blocks' do |param|
       breakout_navigation :next, param
     end
+    alias_command 'n', 'next'
 
     block_command 'nn', 'Execute the next line skipping blocks' do |param|
       breakout_navigation :next, 'blockless'
@@ -22,15 +25,16 @@ module PryMoves
       breakout_navigation :iterate, param
     end
 
+    block_command 'goto', 'goto line' do |param|
+      breakout_navigation :goto, param
+    end
+    alias_command 'g', 'goto'
+
     block_command 'continue', 'Continue program execution and end the Pry session' do
       check_file_context
       run 'exit-all'
     end
-
     alias_command 'c', 'continue'
-    alias_command 's', 'step'
-    alias_command 'n', 'next'
-    alias_command 'f', 'finish'
 
     block_command 'watch', 'Display value of expression on every move' do |param|
       PryMoves::Watch.instance.process_cmd param, target
