@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    pry-moves (0.1.9)
+    pry-moves (0.1.10)
       binding_of_caller (~> 0.7)
       pry (>= 0.10.4, < 0.12.0)
 

@@ -19,6 +19,9 @@ module PryMoves::Painter
       Pry::ColorPrinter.pp obj, colored_str
     end
     colored_str.chomp
+  rescue => e
+    "Inspect error: #{e}\n" +
+      "#{e.backtrace.first(3).join("\n")}"
   end
 
 end
