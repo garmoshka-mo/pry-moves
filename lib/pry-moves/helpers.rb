@@ -47,4 +47,10 @@ module PryMoves::Helpers
     end
   end
 
+  PATH_TRASH = defined?(Rails) ? Rails.root.to_s : Dir.pwd
+
+  def shorten_path(path)
+    path.gsub( /^#{PATH_TRASH}\//, '')
+  end
+
 end

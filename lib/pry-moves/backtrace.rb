@@ -81,8 +81,7 @@ class PryMoves::Backtrace
   end
 
   def build_line(binding)
-    file = "#{binding.eval('__FILE__')}"
-    file.gsub!( /^#{Rails.root.to_s}/, '') if defined? Rails
+    file = PryMoves::Helpers.shorten_path "#{binding.eval('__FILE__')}"
 
     signature = PryMoves::Helpers.method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
