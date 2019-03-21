@@ -2,6 +2,7 @@ require 'pry' unless defined? Pry
 
 require 'pry-moves/version'
 require 'pry-moves/trace_commands'
+require 'pry-moves/traced_method'
 require 'pry-moves/tracer'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'

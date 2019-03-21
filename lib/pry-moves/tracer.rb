@@ -4,6 +4,7 @@ module PryMoves
 class Tracer
 
   include PryMoves::TraceCommands
+  include PryMoves::TracedMethod
 
   def initialize(command, pry_start_options)
     @command = command
@@ -71,30 +72,6 @@ class Tracer
         Thread.current : Kernel
   end
 
-  def set_traced_method(binding)
-    @recursion_level = 0
-    @c_stack_level = 0
-    @stay_at_frame = nil # reset tracked digest
-
-    method = binding.eval 'method(__method__) if __method__'
-    if method
-      source = method.source_location
-      set_method({
-       file: source[0],
-       start: source[1],
-       name: method.name,
-       end: (source[1] + method.source.count("\n") - 1)
-     })
-    else
-      set_method({file: binding.eval('__FILE__')})
-    end
-  end
-
-  def set_method(method)
-    #puts "set_traced_method #{method}"
-    @method = method
-  end
-
   def frame_digest(binding_)
     #puts "frame_digest for: #{binding_.eval '__callee__'}"
     Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
@@ -147,16 +124,6 @@ class Tracer
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 
-  def within_current_method?(file, line)
-    @method[:file] == file and (
-      @method[:start].nil? or
-      line.between?(@method[:start], @method[:end])
-    )
-  end
-
-  def before_end?(line)
-    @method[:end] and line < @method[:end]
-  end
 
   def pry_puts(text)
     @command[:pry].output.puts text
