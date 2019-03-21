@@ -31,9 +31,13 @@ module PryMoves::TracedMethod
 
     # If found file was different - search definition at superclasses:
     obj.class.ancestors.each do |cls|
-      method = cls.instance_method method_name
-      return method if method.source_location[0] == file
+      if cls.instance_methods(false).include? method_name
+        method = cls.instance_method method_name
+        return method if method.source_location[0] == file
+      end
     end
+
+    pry_puts "⚠️  Unable to find definition for method #{method_name} in #{obj}"
 
     nil
   end
