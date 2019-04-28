@@ -1,3 +1,5 @@
+require 'digest'
+
 require 'pry' unless defined? Pry
 
 module PryMoves
@@ -133,6 +135,6 @@ class Tracer
     @pry_start_options[:exit_from_method] = true
     true
   end
-  
+
 end
 end
