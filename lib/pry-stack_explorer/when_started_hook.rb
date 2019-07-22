@@ -74,7 +74,8 @@ module PryStackExplorer
       bindings.rindex do |b|
         if b.frame_type == :method
           self_, method = b.eval("self"), b.eval("__method__")
-          self_.equal?(Pry) && method == :start ||
+          self_.equal?(Pry) && method == :start_with_pry_nav ||
+            self_.equal?(Pry::CLI) && method == :start ||
             self_.class == Binding && method == :pry ||
             self_.class == PryMoves::Tracer && method == :tracing_func
         end
