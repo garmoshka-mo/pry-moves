@@ -6,6 +6,7 @@ module PryStackExplorer
       bindings = binding.callers
       pre_callers = Thread.current[:pre_callers]
       bindings = bindings + pre_callers if pre_callers
+      Thread.current[:suppress_next_whereami] = initiated_by_console_session?(bindings)
       bindings = remove_internal_frames(bindings)
       mark_vapid_frames(bindings)
       bindings
@@ -34,6 +35,22 @@ module PryStackExplorer
     end
 
     private
+
+    def initiated_by_console_session?(bindings)
+      internal_frames = bindings[0..top_internal_frame_index(bindings)]
+      frames_include_pry_call_or_tracer = internal_frames.rindex do |frame|
+        class_name = frame.receiver.class.name
+        method = frame.eval("__method__")
+
+        [
+          ["Binding", :pry],
+          ["PryMoves::Tracer", :tracing_func],
+        ].any? do |call|
+          call == [class_name, method]
+        end
+      end
+      !frames_include_pry_call_or_tracer
+    end
 
     def mark_vapid_frames(bindings)
       stepped_out = false

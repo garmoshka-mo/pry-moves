@@ -45,6 +45,9 @@ Pry::Command::Whereami.class_eval do
 
     if nothing_to_do?
       return
+    elsif Thread.current[:suppress_next_whereami]
+      Thread.current[:suppress_next_whereami] = false
+      return
     elsif internal_binding?(target)
       handle_internal_binding
       return
