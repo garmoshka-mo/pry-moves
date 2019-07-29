@@ -38,18 +38,22 @@ module PryStackExplorer
 
     def initiated_by_console_session?(bindings)
       internal_frames = bindings[0..top_internal_frame_index(bindings)]
-      frames_include_pry_call_or_tracer = internal_frames.rindex do |frame|
-        class_name = frame.receiver.class.name
-        method = frame.eval("__method__")
-
-        [
-          ["Binding", :pry],
-          ["PryMoves::Tracer", :tracing_func],
-        ].any? do |call|
-          call == [class_name, method]
-        end
+      is_debug_session = internal_frames.rindex do |frame|
+        debug_session_frame?(frame)
       end
-      !frames_include_pry_call_or_tracer
+      !is_debug_session
+    end
+
+    def debug_session_frame?(frame)
+      class_name = frame.receiver.class.name
+      method = frame.eval("__method__")
+
+      [
+        ["Binding", :pry],
+        ["PryMoves::Tracer", :tracing_func],
+      ].any? do |call|
+        call == [class_name, method]
+      end
     end
 
     def mark_vapid_frames(bindings)
