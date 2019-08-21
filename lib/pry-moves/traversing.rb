@@ -9,6 +9,8 @@ module PryMoves
       Usage: .method | 123 | :hash_key
 
       Continue traversing of last object in history
+
+      E.g. `orders` will list array, then `3` will enter `orders[3]`, then `.price` will enter `orders[3].price`
     BANNER
 
     def process(cmd)
