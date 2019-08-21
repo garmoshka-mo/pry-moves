@@ -12,6 +12,11 @@ module PryStackExplorer
     end
 
     def call(target, options, _pry_)
+      start_from_console = target.eval('__callee__').nil? &&
+        target.eval('__FILE__') == '<main>' &&
+        target.eval('__LINE__') == 0
+      return if start_from_console
+
       target ||= _pry_.binding_stack.first if _pry_
       options = {
         :call_stack    => true,
