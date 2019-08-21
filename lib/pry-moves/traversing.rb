@@ -12,9 +12,7 @@ module PryMoves
     BANNER
 
     def process(cmd)
-      last_cmd = Pry.history.to_a[-2]
-      # don't save command to history:
-      Pry.history.instance_variable_get(:@history).pop
+      last_cmd = Pry.history.to_a[-1]
       cmd = "#{last_cmd}#{wrap_command(cmd)}"
       _pry_.pager.page "    > #{cmd}\n"
       _pry_.eval cmd
@@ -26,7 +24,7 @@ module PryMoves
   end
 
   class Method < Traversing
-    match(/\.(.+)/)
+    match(/^\.(.+)$/)
 
     def wrap_command(cmd)
       ".#{cmd}"
@@ -34,7 +32,7 @@ module PryMoves
   end
 
   class ArrayIndex < Traversing
-    match(/(\d+)/)
+    match(/^(\d+)$/)
 
     def wrap_command(cmd)
       "[#{cmd}]"
@@ -42,7 +40,7 @@ module PryMoves
   end
 
   class HashKey < Traversing
-    match(/(:\w+)/)
+    match(/^(:\w+)$/)
 
     def wrap_command(cmd)
       "[#{cmd}]"
@@ -52,5 +50,18 @@ module PryMoves
   Pry::Commands.add_command(PryMoves::Method)
   Pry::Commands.add_command(PryMoves::ArrayIndex)
   Pry::Commands.add_command(PryMoves::HashKey)
+
+end
+
+Pry::History.class_eval do
+
+  EXCLUDE = [PryMoves::Method, PryMoves::ArrayIndex, PryMoves::HashKey]
+
+  def <<(line)
+    return if EXCLUDE.some? do |cls|
+      line.match(cls.match)
+    end
+    push line
+  end
 
 end
