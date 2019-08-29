@@ -28,14 +28,18 @@ module PryStackExplorer
       if options[:call_stack].is_a?(Array)
         bindings = options[:call_stack]
 
-        if !valid_call_stack?(bindings)
+        unless valid_call_stack?(bindings)
           raise ArgumentError, ":call_stack must be an array of bindings"
         end
       else
         bindings = caller_bindings(target)
+        initial_frame = bindings.find do |b|
+          not b.local_variable_defined?(:vapid_frame)
+        end
+        options[:initial_frame] = bindings.index initial_frame
       end
 
-      PryStackExplorer.create_and_push_frame_manager bindings, _pry_, :initial_frame => options[:initial_frame]
+      PryStackExplorer.create_and_push_frame_manager bindings, _pry_, initial_frame: options[:initial_frame]
     end
 
     private

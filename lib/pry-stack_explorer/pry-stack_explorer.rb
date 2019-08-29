@@ -117,6 +117,7 @@ Pry.config.hooks.add_hook(:after_session, :delete_frame_manager) do |_, _, _pry_
   PryStackExplorer.clear_frame_managers(_pry_)
 end
 
+# Can be moved to start_with_pry_nav to isolate from other use cases of Pry
 Pry.config.hooks.add_hook(:when_started, :save_caller_bindings, PryStackExplorer::WhenStartedHook.new)
 
 # Import the StackExplorer commands
