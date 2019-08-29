@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    pry-moves (0.1.8)
+    pry-moves (0.1.12)
       binding_of_caller (~> 0.7)
-      pry (>= 0.9.10, < 0.12.0)
+      pry (>= 0.10.4, < 1)
 
 GEM
   remote: https://rubygems.org/
@@ -45,4 +45,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   1.16.6
+   1.17.0
