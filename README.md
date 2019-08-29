@@ -138,7 +138,7 @@ bundle exec rspec
 * Ivo Anjo ([@ivoanjo](https://github.com/ivoanjo))
 
 Patches and bug reports are welcome. Just send a [pull request][pullrequests] or
-file an [issue][issues]. [Project changelog][changelog].
+file an [issue][issues]. 
 
 ## Acknowledgments
 
