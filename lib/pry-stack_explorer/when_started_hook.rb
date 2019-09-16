@@ -49,16 +49,19 @@ module PryStackExplorer
       actual_file, actual_method = nil, nil
 
       bindings.each do |binding|
+        file, method, obj = binding.eval("[__FILE__, __method__, self]")
         if stepped_out
-          if actual_file == binding.eval("__FILE__") and actual_method == binding.eval("__method__")
+          if actual_file == file and actual_method == method
             stepped_out = false
           else
             binding.local_variable_set :vapid_frame, true
           end
         elsif binding.frame_type == :block
           stepped_out = true
-          actual_file = binding.eval("__FILE__")
-          actual_method = binding.eval("__method__")
+          actual_file = file
+          actual_method = method
+        elsif obj.method(method).source.strip.match /^delegate\s/
+          binding.local_variable_set :vapid_frame, true
         end
 
         if binding.local_variable_defined? :hide_from_stack
