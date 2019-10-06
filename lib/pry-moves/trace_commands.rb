@@ -61,7 +61,7 @@ module PryMoves::TraceCommands
   end
 
   def trace_finish(event, file, line, method, binding_)
-    return unless event == 'line'
+    return if @recursion_level >= 0 and not event == 'line'
     if @recursion_level < 0 or @method_to_finish != @method
       if redirect_step_into?(binding_)
         @action = :step
