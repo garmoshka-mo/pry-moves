@@ -12,6 +12,8 @@ module PryStackExplorer
     end
 
     def call(target, options, _pry_)
+      _pry_.config[:messages] = []
+
       start_from_console = target.eval('__callee__').nil? &&
         target.eval('__FILE__') == '<main>' &&
         target.eval('__LINE__') == 0
@@ -38,7 +40,8 @@ module PryStackExplorer
         end
         options[:initial_frame] = bindings.index initial_frame
         if Thread.current[:pry_moves_debug] and options[:initial_frame] > 0
-          puts "\n👾⚠️  Frames hidden: #{options[:initial_frame]}"
+          _pry_.config[:messages] <<
+            "👾⚠️  Frames hidden: #{options[:initial_frame]}"
         end
       end
 

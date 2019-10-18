@@ -59,6 +59,8 @@ Pry::Command::Whereami.class_eval do
     lines = []
     lines << "#{text.bold('From:')} #{PryMoves::Helpers.shorten_path location}"
     lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
+    lines.concat _pry_.config[:messages]
+    _pry_.config[:messages].clear
     lines << ''
     lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
     lines << ''

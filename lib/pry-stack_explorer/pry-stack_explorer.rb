@@ -130,7 +130,9 @@ Pry.config.hooks.add_hook(:before_whereami, :stack_explorer) do
     bindings      = PryStackExplorer.frame_manager(_pry_).bindings
     binding_index = PryStackExplorer.frame_manager(_pry_).binding_index
 
-    info = "#{Pry::Helpers::Text.bold('Frame:')} "+
+    prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
+
+    info = "#{prefix}#{Pry::Helpers::Text.bold('Frame:')} "+
       "#{binding_index}/#{bindings.size - 1} "+
       "#{bindings[binding_index].frame_type}"
 
