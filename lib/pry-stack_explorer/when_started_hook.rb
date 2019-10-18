@@ -37,6 +37,9 @@ module PryStackExplorer
           not b.local_variable_defined?(:vapid_frame)
         end
         options[:initial_frame] = bindings.index initial_frame
+        if Thread.current[:pry_moves_debug] and options[:initial_frame] > 0
+          puts "\n👾⚠️  Frames hidden: #{options[:initial_frame]}"
+        end
       end
 
       PryStackExplorer.create_and_push_frame_manager bindings, _pry_, initial_frame: options[:initial_frame]

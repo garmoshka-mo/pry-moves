@@ -63,7 +63,7 @@ class PryWrapper
         @command[:binding].eval @command[:param]
       rescue => e
         Thread.current.set_trace_func nil
-        puts e
+        puts "❌️ #{e}"
       end
       tracer.stop_tracing
     end.join
