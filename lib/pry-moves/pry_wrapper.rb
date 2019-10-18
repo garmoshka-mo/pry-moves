@@ -10,16 +10,7 @@ class PryWrapper
   def run(&block)
     PryMoves.lock
 
-    Pry.config.marker = "⛔️" if @pry_start_options[:exit_from_method]
-
-    return_value = nil
-    PryMoves.is_open = true
-    @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
-      return_value = yield
-      nil    # Nothing thrown == no navigational command
-    end
-    PryMoves.is_open = false
-    Pry.config.marker = "=>"
+    start_pry(&block)
 
     if @command
       trace_command
@@ -30,10 +21,23 @@ class PryWrapper
       end
     end
 
-    return_value
+    @return_value
   end
 
   private
+
+  def start_pry
+    Pry.config.marker = "⛔️" if @pry_start_options[:exit_from_method]
+    PryMoves.is_open = true
+
+    @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
+      @return_value = yield
+      nil    # Nothing thrown == no navigational command
+    end
+
+    PryMoves.is_open = false
+    Pry.config.marker = "=>"
+  end
 
   def trace_command
     if @command[:action] == :debug
