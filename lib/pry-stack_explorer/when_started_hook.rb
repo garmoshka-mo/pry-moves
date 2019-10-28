@@ -38,8 +38,7 @@ module PryStackExplorer
         end
         options[:initial_frame] = bindings.index initial_frame
         if Thread.current[:pry_moves_debug] and options[:initial_frame] > 0
-          Pry.config.messages <<
-            "⚠️  Frames hidden: #{options[:initial_frame]}"
+          PryMoves.messages << "⚠️  Frames hidden: #{options[:initial_frame]}"
         end
       end
 

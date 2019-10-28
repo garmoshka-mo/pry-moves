@@ -33,7 +33,6 @@ Binding.class_eval do
 end
 
 Pry.config.pager = false
-Pry.config.messages = []
 
 Pry::Command::Whereami.class_eval do
   # Negligent function from Pry - evidently poor output format
@@ -60,8 +59,8 @@ Pry::Command::Whereami.class_eval do
     lines = []
     lines << "#{text.bold('From:')} #{PryMoves::Helpers.shorten_path location}"
     lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
-    lines.concat Pry.config.messages
-    Pry.config.messages.clear
+    lines.concat PryMoves.messages
+    PryMoves.messages.clear
     lines << ''
     lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
     lines << ''

@@ -36,6 +36,10 @@ module PryMoves
     @semaphore ||= Mutex.new
   end
 
+  def messages
+    @messages ||= []
+  end
+
   def locked?
     semaphore.locked?
   end
