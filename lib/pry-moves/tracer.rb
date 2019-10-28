@@ -16,7 +16,7 @@ class Tracer
   def trace
     @action = @command[:action]
     #puts "COMMAND: #{@action}"
-    binding_ = @command[:binding]
+    binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
     set_traced_method binding_
 
     @recursion_level -= 1 if @pry_start_options.delete :exit_from_method

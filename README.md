@@ -122,6 +122,8 @@ Please note that debugging functionality is implemented through
 
 ```
 bundle exec rspec
+
+DEBUG=true bundle exec rspec -e 'backtrace should backtrace'
 ```
 
 ## ToDo

@@ -22,8 +22,8 @@ class PryMoves::Backtrace
     end
   end
 
-  def initialize(binding, pry)
-     @binding, @pry = binding, pry
+  def initialize(pry)
+     @pry = pry
   end
 
   def run_command(param, param2)
@@ -99,7 +99,7 @@ class PryMoves::Backtrace
   end
 
   def stack_bindings(vapid_frames)
-    frame_manager.filter_bindings vapid_frames: vapid_frames
+    frame_manager.bindings.filter_bindings vapid_frames: vapid_frames
   end
 
   def write_to_file(lines, file_suffix)

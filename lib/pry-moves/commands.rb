@@ -41,7 +41,7 @@ module PryMoves
     end
 
     block_command 'bt', 'Backtrace' do |param, param2|
-      PryMoves::Backtrace.new(target, _pry_).run_command param, param2
+      PryMoves::Backtrace.new(_pry_).run_command param, param2
     end
 
     block_command 'debug', '' do
