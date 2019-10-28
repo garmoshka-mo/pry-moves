@@ -10,10 +10,11 @@ class PryWrapper
   def run(&block)
     PryMoves.lock
 
-    if @init_binding.local_variable_defined? :debug_redirect
+    if not @pry_start_options[:pry_moves_loop] and
+        @init_binding.local_variable_defined? :debug_redirect
       debug_redirect = @init_binding.local_variable_get(:debug_redirect)
       PryMoves.messages << "⏩ redirected to #{debug_redirect}"
-      @command = {action: :step}
+      @command = {action: :step, binding: @init_binding} # maybe? @init_binding.__binding__
     else
       start_pry(&block)
     end

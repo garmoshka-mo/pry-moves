@@ -34,9 +34,11 @@ RSpec::Core::BacktraceFormatter.class_eval do
 
   FILTER = /(\/gems\/|\/lib\/pry\/|spec\/pry_debugger\.rb)/
   def backtrace_line(line)
-    return if @lines == 3 and not ENV['TRACE']
-    #return if line.match FILTER
-    return unless line.include? '/playground.rb'
+    unless ENV['TRACE']
+      return if @lines == 3
+      #return if line.match FILTER
+      return unless line.include? '/playground.rb'
+    end
 
     result = native_backtrace_line(line)
     if result

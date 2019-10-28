@@ -11,6 +11,7 @@ class Tracer
   def initialize(command, pry_start_options)
     @command = command
     @pry_start_options = pry_start_options
+    @pry_start_options[:pry_moves_loop] = true
   end
 
   def trace
@@ -85,7 +86,7 @@ class Tracer
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
 
-    catch (:skip) do
+    catch(:skip) do
       if send "trace_#{@action}", event, file, line, id, binding_
         stop_tracing
         Pry.start(binding_, @pry_start_options)
