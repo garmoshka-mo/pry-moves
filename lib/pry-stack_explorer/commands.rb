@@ -90,7 +90,7 @@ module PryStackExplorer
     def find_frame_by_direction(up_or_down, step_into_vapid: false)
       frame_index = find_frame_by_block(up_or_down) do |b|
           step_into_vapid or
-            not b.local_variable_defined?(:vapid_frame)
+            not frame_manager.bindings.vapid?(b)
         end
 
       frame_index ||
