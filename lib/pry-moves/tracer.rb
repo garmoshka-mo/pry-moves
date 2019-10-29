@@ -6,6 +6,7 @@ module PryMoves
 class Tracer
 
   include PryMoves::TraceCommands
+  include PryMoves::TraceStep
   include PryMoves::TracedMethod
 
   def initialize(command, pry_start_options)

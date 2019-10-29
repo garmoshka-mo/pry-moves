@@ -2,59 +2,6 @@ module PryMoves::TraceCommands
 
   private
 
-  def trace_step(event, file, line, method, binding_)
-    @const_missing_level ||= 0
-    if method == :const_missing
-      if event == 'call'
-        @const_missing_level += 1
-      elsif event == 'return'
-        @const_missing_level -= 1
-      end
-    end
-    return if @const_missing_level > 0
-
-    return unless event == 'line'
-
-    if @step_in_everywhere
-      return true
-    elsif @step_into_funcs
-
-      if @recursion_level < 0
-        pry_puts "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
-        return true
-      end
-
-      method = binding_.eval('__callee__').to_s
-      return false unless method_matches?(method)
-
-      return false if @find_straight_descendant &&
-        # if we want to step-in only into straight descendant
-        @caller_digest != current_frame_digest(upward: 1)
-      @find_straight_descendant = false
-
-      return false if redirect_step? binding_
-    elsif redirect_step? binding_
-      return false
-    else
-      return false if binding_.local_variable_defined? :hide_from_stack
-    end
-
-    true
-  end
-
-  def method_matches?(method)
-    @step_into_funcs.any? do |pattern|
-      if pattern.start_with? '='
-        "=#{method}" == pattern
-      else
-        method.include? pattern
-      end
-    end
-  end
-
-
-  # command NEXT:
-
   def trace_next(event, file, line, method, binding_)
     traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
     if traced_method_exit
