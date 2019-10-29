@@ -1,8 +1,9 @@
 class PryMoves::BindingsStack < Array
 
-  def initialize(target)
+  def initialize
     @vapid_bindings = []
-    bindings = target.callers
+    bindings = binding.callers # binding_of_caller has bug and always returns callers of current binding,
+      # no matter at which binding method is called. So no need to pass here binding
     pre_callers = Thread.current[:pre_callers]
     bindings = bindings + pre_callers if pre_callers
     concat remove_internal_frames(bindings)

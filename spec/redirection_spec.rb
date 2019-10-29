@@ -31,4 +31,11 @@ describe 'redirection' do
     Playground.new.redirection_host
   end
 
+  it "instantly redirects binding.pry" do
+    breakpoints [
+      [nil, 'some internal line']
+    ]
+    Playground.new.instant_redirection
+  end
+
 end

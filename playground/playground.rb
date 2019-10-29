@@ -96,6 +96,12 @@ class Playground
     level_a
   end
 
+  def instant_redirection
+    debug_redirect = '=something_inside'
+    binding.pry # at instant_redirection
+    something_inside
+  end
+
   def redirection_host
     binding.pry # redirection host
     method_with_redirection
