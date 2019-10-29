@@ -3,6 +3,16 @@ module PryMoves::TraceCommands
   private
 
   def trace_step(event, file, line, method, binding_)
+    @const_missing_level ||= 0
+    if method == :const_missing
+      if event == 'call'
+        @const_missing_level += 1
+      elsif event == 'return'
+        @const_missing_level -= 1
+      end
+    end
+    return if @const_missing_level > 0
+
     return unless event == 'line'
 
     if @step_in_everywhere
