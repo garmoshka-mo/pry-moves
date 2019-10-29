@@ -33,6 +33,15 @@ describe 'PryMoves commands' do
     Playground.new.step_into
   end
 
+  it 'should skip hidden implementation' do
+    breakpoints [
+      [nil, 'skip_hidden_impl stop'],
+      ['s', 'point to step inside'],
+      ['s', 'some internal line']
+    ]
+    Playground.new.skip_hidden_impl
+  end
+
   it 'should step into func by name' do
     breakpoints [
       [nil, 'stop in step_by_name'],

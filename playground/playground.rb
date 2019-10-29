@@ -16,6 +16,11 @@ class Playground
     binding.pry # step_into stop
     something_inside # point to step inside
   end
+  
+  def skip_hidden_impl
+    binding.pry # skip_hidden_impl stop
+    hidden_self.something_inside # point to step inside
+  end
 
   def continue
     binding.pry # first stop
@@ -51,6 +56,11 @@ class Playground
 
   def level_c(param = nil)
     binding.pry # stop in level_c
+    self
+  end
+
+  def hidden_self
+    hide_from_stack = true
     self
   end
 
@@ -91,6 +101,10 @@ class Playground
     method_with_redirection
   end
 
+  def something_inside
+    :something # some internal line
+  end
+
   private
 
   def iterator
@@ -99,10 +113,6 @@ class Playground
       yield i
       :post_yield # post_yield
     end
-  end
-
-  def something_inside
-    :something # some internal line
   end
 
 end

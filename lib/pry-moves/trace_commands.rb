@@ -6,7 +6,7 @@ module PryMoves::TraceCommands
     return unless event == 'line'
 
     if @step_in_everywhere
-      true
+      return true
     elsif @step_into_funcs
 
       if @recursion_level < 0
@@ -17,21 +17,33 @@ module PryMoves::TraceCommands
       method = binding_.eval('__callee__').to_s
       return false unless method_matches?(method)
 
-      func_reached = (not @caller_digest or
+      return false if @find_straight_descendant &&
         # if we want to step-in only into straight descendant
-        @caller_digest == frame_digest(binding_.of_caller(3 + 1)))
+        @caller_digest != current_frame_digest(upward: 1)
+      @find_straight_descendant = false
 
-      if func_reached
-        @caller_digest = nil
-        not redirect_step_into? binding_
-      end
-
-    elsif redirect_step_into? binding_
-      false
+      return false if redirect_step? binding_
+    elsif redirect_step? binding_
+      return false
     else
-      not binding_.local_variable_defined? :hide_from_stack
+      return false if binding_.local_variable_defined? :hide_from_stack
+    end
+
+    true
+  end
+
+  def method_matches?(method)
+    @step_into_funcs.any? do |pattern|
+      if pattern.start_with? '='
+        "=#{method}" == pattern
+      else
+        method.include? pattern
+      end
     end
   end
+
+
+  # command NEXT:
 
   def trace_next(event, file, line, method, binding_)
     traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
@@ -47,7 +59,7 @@ module PryMoves::TraceCommands
       if event == 'line'
         if @stay_at_frame
           return (
-            @stay_at_frame == frame_digest(binding_.of_caller(3)) or
+            @stay_at_frame == current_frame_digest or
             @c_stack_level < 0
           )
         else
@@ -63,7 +75,7 @@ module PryMoves::TraceCommands
   def trace_finish(event, file, line, method, binding_)
     return if @recursion_level >= 0 and not event == 'line'
     if @recursion_level < 0 or @method_to_finish != @method
-      if redirect_step_into?(binding_)
+      if redirect_step?(binding_)
         @action = :step
         return false
       end
@@ -74,7 +86,7 @@ module PryMoves::TraceCommands
     if @block_to_finish
       @recursion_level == 0 and
         within_current_method?(file, line) and
-        @block_to_finish != frame_digest(binding_.of_caller(3))
+        @block_to_finish != current_frame_digest
     end
   end
 
@@ -98,7 +110,7 @@ module PryMoves::TraceCommands
     event == 'line' and @recursion_level == 0 and
       within_current_method?(file, line) and
       (line <= @iteration_start_line or
-        @caller_digest != frame_digest(binding_.of_caller(3))
+        @caller_digest != current_frame_digest
       )
   end
 

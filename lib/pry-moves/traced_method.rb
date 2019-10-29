@@ -22,8 +22,8 @@ module PryMoves::TracedMethod
   end
 
   def find_method_definition(binding)
-    method_name, obj, line, file =
-      binding.eval '[__method__, self, __LINE__, __FILE__]'
+    method_name, obj, file =
+      binding.eval '[__method__, self, __FILE__]'
     return unless method_name
 
     method = obj.method(method_name)

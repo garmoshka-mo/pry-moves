@@ -10,9 +10,10 @@ class PryMoves::BindingsStack < Array
   end
 
   def initial_frame_index
-    index do |b|
-      not vapid? b
-    end
+    index{|b| not vapid? b} || 0
+  end
+  def initial_frame
+    find{|b| not vapid? b}
   end
 
   def filter_bindings(vapid_frames: false)
