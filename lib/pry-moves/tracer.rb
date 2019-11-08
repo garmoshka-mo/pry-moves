@@ -96,6 +96,7 @@ class Tracer
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
+    return unless binding_ # ignore strange cases
 
     catch(:skip) do
       if send "trace_#{@action}", event, file, line, id, binding_
@@ -126,11 +127,6 @@ class Tracer
   def debug_info(file, line, id)
     puts "📽  Action:#{@action}; recur:#{@recursion_level}; #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
-  end
-
-
-  def pry_puts(text)
-    @command[:pry].output.puts text
   end
 
   def exit_from_method

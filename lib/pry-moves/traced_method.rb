@@ -37,7 +37,7 @@ module PryMoves::TracedMethod
       end
     end
 
-    pry_puts "⚠️  Unable to find definition for method #{method_name} in #{obj}"
+    PryMoves.messages << "⚠️  Unable to find definition for method #{method_name} in #{obj}"
 
     nil
   end

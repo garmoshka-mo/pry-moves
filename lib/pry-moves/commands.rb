@@ -67,8 +67,7 @@ module PryMoves
         throw :breakout_nav, {        # Break out of the REPL loop and
           action: action,          #   signal the tracer.
           param:  param,
-          binding: target,
-          pry: _pry_
+          binding: target
         }
       end
 

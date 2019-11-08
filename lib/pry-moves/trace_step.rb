@@ -19,7 +19,7 @@ module PryMoves::TraceStep
       return true
     elsif @step_into_funcs
       if @recursion_level < 0
-        pry_puts "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
+        PryMoves.messages << "⚠️  Unable to find function with name #{@step_into_funcs.join(',')}"
         return true
       end
 
