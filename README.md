@@ -19,9 +19,9 @@ _An execution control add-on for [Pry][pry]._
 * `c` - **continue**
 * `g 10` - **goto** line 10
 * `bt` - show latest 5 lines from backtrace
-  * `bt 10` - latest 10 lines
   * `bt full` - full backtrace
   * `bt +` - full backtrace with hidden frames. Aliases: `bt hidden` `bt vapid` `bt all`
+  * `bt 10` - go to backtrace line 10
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
 * `up`/`down`/`top`/`bottom` - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)

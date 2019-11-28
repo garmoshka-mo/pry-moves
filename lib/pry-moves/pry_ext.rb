@@ -20,6 +20,8 @@ end
 
 Binding.class_eval do
 
+  attr_accessor :index
+
   alias pry_forced pry
 
   def pry

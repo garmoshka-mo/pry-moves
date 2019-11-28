@@ -7,6 +7,7 @@ class PryMoves::BindingsStack < Array
     pre_callers = Thread.current[:pre_callers]
     bindings = bindings + pre_callers if pre_callers
     concat remove_internal_frames(bindings)
+    set_indices
     mark_vapid_frames
   end
 
@@ -28,6 +29,12 @@ class PryMoves::BindingsStack < Array
   end
 
   private
+
+  def set_indices
+    each_with_index do |binding, index|
+      binding.index = index
+    end
+  end
 
   def mark_vapid_frames
     stepped_out = false

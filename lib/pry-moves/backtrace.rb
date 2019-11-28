@@ -30,27 +30,35 @@ class PryMoves::Backtrace
     if param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
       write_to_file build, suffix
+    elsif param and param.match /\d+/
+      index = param.to_i
+      frame_manager.change_frame_to index
     else
-      @colorize = true
-      if param.is_a? String and param.match /\d+/
-        param = param.to_i
-      end
-      @lines_count = param || PryMoves::Backtrace::lines_count
-      @pry.output.puts build
+      print_backtrace param
     end
   end
 
   private
 
+  def print_backtrace filter
+    @colorize = true
+    if filter.is_a? String
+      @filter = filter
+    else
+      @lines_count = PryMoves::Backtrace::lines_count
+    end
+    @pry.output.puts build
+  end
+
   def build
     result = []
-    show_vapid = %w(+ all hidden vapid).include? @lines_count
+    show_vapid = %w(+ all hidden vapid).include? @filter
     stack = stack_bindings(show_vapid)
               .reverse.reject do |binding|
                 binding.eval('__FILE__').match self.class::filter
               end
 
-    if @lines_count.is_a?(Numeric) and stack.count > @lines_count
+    if @lines_count and stack.count > @lines_count
       result << "Latest #{@lines_count} lines: (`bt all` for full tracing)"
       stack = stack.last(@lines_count)
     end
@@ -60,7 +68,7 @@ class PryMoves::Backtrace
 
   def build_result(stack, result)
     current_object = nil
-    stack.each do |binding|
+    stack.each_with_index do |binding|
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
       # Comparison of objects directly may raise exception
       if current_object.object_id != obj.object_id
@@ -87,8 +95,12 @@ class PryMoves::Backtrace
     signature = PryMoves::Helpers.method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
-    indent = frame_manager.current_frame == binding ?
-        ' => ': '    '
+    indent = if frame_manager.current_frame == binding
+               '==> '
+             else
+               s = "#{binding.index}:".ljust(4, ' ')
+               "\e[2;49;90m#{s}\e[0m"
+             end
 
     line = binding.eval('__LINE__')
     "#{indent}#{file}:#{line} #{signature}"

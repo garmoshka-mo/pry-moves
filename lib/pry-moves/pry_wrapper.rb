@@ -73,7 +73,7 @@ class PryWrapper
       tracer = start_tracing
       begin
         @command[:binding].eval @command[:param]
-      rescue => e
+      rescue StandardError, SyntaxError => e
         Thread.current.set_trace_func nil
         puts "❌️ #{e}"
       end
