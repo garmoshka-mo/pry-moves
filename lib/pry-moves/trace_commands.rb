@@ -25,7 +25,7 @@ module PryMoves::TraceCommands
       end
 
        exit_from_method if event == 'return' and
-         method != :to_s and before_end?(line)
+         method == @method[:name] and before_end?(line)
     end
   end
 
