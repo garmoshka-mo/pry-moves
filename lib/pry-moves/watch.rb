@@ -44,6 +44,8 @@ class PryMoves::Watch
     "\033[1m#{cmd}\033[0m: #{format binding_.eval(cmd)}"
   rescue NameError
     "\033[1m#{cmd}\033[0m: <undefined>"
+  rescue => e
+    "\033[1m#{cmd}\033[0m: <#{e}>"
   end
 
   def format(text)

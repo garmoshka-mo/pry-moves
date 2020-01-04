@@ -60,6 +60,7 @@ Pry::History.class_eval do
   EXCLUDE = [PryMoves::Method, PryMoves::ArrayIndex, PryMoves::HashKey]
 
   def <<(line)
+    return if ["!"].include? line
     return if EXCLUDE.any? do |cls|
       line.match(cls.match)
     end
