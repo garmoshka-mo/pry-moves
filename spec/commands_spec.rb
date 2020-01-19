@@ -70,6 +70,15 @@ describe 'PryMoves commands' do
     Playground.new.recursion
   end
 
+  it 'should stop after finishing early return' do
+    breakpoints [
+      [nil, 'stop in level_c'],
+      ['f', 'at early return'],
+      ['f', 'after early return']
+    ]
+    Playground.new.early_return_wrap
+  end
+
   it 'should debug' do
     breakpoints [
       [nil, 'basic next stop'],

@@ -22,10 +22,7 @@ describe 'backtrace' do
       }],
       ['bt 2', lambda{|b, output|
         lines = output.split("\n").reverse
-        expect(lines[0]).to end_with 'level_c(param=?)'
-        expect(lines[1]).to end_with 'level_a()'
-        expect(lines[3]).to start_with 'Latest 2 lines'
-        expect(lines.count).to be 4
+        expect(lines[1]).to end_with 'level_b # inside of level_a'
       }],
     ]
     Playground.new.level_a

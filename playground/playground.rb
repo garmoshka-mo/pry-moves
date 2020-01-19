@@ -44,6 +44,16 @@ class Playground
     step_by_name
     :after_step_by_name # after_step_by_name
   end
+  
+  def early_return_wrap
+    early_return
+    :after_return # after early return
+  end
+  
+  def early_return
+    return true if level_c # at early return
+    dummy = 1
+  end
 
   def level_a
     level_b # inside of level_a
