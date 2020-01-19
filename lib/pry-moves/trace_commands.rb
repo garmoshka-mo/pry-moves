@@ -36,6 +36,7 @@ module PryMoves::TraceCommands
         @action = :step
         return false
       end
+      exit_from_method if event == 'return'
       return true
     end
 
