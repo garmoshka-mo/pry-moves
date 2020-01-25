@@ -42,6 +42,10 @@ module PryMoves
     @messages ||= []
   end
 
+  def add_command(command, &block)
+    Pry.commands.block_command command, "", &block
+  end
+
   def locked?
     semaphore.locked?
   end
