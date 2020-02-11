@@ -96,5 +96,14 @@ describe 'blocks' do
     Playground.new.nested_block early_return: true
     :exit # exit
   end
+
+  it 'should skip one-line block' do
+    breakpoints [
+      [nil, 'stop in one_line_block'],
+      ['n', 'iterator line'],
+      ['n', 'after block']
+    ]
+    Playground.new.one_line_block
+  end
   
 end

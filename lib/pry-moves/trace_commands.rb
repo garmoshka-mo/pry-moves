@@ -10,7 +10,7 @@ module PryMoves::TraceCommands
       throw :skip if event == 'call'
     end
 
-    if @recursion_level == 0 and
+    if @recursion_level == 0 and @start_line != line and
       within_current_method?(file, line)
 
       if event == 'line'

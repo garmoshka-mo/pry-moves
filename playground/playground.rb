@@ -92,6 +92,12 @@ class Playground
     :after_block # after block
   end
 
+  def one_line_block
+    binding.pry # stop in one_line_block
+    iterator { |i| dummy = 1 } # iterator line
+    :after_block # after block
+  end
+
   def zaloop(pass = :root)
     binding.pry if pass == :root # stop in zaloop
     iterator do |i|

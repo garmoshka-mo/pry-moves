@@ -53,6 +53,7 @@ class Tracer
         (binding_.frame_type == :block) &&
           frame_digest(binding_)
     when :next
+      @start_line = binding_.eval('__LINE__')
       if @command[:param] == 'blockless'
         @stay_at_frame = frame_digest(binding_)
       end

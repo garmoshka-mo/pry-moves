@@ -72,3 +72,5 @@ module PryMoves
   # Reference to currently running pry-remote server. Used by the tracer.
   attr_accessor :current_remote_server
 end
+
+PryMoves.trace = true if ENV['TRACE_MOVES']
