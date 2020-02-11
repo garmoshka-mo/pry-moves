@@ -34,6 +34,7 @@ class Tracer
   private
 
   def init(binding_)
+    # todo: refactor to own class per trace command
     case @action
     when :step
       @step_into_funcs = nil
@@ -54,8 +55,9 @@ class Tracer
           frame_digest(binding_)
     when :next
       @start_line = binding_.eval('__LINE__')
+      @start_digest = frame_digest(binding_)
       if @command[:param] == 'blockless'
-        @stay_at_frame = frame_digest(binding_)
+        @stay_at_frame = @start_digest
       end
     when :iterate
       @iteration_start_line = binding_.eval('__LINE__')
