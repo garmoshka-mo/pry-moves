@@ -83,7 +83,7 @@ class PryMoves::BindingsStack < Array
         self_, method = b.eval("self"), b.eval("__method__")
         self_.equal?(Pry) && method == :start ||
           self_.class == Binding && method == :pry ||
-          self_.class == PryMoves::Tracer && method == :tracing_func
+          self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func
       end
     end
   end

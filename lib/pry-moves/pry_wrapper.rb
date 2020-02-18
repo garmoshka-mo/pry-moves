@@ -85,9 +85,7 @@ class PryWrapper
 
   def start_tracing
     @last_runtime_binding = @command[:binding]
-    tracer = PryMoves::Tracer.new @command, @pry_start_options
-    tracer.trace
-    tracer
+    PryMoves::TraceCommand.trace @command, @pry_start_options
   end
 
 end

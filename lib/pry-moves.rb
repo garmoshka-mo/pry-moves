@@ -1,10 +1,6 @@
 require 'pry' unless defined? Pry
 
 require 'pry-moves/version'
-require 'pry-moves/trace_commands'
-require 'pry-moves/trace_step'
-require 'pry-moves/traced_method'
-require 'pry-moves/tracer'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
 require 'pry-moves/traversing'
@@ -14,6 +10,16 @@ require 'pry-moves/backtrace'
 require 'pry-moves/watch'
 require 'pry-moves/helpers'
 require 'pry-moves/painter'
+
+require 'commands/traced_method'
+require 'commands/trace_command'
+require 'commands/debug'
+require 'commands/finish'
+require 'commands/goto'
+require 'commands/iterate'
+require 'commands/next'
+require 'commands/next_breakpoint'
+require 'commands/step'
 
 require 'pry-stack_explorer/pry-stack_explorer'
 

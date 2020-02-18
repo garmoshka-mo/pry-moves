@@ -2,12 +2,12 @@ module PryMoves::TracedMethod
 
   private
 
-  def set_traced_method(binding)
+  def set_traced_method
     @recursion_level = 0
     @c_stack_level = 0
     @stay_at_frame = nil # reset tracked digest
 
-    method = find_method_definition binding
+    method = find_method_definition @binding_
     if method
       source = method.source_location
       set_method({
@@ -17,7 +17,7 @@ module PryMoves::TracedMethod
                    end: (source[1] + method.source.count("\n") - 1)
                  })
     else
-      set_method({file: binding.eval('__FILE__')})
+      set_method({file: @binding_.eval('__FILE__')})
     end
   end
 

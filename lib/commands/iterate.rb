@@ -1,0 +1,22 @@
+class PryMoves::Iterate < PryMoves::TraceCommand
+
+  def init
+    @iteration_start_line = @binding_.eval('__LINE__')
+    @caller_digest = frame_digest(@binding_)
+  end
+
+  def trace(event, file, line, method, binding_)
+    return exit_from_method if event == 'return' and
+      within_current_method?(file, line)
+
+    # промотка итерации -
+    # попасть на ту же или предыдущую строку или выйти из дайджеста
+    # будучи в том же методе
+    event == 'line' and @recursion_level == 0 and
+      within_current_method?(file, line) and
+      (line <= @iteration_start_line or
+        @caller_digest != current_frame_digest
+      )
+  end
+
+end
