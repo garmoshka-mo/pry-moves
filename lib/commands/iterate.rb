@@ -12,7 +12,7 @@ class PryMoves::Iterate < PryMoves::TraceCommand
     # промотка итерации -
     # попасть на ту же или предыдущую строку или выйти из дайджеста
     # будучи в том же методе
-    event == 'line' and @recursion_level == 0 and
+    event == 'line' and @call_depth == 0 and
       within_current_method?(file, line) and
       (line <= @iteration_start_line or
         @caller_digest != current_frame_digest

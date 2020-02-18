@@ -22,7 +22,9 @@ class TraceCommand
     @binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
     set_traced_method
 
-    @recursion_level -= 1 if @pry_start_options.delete :exit_from_method
+    @call_depth -= 1 if @pry_start_options.delete :exit_from_method
+    @pry_start_options.delete :initial_frame
+
     init
     start_tracing
   end
@@ -60,7 +62,7 @@ class TraceCommand
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    printf "👟 %8s %s:%-2d %10s %8s rec:#{@recursion_level} cst:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace
+    printf "👟 %8s %s:%-2d %10s %8s rec:#{@call_depth} cst:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
@@ -75,8 +77,8 @@ class TraceCommand
       elsif %w(call return).include?(event) and within_current_method?(file, line) and
         @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
         delta = event == 'call' ? 1 : -1
-        #puts "recursion #{event}: #{delta}; changed: #{@recursion_level} => #{@recursion_level + delta}"
-        @recursion_level += delta
+        #puts "recursion #{event}: #{delta}; changed: #{@call_depth} => #{@call_depth + delta}"
+        @call_depth += delta
       elsif %w(c-call c-return).include?(event)
         delta = event == 'c-call' ? 1 : -1
         @c_stack_level += delta
@@ -93,7 +95,7 @@ class TraceCommand
   end
 
   def debug_info(file, line, id)
-    puts "📽  Action:#{@action}; recur:#{@recursion_level}; #{@method[:file]}:#{file}"
+    puts "📽  Action:#{@action}; recur:#{@call_depth}; #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 

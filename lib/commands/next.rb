@@ -9,14 +9,14 @@ class PryMoves::Next < PryMoves::TraceCommand
   end
 
   def trace(event, file, line, method, binding_)
-    traced_method_exit = (@recursion_level < 0 and %w(line call).include? event)
+    traced_method_exit = (@call_depth < 0 and %w(line call).include? event)
     if traced_method_exit
       # Set new traced method, because we left previous one
       set_traced_method
       throw :skip if event == 'call'
     end
 
-    if @recursion_level == 0 and
+    if @call_depth == 0 and
       within_current_method?(file, line)
 
       if event == 'line'

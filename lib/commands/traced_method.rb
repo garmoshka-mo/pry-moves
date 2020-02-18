@@ -3,7 +3,7 @@ module PryMoves::TracedMethod
   private
 
   def set_traced_method
-    @recursion_level = 0
+    @call_depth = 0
     @c_stack_level = 0
     @stay_at_frame = nil # reset tracked digest
 

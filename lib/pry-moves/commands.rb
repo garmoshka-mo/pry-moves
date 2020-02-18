@@ -21,6 +21,11 @@ module PryMoves
       breakout_navigation :next, 'blockless'
     end
 
+    block_command 'next_breakpoint', 'Go to next breakpoint' do |param|
+      breakout_navigation :next_breakpoint, param
+    end
+    alias_command 'b', 'next_breakpoint'
+
     block_command 'iterate', 'Go to next iteration of current block' do |param|
       breakout_navigation :iterate, param
     end

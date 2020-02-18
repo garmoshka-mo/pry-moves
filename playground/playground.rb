@@ -126,6 +126,16 @@ class Playground
   def something_inside
     :something # some internal line
   end
+  
+  def method_with_breakpoints
+    binding.pry # method_with_breakpoints host
+    dummy = 1 # some internal line
+    debug_ # breakpoint
+    dummy = 1 # after breakpoint
+    dummy = 1 # after after breakpoint
+    debug_ # breakpoint 2
+    dummy = 1 # after breakpoint 2
+  end
 
   private
 
@@ -135,6 +145,10 @@ class Playground
       yield i
       :post_yield # post_yield
     end
+  end
+  
+  def debug_
+    :something # inside of debug method
   end
 
 end

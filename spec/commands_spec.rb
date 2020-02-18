@@ -10,7 +10,7 @@ describe 'PryMoves commands' do
     Playground.new.basic_next
   end
 
-  it 'should stop on second breakpoint' do
+  it 'should stop on second binding.pry' do
     breakpoints [
       [nil, 'first stop'],
       ['c', 'second stop'],
@@ -86,6 +86,16 @@ describe 'PryMoves commands' do
       ['n', 'basic next stop']
     ]
     Playground.new.basic_next
+  end
+
+  it 'should next breakpoint' do
+    breakpoints [
+      [nil, 'method_with_breakpoints host'],
+      ['b', 'breakpoint'],
+      ['n', 'after breakpoint'],
+      ['b', 'breakpoint 2']
+    ]
+    Playground.new.method_with_breakpoints
   end
 
 end
