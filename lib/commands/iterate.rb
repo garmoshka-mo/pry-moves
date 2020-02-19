@@ -1,8 +1,8 @@
 class PryMoves::Iterate < PryMoves::TraceCommand
 
-  def init
-    @iteration_start_line = @binding_.eval('__LINE__')
-    @caller_digest = frame_digest(@binding_)
+  def init(binding_)
+    @iteration_start_line = binding_.eval('__LINE__')
+    @caller_digest = frame_digest(binding_)
   end
 
   def trace(event, file, line, method, binding_)

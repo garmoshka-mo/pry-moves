@@ -79,7 +79,7 @@ describe 'blocks' do
       ['n', 'iterator line'],
       ['n', 'inside block'],
       ['iterate', 'iterator line'],
-      # ['n', 'exit'], # todo: spec line doesn't work for some reason after refactoring
+      ['n', 'exit']
     ]
     Playground.new.native_block early_return: true
     :exit # exit
@@ -91,7 +91,7 @@ describe 'blocks' do
       ['n', 'iterator line'],
       ['n', 'inside block'],
       ['iterate', 'iterator line'],
-      # ['n', 'exit'], # todo: spec line doesn't work for some reason after refactoring
+      ['n', 'exit']
     ]
     Playground.new.nested_block early_return: true
     :exit # exit

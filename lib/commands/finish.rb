@@ -1,10 +1,10 @@
 class PryMoves::Finish < PryMoves::TraceCommand
 
-  def init
+  def init(binding_)
     @method_to_finish = @method
     @block_to_finish =
-      (@binding_.frame_type == :block) &&
-        frame_digest(@binding_)
+      (binding_.frame_type == :block) &&
+        frame_digest(binding_)
   end
 
   def trace(event, file, line, method, binding_)

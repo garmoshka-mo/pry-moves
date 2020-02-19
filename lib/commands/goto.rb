@@ -1,6 +1,6 @@
 class PryMoves::Goto < PryMoves::TraceCommand
 
-  def init
+  def init(binding_)
     @goto_line = @command[:param].to_i
   end
 

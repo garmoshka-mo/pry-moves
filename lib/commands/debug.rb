@@ -1,6 +1,6 @@
 class PryMoves::Debug < PryMoves::TraceCommand
 
-  def init
+  def init(binding_)
     #
   end
 

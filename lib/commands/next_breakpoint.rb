@@ -1,7 +1,7 @@
 class PryMoves::NextBreakpoint < PryMoves::TraceCommand
 
-  def init
-    @reach_digest = frame_digest(@binding_)
+  def init(binding_)
+    @reach_digest = frame_digest(binding_)
   end
 
   def trace(event, file, line, method, binding_)

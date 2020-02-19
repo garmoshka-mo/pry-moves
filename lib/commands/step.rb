@@ -1,9 +1,9 @@
 class PryMoves::Step < PryMoves::TraceCommand
 
-  def init
+  def init(binding_)
     @step_into_funcs = nil
-    @start_line = @binding_.eval('__LINE__')
-    @caller_digest = frame_digest(@binding_)
+    @start_line = binding_.eval('__LINE__')
+    @caller_digest = frame_digest(binding_)
     func = @command[:param]
     if func == '+'
       @step_in_everywhere = true

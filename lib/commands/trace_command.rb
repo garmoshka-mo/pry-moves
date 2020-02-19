@@ -19,13 +19,13 @@ class TraceCommand
 
     @action = @command[:action]
     #puts "COMMAND: #{@action}"
-    @binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
-    set_traced_method
+    binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
+    set_traced_method binding_
 
     @call_depth -= 1 if @pry_start_options.delete :exit_from_method
     @pry_start_options.delete :initial_frame
 
-    init
+    init binding_
     start_tracing
   end
 
