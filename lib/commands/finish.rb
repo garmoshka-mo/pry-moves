@@ -9,6 +9,7 @@ class PryMoves::Finish < PryMoves::TraceCommand
 
   def trace(event, file, line, method, binding_)
     return if @call_depth >= 0 and not event == 'line'
+
     if @call_depth < 0 or @method_to_finish != @method
       if redirect_step?(binding_)
         @action = :step
