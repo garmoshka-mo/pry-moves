@@ -12,6 +12,7 @@ require 'pry-moves/helpers'
 require 'pry-moves/painter'
 
 require 'commands/traced_method'
+require 'commands/trace_helpers'
 require 'commands/trace_command'
 require 'commands/debug'
 require 'commands/finish'

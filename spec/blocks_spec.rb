@@ -97,6 +97,19 @@ describe 'blocks' do
     :exit # exit
   end
 
+  it 'should iterate over one-line in block' do
+    breakpoints [
+      [nil, 'stop in one_line_in_block'],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['i', {output: '=> 0'}],
+      ['n', 'inside block'],
+      ['i', {output: '=> 1'}],
+      ['n', 'after block'],
+    ]
+    Playground.new.one_line_in_block
+  end
+
   it 'should skip one-line block' do
     breakpoints [
       [nil, 'stop in one_line_block'],
@@ -104,6 +117,18 @@ describe 'blocks' do
       ['n', 'after block']
     ]
     Playground.new.one_line_block
+  end
+
+  it 'should skip parentheses in loop' do
+    breakpoints [
+      [nil, 'stop in parentheses_in_loop'],
+      ['n', nil],
+      ['n', 'iterator line'],
+      ['n', 'inside block'],
+      ['n', 'iterator line'],
+      ['n', 'after block']
+    ]
+    Playground.new.parentheses_in_loop
   end
   
 end

@@ -82,7 +82,7 @@ class Playground
     end
     :after_block # after block
   end
-
+  
   def native_block(early_return: false)
     binding.pry # stop in native_block
     2.times do |i| # iterator line
@@ -92,9 +92,26 @@ class Playground
     :after_block # after block
   end
 
+  def one_line_in_block
+    binding.pry # stop in one_line_in_block
+    iterator do |i| # iterator line
+      dummy = 1 # inside block
+    end
+    :after_block # after block
+  end
+
   def one_line_block
     binding.pry # stop in one_line_block
     iterator { |i| dummy = 1 } # iterator line
+    :after_block # after block
+  end
+  
+  def parentheses_in_loop
+    binding.pry # stop in parentheses_in_loop
+    i = 2
+    while (i = i - 1) > 0 # iterator line
+      dummy = 1 # inside block
+    end
     :after_block # after block
   end
 

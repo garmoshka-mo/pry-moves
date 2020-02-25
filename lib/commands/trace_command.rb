@@ -5,6 +5,7 @@ module PryMoves
 class TraceCommand
 
   include PryMoves::TracedMethod
+  include PryMoves::TraceHelpers
 
   def self.trace(command, pry_start_options)
     cls = command[:action].to_s.split('_').collect(&:capitalize).join
@@ -50,17 +51,6 @@ class TraceCommand
       Thread.current : Kernel
   end
 
-  def current_frame_digest(upward: 0)
-    # binding_ from tracing_func doesn't have @iseq,
-    # therefore binding should  be re-retrieved using 'binding_of_caller' lib
-    frame_digest(binding.of_caller(4 + upward))
-  end
-
-  def frame_digest(binding_)
-    #puts "frame_digest for: #{binding_.eval '__callee__'}"
-    Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
-  end
-
   def tracing_func(event, file, line, id, binding_, klass)
     printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace
 
@@ -84,24 +74,6 @@ class TraceCommand
         @c_stack_level += delta
       end
     end
-  end
-
-  def redirect_step?(binding_)
-    return false unless binding_.local_variable_defined? :debug_redirect
-
-    debug_redirect = binding_.local_variable_get(:debug_redirect)
-    @step_into_funcs = [debug_redirect.to_s] if debug_redirect
-    true
-  end
-
-  def debug_info(file, line, id)
-    puts "📽  Action:#{@action}; recur:#{@call_depth}; #{@method[:file]}:#{file}"
-    puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
-  end
-
-  def exit_from_method
-    @pry_start_options[:exit_from_method] = true
-    true
   end
 
 end
