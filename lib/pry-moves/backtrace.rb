@@ -52,7 +52,7 @@ class PryMoves::Backtrace
 
   def build
     result = []
-    show_vapid = %w(+ all hidden vapid).include? @filter
+    show_vapid = @filter && !%w(* important).include?(@filter)
     stack = stack_bindings(show_vapid)
               .reverse.reject do |binding|
                 binding.eval('__FILE__').match self.class::filter

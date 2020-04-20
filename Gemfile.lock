@@ -39,10 +39,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  pry
+  pry (= 0.11.3)
   pry-moves!
   pry-remote (~> 0.1.6)
   rspec
 
 BUNDLED WITH
-   1.17.0
+   1.17.3
