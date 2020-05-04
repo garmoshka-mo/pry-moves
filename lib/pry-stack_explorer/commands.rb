@@ -87,14 +87,15 @@ module PryStackExplorer
       frame_manager.bindings.index(new_frame)
     end
 
-    def find_frame_by_direction(up_or_down, step_into_vapid: false)
-      frame_index = find_frame_by_block(up_or_down) do |b|
-          step_into_vapid or
+    def find_frame_by_direction(dir, step_into_vapid: false)
+      PryMoves.show_vapid_frames = true if step_into_vapid
+      frame_index = find_frame_by_block(dir) do |b|
+          PryMoves.show_vapid_frames or
             not frame_manager.bindings.vapid?(b)
         end
 
       frame_index ||
-        raise(Pry::CommandError, "At #{up_or_down == :up ? 'top' : 'bottom'} of stack, cannot go further")
+        raise(Pry::CommandError, "At #{dir == :up ? 'top' : 'bottom'} of stack, cannot go further")
     end
 
     def move(direction, param)

@@ -36,6 +36,7 @@ module PryMoves
     alias_command 'g', 'goto'
 
     block_command 'continue', 'Continue program execution and end the Pry session' do
+      PryMoves.show_vapid_frames = false
       check_file_context
       run 'exit-all'
     end

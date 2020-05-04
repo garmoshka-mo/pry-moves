@@ -20,8 +20,8 @@ _An execution control add-on for [Pry][pry]._
 * `iterate` - go to next iteration of current block
 * `g 10` - **goto** line 10
 * `bt` - show latest 5 lines from backtrace
-  * `bt *` `bt important` - show full backtrace without hidden frames
-  * `bt +` `bt all` - full backtrace with hidden frames. Aliases: `bt hidden` `bt vapid` `bt all`
+  * `bt *` `bt a` `bt all` - full backtrace, excluding hidden frames
+  * `bt +` `bt hidden` - full backtrace with hidden frames. Alias: `bt vapid`
   * `bt 10` - go to backtrace line 10
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
 * `up`/`down`/`top`/`bottom` - move over call stack

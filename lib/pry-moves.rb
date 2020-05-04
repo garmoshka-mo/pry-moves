@@ -32,7 +32,7 @@ module PryMoves
 
   extend self
 
-  attr_accessor :is_open, :trace
+  attr_accessor :is_open, :trace, :show_vapid_frames
 
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
