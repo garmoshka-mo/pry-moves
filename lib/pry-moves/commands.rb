@@ -55,6 +55,18 @@ module PryMoves
       breakout_navigation :debug, cmd
     end
 
+    block_command :restart, '' do
+      PryMoves.restart_requested = true
+      run 'continue'
+    end
+    alias_command '@', 'restart'
+
+    block_command :reload, '' do
+      PryMoves.reload_requested = true
+      run 'continue'
+    end
+    alias_command '#', 'reload'
+
     block_command '!', 'exit' do
       PryMoves.unlock
       Pry.config.exit_requested = true

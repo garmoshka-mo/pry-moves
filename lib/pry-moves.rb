@@ -10,6 +10,7 @@ require 'pry-moves/backtrace'
 require 'pry-moves/watch'
 require 'pry-moves/helpers'
 require 'pry-moves/painter'
+require 'pry-moves/restartable'
 
 require 'commands/traced_method'
 require 'commands/trace_helpers'
@@ -23,6 +24,7 @@ require 'commands/next_breakpoint'
 require 'commands/step'
 
 require 'pry-stack_explorer/pry-stack_explorer'
+require 'debug_sugar'
 
 # Optionally load pry-remote monkey patches
 require 'pry-moves/pry_remote_ext' if defined? PryRemote
@@ -31,8 +33,10 @@ module PryMoves
   TRACE_IGNORE_FILES = Dir[File.join(File.dirname(__FILE__), '**', '*.rb')].map { |f| File.expand_path(f) }
 
   extend self
+  extend PryMoves::Restartable
 
-  attr_accessor :is_open, :trace, :show_vapid_frames
+  attr_accessor :is_open, :trace, :show_vapid_frames,
+    :stop_on_breakpoints, :launched_specs_examples
 
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
@@ -76,8 +80,24 @@ module PryMoves
     true
   end
 
+  def trigger(event)
+    triggers[event].each &:call
+  end
+
+  def triggers
+    @triggers ||= Hash.new do |hash, key|
+      hash[key] = []
+    end
+  end
+
+  def on(trigger, &block)
+    triggers[trigger] << block
+  end
+
   # Reference to currently running pry-remote server. Used by the tracer.
   attr_accessor :current_remote_server
 end
 
+PryMoves.stop_on_breakpoints = true
+PryMoves.launched_specs_examples = 0
 PryMoves.trace = true if ENV['TRACE_MOVES']
