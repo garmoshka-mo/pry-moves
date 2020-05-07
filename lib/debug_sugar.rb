@@ -47,3 +47,21 @@ RSpec.configure do |config|
   end
 
 end if defined? RSpec
+
+Rake::Task.class_eval do
+
+  alias origin_execute execute
+
+  def execute(args=nil)
+    args ||= EMPTY_TASK_ARGS
+    @actions = @actions.map do |act|
+      Proc.new do
+        PryMoves.restartable do
+          act.call(self, args)
+        end
+      end
+    end
+    origin_execute args
+  end
+
+end if defined? Rake
