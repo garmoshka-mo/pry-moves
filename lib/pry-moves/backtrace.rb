@@ -42,6 +42,7 @@ class PryMoves::Backtrace
 
   def print_backtrace filter
     @colorize = true
+    @lines_numbers = true
     if filter.is_a? String
       @filter = filter
     else
@@ -85,7 +86,8 @@ class PryMoves::Backtrace
     if @colorize
       PryMoves::Painter.colorize obj
     else
-      obj.inspect
+      i = obj.inspect
+      i.start_with?('#<') ? obj.class.to_s : i
     end
   end
 
@@ -96,11 +98,13 @@ class PryMoves::Backtrace
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
     indent = if frame_manager.current_frame == binding
-               '==> '
-             else
-               s = "#{binding.index}:".ljust(4, ' ')
-               "\e[2;49;90m#{s}\e[0m"
-             end
+      '==> '
+    elsif @lines_numbers
+      s = "#{binding.index}:".ljust(4, ' ')
+      @colorize ? "\e[2;49;90m#{s}\e[0m" : s
+    else
+      '    '
+    end
 
     line = binding.eval('__LINE__')
     "#{indent}#{file}:#{line} #{signature}"
