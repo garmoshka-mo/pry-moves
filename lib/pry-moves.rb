@@ -38,6 +38,16 @@ module PryMoves
   attr_accessor :is_open, :trace, :show_vapid_frames,
     :stop_on_breakpoints, :launched_specs_examples
 
+  def debug(message = nil)
+    hide_from_stack = true
+    if PryMoves.stop_on_breakpoints
+      PryMoves.re_execution
+      PryMoves.messages << message if message
+      binding.pry
+      PryMoves.re_execution
+    end
+  end
+
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
   def check_file_context(target)

@@ -5,6 +5,7 @@ module PryMoves::Restartable
   def restartable
     trigger :new_run
     yield
+    re_execution
   rescue PryMoves::Restart
     self.restart_requested = false
     PryMoves.launched_specs_examples = 0

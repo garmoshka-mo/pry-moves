@@ -1,19 +1,13 @@
 def debug
   hide_from_stack = true
-  if PryMoves.stop_on_breakpoints
-    PryMoves.re_execution
-    binding.pry
-    PryMoves.re_execution
-  end
+  PryMoves.debug
 end
 
 def error(msg)
   hide_from_stack = true
   err = "😱  #{msg}"
   if PryMoves.stop_on_breakpoints
-    PryMoves.re_execution
-    PryMoves.messages << err.red
-    debug
+    PryMoves.debug err.red
   else
     unless PryMoves.open?
       STDERR.puts err.ljust(80, ' ').red
@@ -26,9 +20,7 @@ def shit!(err)
   hide_from_stack = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
-  PryMoves.re_execution
-  PryMoves.messages << message.red
-  debug
+  PryMoves.debug message.red
   nil
 end
 
