@@ -16,7 +16,7 @@ def error(msg)
   raise msg
 end
 
-def shit!(err)
+def shit!(err = 'Oh, shit!')
   hide_from_stack = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints

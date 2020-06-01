@@ -19,9 +19,8 @@ _An execution control add-on for [Pry][pry]._
 * `b` - go to next breakpoint (breakpoints currently are methods which contain "debug" in their name)
 * `iterate` - go to next iteration of current block
 * `g 10` - **goto** line 10
-* `bt` - show latest 5 lines from backtrace
-  * `bt *` `bt a` `bt all` - full backtrace, excluding hidden frames
-  * `bt +` `bt hidden` - full backtrace with hidden frames. Alias: `bt vapid`
+* `bt` - show backtrace, excluding hidden frames
+  * `bt +` `bt a` `bt all` - full backtrace with hidden frames
   * `bt 10` - go to backtrace line 10
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
 * `up`/`down`/`top`/`bottom` - move over call stack
@@ -64,10 +63,9 @@ end
 
 ## Configuration
 
-Here is default configuration, you can override it:
+Here is default configuration, you can reassign it:
 
 ```ruby
-PryMoves::Backtrace::lines_count = 5
 PryMoves::Backtrace::filter =
   /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/|\/pry-moves\/)/
 ```

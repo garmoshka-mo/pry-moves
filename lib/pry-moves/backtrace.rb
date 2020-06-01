@@ -3,8 +3,6 @@ require 'fileutils'
 class PryMoves::Backtrace
 
   class << self
-    def lines_count; @lines_count || 5; end
-    def lines_count=(f); @lines_count = f; end
 
     def filter
       @filter || /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/)/
@@ -43,11 +41,7 @@ class PryMoves::Backtrace
   def print_backtrace filter
     @colorize = true
     @lines_numbers = true
-    if filter.is_a? String
-      @filter = filter
-    else
-      @lines_count = PryMoves::Backtrace::lines_count
-    end
+    @filter = filter if filter.is_a? String
     @pry.output.puts build
   end
 
@@ -58,12 +52,6 @@ class PryMoves::Backtrace
               .reverse.reject do |binding|
                 binding.eval('__FILE__').match self.class::filter
               end
-
-    if @lines_count and stack.count > @lines_count
-      result << "Latest #{@lines_count} lines: (`bt all` for full tracing)"
-      stack = stack.last(@lines_count)
-    end
-
     build_result stack, result
   end
 
