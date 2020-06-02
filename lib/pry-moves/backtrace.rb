@@ -18,7 +18,10 @@ class PryMoves::Backtrace
         # not used
       end
     end
+
   end
+
+  include PryMoves::Helpers
 
   def initialize(pry)
      @pry = pry
@@ -70,19 +73,10 @@ class PryMoves::Backtrace
     result
   end
 
-  def format_obj(obj)
-    if @colorize
-      PryMoves::Painter.colorize obj
-    else
-      i = obj.inspect
-      i.start_with?('#<') ? obj.class.to_s : i
-    end
-  end
-
   def build_line(binding)
-    file = PryMoves::Helpers.shorten_path "#{binding.eval('__FILE__')}"
+    file = shorten_path "#{binding.eval('__FILE__')}"
 
-    signature = PryMoves::Helpers.method_signature binding
+    signature = method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
     indent = if frame_manager.current_frame == binding
