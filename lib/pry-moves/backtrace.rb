@@ -50,12 +50,12 @@ class PryMoves::Backtrace
 
   def build
     result = []
-    show_vapid = %w(+ hidden vapid).include?(@filter)
+    show_vapid = %w(+ a all hidden vapid).include?(@filter)
     stack = stack_bindings(show_vapid)
-              .reverse.reject do |binding|
-                binding.eval('__FILE__').match self.class::filter
-              end
-    build_result stack, result
+    stack.reject! do |binding|
+      binding.eval('__FILE__').match self.class::filter
+    end unless %w(a all).include?(@filter)
+    build_result stack.reverse, result
   end
 
   def build_result(stack, result)

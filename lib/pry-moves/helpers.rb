@@ -36,6 +36,7 @@ module PryMoves::Helpers
       args = meth_obj.parameters.map.with_index do |(type, name), i|
         name ||= (type == :block ? 'block' : "arg#{i + 1}")
         value = format_obj binding.eval(name.to_s)
+        value = value.split("\n").first
         name = case type
                when :req   then name.to_s
                when :opt   then "#{name}=?"
