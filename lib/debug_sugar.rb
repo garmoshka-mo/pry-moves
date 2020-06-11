@@ -42,18 +42,20 @@ end if defined? RSpec
 
 Rake::Task.class_eval do
 
-  alias origin_execute execute
+  alias execute_origin_for_pry_moves execute
 
   def execute(args=nil)
     args ||= EMPTY_TASK_ARGS
-    @actions = @actions.map do |act|
-      Proc.new do
-        PryMoves.restartable do
-          act.call(self, args)
-        end
-      end
+    PryMoves.restartable do
+      reload_actions
+      execute_origin_for_pry_moves args
     end
-    origin_execute args
+  end
+
+  def reload_actions
+    rake_task_path = actions[0].source_location[0]
+    actions.clear
+    load rake_task_path
   end
 
 end if defined? Rake
