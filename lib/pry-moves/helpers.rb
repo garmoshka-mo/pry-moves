@@ -34,9 +34,13 @@ module PryMoves::Helpers
       "#{meth_obj.name}(UNKNOWN) (undefined method)"
     else
       args = meth_obj.parameters.map.with_index do |(type, name), i|
-        name ||= (type == :block ? 'block' : "arg#{i + 1}")
-        value = format_obj binding.eval(name.to_s)
-        value = value.split("\n").first
+        if name
+          value = format_obj binding.eval(name.to_s)
+          value = value.split("\n").first
+          show_value = true
+        else
+          name = (type == :block ? 'block' : "arg#{i + 1}")
+        end
         name = case type
                when :req   then name.to_s
                when :opt   then "#{name}=?"
@@ -44,7 +48,7 @@ module PryMoves::Helpers
                when :block then "&#{name}"
                else '?'
                end
-        "#{name}: #{value}"
+        show_value ? "#{name}: #{value}" : name
       end
       "#{meth_obj.name}(#{args.join(', ')})"
     end
