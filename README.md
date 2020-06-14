@@ -9,6 +9,8 @@ _An execution control add-on for [Pry][pry]._
 
 ## Commands:
 
+Documentation for latest version. For [v0.1.12 see documentation here](https://github.com/garmoshka-mo/pry-moves/tree/v0.1.12#commands)
+
 * `n` - **next** line in current frame, including block lines (moving to next line goes as naturally expected)
   * `nn` - **next** line in current frame, skipping block lines
 * `s` - **step** into function execution
