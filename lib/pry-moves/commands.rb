@@ -80,6 +80,13 @@ module PryMoves
 
     helpers do
       def breakout_navigation(action, param)
+        input = Pry.config.original_user_input
+        binding_value = target.eval(input) rescue nil
+        unless binding_value.nil?
+          puts PryMoves::Painter.colorize binding_value
+          return
+        end
+
         check_file_context
         _pry_.binding_stack.clear     # Clear the binding stack.
         throw :breakout_nav, {        # Break out of the REPL loop and
@@ -96,6 +103,7 @@ module PryMoves
         end
       end
     end
+
   end
 end
 

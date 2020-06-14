@@ -36,6 +36,33 @@ end
 
 Pry.config.pager = false
 
+Pry::Command.class_eval do
+  class << self
+    attr_accessor :original_user_input
+  end
+
+  alias run_origin_for_pry_moves run
+  def run(command_string, *args)
+    Pry.config.original_user_input =
+      self.class.original_user_input || command_string
+    result = run_origin_for_pry_moves command_string, *args
+    Pry.config.original_user_input = nil
+    result
+  end
+end
+
+Pry::CommandSet.class_eval do
+
+  alias alias_command_origin_for_pry_moves alias_command
+
+  def alias_command(match, action, options = {})
+    cmd = alias_command_origin_for_pry_moves match, action, options
+    cmd.original_user_input = match
+    cmd
+  end
+
+end
+
 Pry::Command::Whereami.class_eval do
   # Negligent function from Pry - evidently poor output format
   # would be wanted to be changed often by developers,
