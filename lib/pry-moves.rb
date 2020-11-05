@@ -39,7 +39,7 @@ module PryMoves
     :stop_on_breakpoints, :launched_specs_examples
 
   def debug(message = nil)
-    hide_from_stack = true
+    pry_moves_stack_start = true
     if PryMoves.stop_on_breakpoints
       PryMoves.re_execution
       PryMoves.messages << message if message

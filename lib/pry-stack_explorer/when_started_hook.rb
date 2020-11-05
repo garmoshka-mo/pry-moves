@@ -23,7 +23,7 @@ module PryStackExplorer
         end
       else
         bindings = PryMoves::BindingsStack.new
-        initial_frame ||= bindings.initial_frame_index
+        initial_frame ||= bindings.suggest_initial_frame_index
         # if Thread.current[:pry_moves_debug] and initial_frame > 0
         if initial_frame > 0
           PryMoves.messages << "⚠️  Frames hidden: #{initial_frame}"

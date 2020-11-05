@@ -1,10 +1,10 @@
 def debug
-  hide_from_stack = true
+  pry_moves_stack_start = true
   PryMoves.debug
 end
 
 def error(msg)
-  hide_from_stack = true
+  pry_moves_stack_start = true
   err = "😱  #{msg}"
   if PryMoves.stop_on_breakpoints
     PryMoves.debug err.red
@@ -17,7 +17,7 @@ def error(msg)
 end
 
 def shit!(err = 'Oh, shit!')
-  hide_from_stack = true
+  pry_moves_stack_start = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
   PryMoves.debug message.red
