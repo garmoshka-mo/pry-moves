@@ -1,6 +1,7 @@
 module PryMoves::Restartable
 
-  attr_accessor :restart_requested, :reload_requested
+  attr_accessor :restart_requested, :reload_requested,
+    :reload_rake_tasks
 
   def restartable
     trigger :new_run

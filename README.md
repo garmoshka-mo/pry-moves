@@ -32,8 +32,12 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
 * `debug some_method(some_param)` - call `some_method(some_param)` and interactively step into it. This way you can virtually "step back" by executing previous pieces of code from current method
 * `.method` or `123` or `:hash_key` - Continue traversing of last object in history. E.g. `orders` will list array, then `3` will enter `orders[3]`, then `.price` will enter `orders[3].price`
 * `watch variable` - display variable's value on each step
+* `@` - restart. Set config `PryMoves.reload_rake_tasks = true` to automatically reload rake tasks
+* `#` - exit with code 3, can be wrapped in bash script to fully reload ruby scripts
 * `!` - exit
 
+Variable & methods names takes precedence over commands. 
+So if you have variable named `step`, to execute command `step` type `cmd step` or command's alias, e.g. `s` 
 
 ## Examples
 

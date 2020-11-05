@@ -47,7 +47,7 @@ Rake::Task.class_eval do
   def execute(args=nil)
     args ||= EMPTY_TASK_ARGS
     PryMoves.restartable do
-      reload_actions
+      reload_actions if PryMoves.reload_rake_tasks
       execute_origin_for_pry_moves args
     end
   end
