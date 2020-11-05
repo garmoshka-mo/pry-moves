@@ -67,6 +67,11 @@ module PryMoves
     end
     alias_command '#', 'reload'
 
+    block_command 'cmd', 'Execute command explicitly' do |param|
+      Pry.config.ignore_once_var_precedence = true
+      run param
+    end
+
     block_command '!', 'exit' do
       PryMoves.unlock
       Pry.config.exit_requested = true
@@ -80,12 +85,7 @@ module PryMoves
 
     helpers do
       def breakout_navigation(action, param)
-        input = Pry.config.original_user_input
-        binding_value = target.eval(input) rescue nil
-        unless binding_value.nil?
-          puts PryMoves::Painter.colorize binding_value
-          return
-        end
+        return if var_precedence action
 
         check_file_context
         _pry_.binding_stack.clear     # Clear the binding stack.
@@ -94,6 +94,21 @@ module PryMoves
           param:  param,
           binding: target
         }
+      end
+
+      def var_precedence action
+        if Pry.config.ignore_once_var_precedence
+          Pry.config.ignore_once_var_precedence = false
+          return
+        end
+
+        input = Pry.config.original_user_input || action
+        binding_value = target.eval(input) rescue nil
+        unless binding_value.nil?
+          puts "ℹ️️  Variable \"#{input}\" found. To execute command type its alias or: cmd #{input}"
+          puts PryMoves::Painter.colorize binding_value
+          true
+        end
       end
 
       # Ensures that a command is executed in a local file context.
