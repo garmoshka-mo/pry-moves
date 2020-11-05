@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    pry-moves (0.1.13)
+    pry-moves (1.0.0)
       binding_of_caller (~> 0.7)
       colorize (~> 0.8)
-      pry (>= 0.10.4, < 1)
+      pry (>= 0.10.4, < 0.12.0)
 
 GEM
   remote: https://rubygems.org/
