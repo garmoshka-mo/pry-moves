@@ -84,10 +84,10 @@ class PryMoves::BindingsStack < Array
       if b.frame_type == :method
         method, self_ = b.eval("[__method__, self]")
 
-        b.local_variable_defined? :pry_moves_stack_start ||
-          self_.equal?(Pry) && method == :start ||
+        self_.equal?(Pry) && method == :start ||
           self_.class == Binding && method == :pry ||
-          self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func
+          self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func ||
+          b.local_variable_defined?(:pry_moves_stack_start)
       end
     end
   end
