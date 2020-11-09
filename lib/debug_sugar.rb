@@ -1,15 +1,15 @@
 def debug
-  pry_moves_stack_start = true
+  pry_moves_stack_root = true
   PryMoves.debug
 end
 
 def error(msg)
-  pry_moves_stack_start = true
+  pry_moves_stack_root = true
   err = "😱  #{msg}"
-  if PryMoves.stop_on_breakpoints
-    PryMoves.debug err.red
-  else
-    unless PryMoves.open?
+  unless PryMoves.open?
+    if PryMoves.stop_on_breakpoints
+      PryMoves.debug err.red
+    else
       STDERR.puts err.ljust(80, ' ').red
     end
   end
@@ -17,7 +17,7 @@ def error(msg)
 end
 
 def shit!(err = 'Oh, shit!')
-  pry_moves_stack_start = true
+  pry_moves_stack_root = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
   PryMoves.debug message.red

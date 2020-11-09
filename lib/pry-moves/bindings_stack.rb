@@ -87,7 +87,7 @@ class PryMoves::BindingsStack < Array
         self_.equal?(Pry) && method == :start ||
           self_.class == Binding && method == :pry ||
           self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func ||
-          b.local_variable_defined?(:pry_moves_stack_start)
+          b.local_variable_defined?(:pry_moves_stack_root)
       end
     end
   end
