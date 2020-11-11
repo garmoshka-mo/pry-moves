@@ -5,6 +5,7 @@ class PryMoves::Step < PryMoves::TraceCommand
     @start_line = binding_.eval('__LINE__')
     @caller_digest = frame_digest(binding_)
     func = @command[:param]
+    redirect_step? binding_ # set @step_into_funcs from initial binding
     if func == '+'
       @step_in_everywhere = true
     elsif func
