@@ -2,12 +2,13 @@ require 'pry' unless defined? Pry
 
 module PryMoves
 class PryWrapper
-  def initialize(binding_, pry_start_options = {})
+  def initialize(binding_, pry_start_options, pry)
     @init_binding = binding_
     @pry_start_options = pry_start_options   # Options to use for Pry.start
+    @pry = pry
   end
 
-  def run(&block)
+  def run
     PryMoves.lock
 
     if not @pry_start_options[:pry_moves_loop] and
@@ -17,7 +18,7 @@ class PryWrapper
       @command = {action: :step,
         binding: PryMoves::BindingsStack.new.initial_frame}
     else
-      start_pry(&block)
+      start_pry
     end
 
     if @command
@@ -39,7 +40,7 @@ class PryWrapper
     PryMoves.is_open = true
 
     @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
-      @return_value = yield
+      @return_value = @pry.pry_moves_origin_start(@init_binding, @pry_start_options)
       nil    # Nothing thrown == no navigational command
     end
 

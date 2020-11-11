@@ -1,21 +1,16 @@
 class << Pry
-  alias_method :start_without_pry_nav, :start
+  alias pry_moves_origin_start start
 
-  def start_with_pry_nav(target = TOPLEVEL_BINDING, options = {})
-    old_options = options.reject { |k, _| k == :pry_remote }
-
+  def start(target = TOPLEVEL_BINDING, options = {})
     if target.is_a?(Binding) && PryMoves.check_file_context(target)
       # Wrap the tracer around the usual Pry.start
-      PryMoves::PryWrapper.new(target, options).run do
-        start_without_pry_nav(target, old_options)
-      end
+      PryMoves::PryWrapper.new(target, options, self).run
     else
       # No need for the tracer unless we have a file context to step through
-      start_without_pry_nav(target, old_options)
+      pry_moves_origin_start(target, options)
     end
   end
 
-  alias_method :start, :start_with_pry_nav
 end
 
 Binding.class_eval do
