@@ -21,6 +21,9 @@ class TraceCommand
     @action = @command[:action]
     #puts "COMMAND: #{@action}"
     binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
+    unless binding_.instance_variable_get('@iseq')
+      binding_ = PryMoves::BindingsStack.new.initial_frame
+    end
     set_traced_method binding_
 
     @call_depth -= 1 if @pry_start_options.delete :exit_from_method

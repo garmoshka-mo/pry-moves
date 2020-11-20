@@ -27,7 +27,8 @@ module PryMoves::TraceHelpers
 
   def frame_digest(binding_)
     #puts "frame_digest for: #{binding_.eval '__callee__'}"
-    Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
+    iseq = binding_.instance_variable_get('@iseq')
+    Digest::MD5.hexdigest iseq.disasm
   end
 
   def current_frame_type(upward: 0)
