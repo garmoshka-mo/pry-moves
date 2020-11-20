@@ -81,11 +81,13 @@ Pry::Command::Whereami.class_eval do
   def build_output
     lines = []
     lines << "#{text.bold('From:')} #{PryMoves::Helpers.shorten_path location}"
-    lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
     lines << ''
     lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+
+    lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
     lines.concat PryMoves.messages
     PryMoves.messages.clear
+
     lines << ''
     lines.join "\n"
   end
