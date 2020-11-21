@@ -8,7 +8,6 @@ class PryMoves::Goto < PryMoves::TraceCommand
     if @call_depth < 0 or
         @call_depth == 0 and event == 'return' and within_current_method?(file, line)
       PryMoves.messages << "⚠️  Unable to reach line #{@goto_line} in current frame"
-      exit_from_method if event == 'return'
       return true
     end
 

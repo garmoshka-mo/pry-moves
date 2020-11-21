@@ -18,8 +18,10 @@ describe 'blocks' do
       ['f', 'after block'],
       ['pass', {output: '=> 0'}],
 
+      ['f', 'exit from zaloop'],
       ['f', 'post_yield'], # Тут хорошо бы, чтобы сразу шёл на "after block",
       # но пока и не понятно, как это угадать
+      ['f', 'exit from iterator'],
       ['f', 'after block'],
       ['pass', {output: '=> :root'}],
     ]

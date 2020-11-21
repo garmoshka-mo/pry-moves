@@ -67,7 +67,7 @@ class Playground
   def level_c(param = nil)
     binding.pry # stop in level_c
     self
-  end
+  end # exit from level_c
 
   def hidden_self
     hide_from_stack = true
@@ -122,7 +122,7 @@ class Playground
       zaloop i if pass == :root
     end
     :after_block # after block
-  end
+  end # exit from zaloop
 
   def method_with_redirection
     debug_redirect = '=level_a' # at method_with_redirection
@@ -162,7 +162,7 @@ class Playground
       yield i
       :post_yield # post_yield
     end
-  end
+  end # exit from iterator
   
   def debug_
     :something # inside of debug method

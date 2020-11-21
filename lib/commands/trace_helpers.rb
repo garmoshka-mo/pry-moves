@@ -13,12 +13,6 @@ module PryMoves::TraceHelpers
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 
-  def exit_from_method
-    @pry_start_options[:exit_from_method] = true
-    true
-  end
-
-
   def current_frame_digest(upward: 0)
     # binding_ from tracing_func doesn't have @iseq,
     # therefore binding should  be re-retrieved using 'binding_of_caller' lib

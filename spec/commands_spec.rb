@@ -73,6 +73,7 @@ describe 'PryMoves commands' do
   it 'should stop after finishing early return' do
     breakpoints [
       [nil, 'stop in level_c'],
+      ['f', 'exit from level_c'],
       ['f', 'at early return'],
       ['f', 'after early return']
     ]

@@ -6,7 +6,7 @@ class PryMoves::Iterate < PryMoves::TraceCommand
   end
 
   def trace(event, file, line, method, binding_)
-    return exit_from_method if event == 'return' and
+    return true if event == 'return' and
       within_current_method?(file, line)
 
     # промотка итерации -

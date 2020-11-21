@@ -35,7 +35,7 @@ class PryMoves::Next < PryMoves::TraceCommand
         end
       end
 
-      exit_from_method if event == 'return' and
+      true if event == 'return' and
         method == @method[:name] and before_end?(line)
     end
   end
