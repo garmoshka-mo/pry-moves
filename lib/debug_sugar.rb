@@ -3,24 +3,29 @@ def debug
   PryMoves.debug
 end
 
-def error(msg)
+def error(msg, debug_object = nil)
   pry_moves_stack_root = true
   err = "😱  #{msg}"
   unless PryMoves.open?
     if PryMoves.stop_on_breakpoints
-      PryMoves.debug err.red
+      lines = [err.red]
+      lines.prepend debug_object.ai if debug_object
+      PryMoves.debug lines.join("\n")
     else
+      STDERR.puts debug_object.ai if debug_object
       STDERR.puts err.ljust(80, ' ').red
     end
   end
   raise msg
 end
 
-def shit!(err = 'Oh, shit!')
+def shit!(err = 'Oh, shit!', debug_object = nil)
   pry_moves_stack_root = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
-  PryMoves.debug message.red
+  lines = [message.red]
+  lines.prepend debug_object.ai if debug_object
+  PryMoves.debug lines.join("\n")
   nil
 end
 
