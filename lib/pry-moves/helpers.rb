@@ -55,11 +55,7 @@ module PryMoves::Helpers
 
   def format_arg binding, arg_name
     arg = binding.eval(arg_name.to_s)
-    if arg.is_a? String
-      format_obj cut_string arg
-    else
-      cut_string format_obj arg
-    end
+    format_obj arg
   end
 
   def cut_string str
@@ -74,6 +70,14 @@ module PryMoves::Helpers
   end
 
   def format_obj(obj)
+    if obj.is_a? String
+      format_obj2 cut_string obj
+    else
+      cut_string format_obj2 obj
+    end
+  end
+
+  def format_obj2(obj)
     if @colorize
       PryMoves::Painter.colorize obj
     else
