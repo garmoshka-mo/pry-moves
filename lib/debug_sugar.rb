@@ -29,6 +29,12 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
   nil
 end
 
+def required(var)
+  pry_moves_stack_root = true
+  error("required parameter is missing") if var.nil?
+  var
+end
+
 RSpec.configure do |config|
 
   config.before(:each) do

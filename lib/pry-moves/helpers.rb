@@ -35,8 +35,7 @@ module PryMoves::Helpers
     else
       args = meth_obj.parameters.map.with_index do |(type, name), i|
         if name
-          value = format_obj binding.eval(name.to_s)
-          value = value.split("\n").first
+          value = format_arg binding, name.to_s
           show_value = true
         else
           name = (type == :block ? 'block' : "arg#{i + 1}")
@@ -52,6 +51,20 @@ module PryMoves::Helpers
       end
       "#{meth_obj.name}(#{args.join(', ')})"
     end
+  end
+
+  def format_arg binding, arg_name
+    arg = binding.eval(arg_name.to_s)
+    if arg.is_a? String
+      format_obj cut_string arg
+    else
+      cut_string format_obj arg
+    end
+  end
+
+  def cut_string str
+    str = str.split("\n").first
+    str.length > 50 ? "#{str.first 50}..." : str
   end
 
   PATH_TRASH = defined?(Rails) ? Rails.root.to_s : Dir.pwd
