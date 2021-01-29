@@ -9,10 +9,7 @@ class PryMoves::Finish < PryMoves::TraceCommand
     return true if @on_exit_from_method
     return if @call_depth > 0 or event == 'c-return'
 
-    if @call_depth < 0 and within_current_method?(file, line)
-      @pry_start_options[:exit_from_method] = true
-      return true
-    end
+    return true if @call_depth < 0
 
     # for finishing blocks inside current method
     if @block_to_finish

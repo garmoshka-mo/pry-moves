@@ -16,7 +16,7 @@ module PryMoves::TraceHelpers
   def current_frame_digest(upward: 0)
     # binding_ from tracing_func doesn't have @iseq,
     # therefore binding should  be re-retrieved using 'binding_of_caller' lib
-    frame_digest(binding.of_caller(4 + upward))
+    frame_digest(binding.of_caller(3 + upward))
   end
 
   def frame_digest(binding_)
@@ -28,7 +28,7 @@ module PryMoves::TraceHelpers
   def current_frame_type(upward: 0)
     # binding_ from tracing_func doesn't have @iseq,
     # therefore binding should  be re-retrieved using 'binding_of_caller' lib
-    frame_type(binding.of_caller(4 + upward))
+    frame_type(binding.of_caller(3 + upward))
   end
 
   def frame_type(binding_)

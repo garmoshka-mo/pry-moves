@@ -47,11 +47,13 @@ module PryMoves::TracedMethod
     @method = method
   end
 
-  def within_current_method?(file, line)
-    @method[:file] == file and (
-    @method[:start].nil? or
+  def within_current_method?(file, line, id = nil)
+    return unless @method[:file] == file
+    return unless @method[:start].nil? or
       line.between?(@method[:start], @method[:end])
-    )
+    return unless id.nil? or @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
+
+    true
   end
 
   def before_end?(line)

@@ -64,24 +64,22 @@ class TraceCommand
     return unless binding_ # ignore strange cases
 
     # for cases when currently traced method called more times recursively
-    if %w(call return).include?(event) and within_current_method?(file, line) and
-      @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
-      delta = event == 'call' ? 1 : -1
-      #puts "recursion #{event}: #{delta}; changed: #{@call_depth} => #{@call_depth + delta}"
-      @call_depth += delta
+    if event == "call" and within_current_method?(file, line, id)
+      @call_depth += 1
     elsif %w(c-call c-return).include?(event)
+      # todo: может быть, c-return тоже правильнее делать после trace
       delta = event == 'c-call' ? 1 : -1
       @c_stack_level += delta
     end
 
     printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace # TRACE_MOVES=1
 
-    catch(:skip) do
-      if trace event, file, line, id, binding_
-        @pry_start_options[:exit_from_method] = true if event == 'return'
-        stop_tracing
-        Pry.start(binding_, @pry_start_options)
-      end
+    if trace event, file, line, id, binding_
+      @pry_start_options[:exit_from_method] = true if event == 'return'
+      stop_tracing
+      Pry.start(binding_, @pry_start_options)
+    elsif event == "return" and within_current_method?(file, line, id)
+      @call_depth -= 1
     end
   end
 

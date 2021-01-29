@@ -120,6 +120,7 @@ class Playground
     iterator do |i|
       dummy = 1 # inside block
       zaloop i if pass == :root
+      return unless pass == :root # after sub-zaloop
     end
     :after_block # after block
   end # exit from zaloop

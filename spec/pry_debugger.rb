@@ -30,7 +30,10 @@ module PryDebugger
         if exp[:output_includes]
           expect(output).to include exp[:output_includes]
         else
-          expect(output).to eq exp[:output]
+          err = <<-TEXT
+[#{step[:index]}] #{step[:cmd]} expected output '#{exp[:output]}', got '#{output}'
+          TEXT
+          expect(output).to eq(exp[:output]), err
         end
       elsif not exp.nil?
         err = <<-TEXT
