@@ -5,7 +5,7 @@ describe 'blocks' do
   it 'should go next over blocks' do
     breakpoints [
       [nil, 'stop in zaloop'],
-      ['n', ''],
+      ['n', 'iterator line'],
       # repeat commands
       ['', 'inside block'],
       ['', nil],
@@ -15,6 +15,7 @@ describe 'blocks' do
       ['', 'inside block'],
       ['pass', {output: '=> 0'}],
 
+      ['f', 'iterator line'],
       ['f', 'after sub-zaloop'],
       ['pass', {output: '=> :root'}],
 
@@ -37,7 +38,7 @@ describe 'blocks' do
   it 'should finish block with sub-calls' do
     breakpoints [
       [nil, 'stop in zaloop'],
-      ['n', ''],
+      ['n', 'iterator line'],
       ['', 'inside block'],
       ['f', 'after block'],
       ['pass', {output: '=> :root'}],

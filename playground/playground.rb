@@ -117,7 +117,7 @@ class Playground
 
   def zaloop(pass = :root)
     binding.pry if pass == :root # stop in zaloop
-    iterator do |i|
+    iterator do |i| # iterator line
       dummy = 1 # inside block
       zaloop i if pass == :root
       return unless pass == :root # after sub-zaloop
