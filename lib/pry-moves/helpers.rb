@@ -58,8 +58,11 @@ module PryMoves::Helpers
     format_obj arg
   end
 
+  def first_line str
+    str.split("\n").first
+  end
+
   def cut_string str
-    str = str.split("\n").first
     str.length > 50 ? "#{str.first 50}..." : str
   end
 
@@ -71,9 +74,9 @@ module PryMoves::Helpers
 
   def format_obj(obj)
     if obj.is_a? String
-      format_obj2 cut_string obj
+      format_obj2 cut_string first_line obj
     else
-      cut_string format_obj2 obj
+      first_line format_obj2 obj
     end
   end
 
