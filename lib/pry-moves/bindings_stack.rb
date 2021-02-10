@@ -42,13 +42,15 @@ class PryMoves::BindingsStack < Array
     stepped_out = false
     actual_file, actual_method = nil, nil
 
+    # here calls checked in reverse order - from latest to parent:
     each do |binding|
       file, method, obj = binding.eval("[__FILE__, __method__, self]")
 
       if file.match PryMoves::Backtrace::filter
         @vapid_bindings << binding
       elsif stepped_out
-        if actual_file == file and actual_method == method
+        if actual_file == file and actual_method == method or
+            binding.local_variable_defined? :pry_moves_deferred_call
           stepped_out = false
         else
           @vapid_bindings << binding
