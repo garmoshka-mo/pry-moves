@@ -50,17 +50,23 @@ class PryMoves::Backtrace
 
   def build
     show_vapid = %w(+ a all hidden vapid).include?(@filter)
-    stack = stack_bindings(show_vapid)
-    stack.reject! do |binding|
-      binding.eval('__FILE__').match self.class::filter
-    end unless %w(a all).include?(@filter)
-    build_result stack.reverse
-  end
-
-  def build_result(stack)
+    show_all = %w(a all).include?(@filter)
     result = []
-    current_object = nil
-    stack.each_with_index do |binding|
+    current_object, vapid_count = nil, 0
+
+    frame_manager.bindings.each_with_details do |binding, vapid|
+      next if !show_all and binding.eval('__FILE__').match self.class::filter
+
+      if !show_vapid and vapid
+        vapid_count += 1
+        next
+      end
+
+      if vapid_count > 0
+        result << "👽  frames hidden: #{vapid_count}"
+        vapid_count = 0
+      end
+
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
       # Comparison of objects directly may raise exception
       if current_object.object_id != obj.object_id
@@ -70,6 +76,9 @@ class PryMoves::Backtrace
 
       result << build_line(binding)
     end
+
+    result << "👽  frames hidden: #{vapid_count}" if vapid_count > 0
+
     result
   end
 
@@ -94,10 +103,6 @@ class PryMoves::Backtrace
 
   def frame_manager
     PryStackExplorer.frame_manager(@pry)
-  end
-
-  def stack_bindings(vapid_frames)
-    frame_manager.bindings.filter_bindings vapid_frames: vapid_frames
   end
 
   def write_to_file(lines, file_suffix)

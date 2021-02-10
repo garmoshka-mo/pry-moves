@@ -20,9 +20,9 @@ class PryMoves::BindingsStack < Array
     find{|b| not vapid? b}
   end
 
-  def filter_bindings(vapid_frames: false)
-    self.reject do |binding|
-      !vapid_frames and vapid? binding
+  def each_with_details
+    self.reverse.each do |binding|
+      yield binding, vapid?(binding)
     end
   end
 
