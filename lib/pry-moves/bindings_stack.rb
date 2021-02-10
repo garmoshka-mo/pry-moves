@@ -74,7 +74,7 @@ class PryMoves::BindingsStack < Array
     #bindings.each_with_index do |b, index|
     #  puts "#{index}: #{b.eval("self.class")} #{b.eval("__method__")}"
     #end
-    #puts "FOUND top internal frame: #{bindings.size} => #{i}"
+    # puts "FOUND top internal frame in #{bindings.size} frames: [#{i}] #{bindings[i].ai}"
 
     bindings.drop i+1
   end

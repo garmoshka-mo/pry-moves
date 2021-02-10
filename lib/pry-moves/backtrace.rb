@@ -49,16 +49,16 @@ class PryMoves::Backtrace
   end
 
   def build
-    result = []
     show_vapid = %w(+ a all hidden vapid).include?(@filter)
     stack = stack_bindings(show_vapid)
     stack.reject! do |binding|
       binding.eval('__FILE__').match self.class::filter
     end unless %w(a all).include?(@filter)
-    build_result stack.reverse, result
+    build_result stack.reverse
   end
 
-  def build_result(stack, result)
+  def build_result(stack)
+    result = []
     current_object = nil
     stack.each_with_index do |binding|
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'

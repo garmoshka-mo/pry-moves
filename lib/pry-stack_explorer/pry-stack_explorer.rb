@@ -1,7 +1,7 @@
 # pry-stack_explorer.rb
 # (C) John Mair (banisterfiend); MIT license
 
-require "pry-stack_explorer/commands"
+require "pry-stack_explorer/stack_commands"
 require "pry-stack_explorer/frame_manager"
 require "pry-stack_explorer/when_started_hook"
 require "binding_of_caller"

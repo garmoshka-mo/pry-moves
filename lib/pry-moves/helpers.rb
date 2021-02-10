@@ -57,8 +57,8 @@ module PryMoves::Helpers
     end
   end
 
-  def format_obj2(obj)
-    if @colorize
+  def format_obj2(obj, monochrome: false)
+    if !monochrome
       PryMoves::Painter.colorize obj
     else
       i = obj.inspect

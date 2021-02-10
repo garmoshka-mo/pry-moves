@@ -94,6 +94,10 @@ module PryStackExplorer
             not frame_manager.bindings.vapid?(b)
         end
 
+      if !frame_index and !PryMoves.show_vapid_frames
+        frame_index = find_frame_by_block(dir) {true}
+      end
+
       frame_index ||
         raise(Pry::CommandError, "At #{dir == :up ? 'top' : 'bottom'} of stack, cannot go further")
     end

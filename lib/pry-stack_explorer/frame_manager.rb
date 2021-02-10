@@ -54,9 +54,9 @@ module PryStackExplorer
     # @param [Fixnum] index The index.
     def set_binding_index_safely(index)
       if index > bindings.size - 1
-        raise Pry::CommandError, "At top of stack, cannot go further"
+        raise Pry::CommandError, "Shouldn't happen: At top of stack, cannot go further"
       elsif index < 0
-        raise Pry::CommandError, "At bottom of stack, cannot go further"
+        raise Pry::CommandError, "Shouldn't happen: At bottom of stack, cannot go further"
       else
         self.binding_index = index
       end
