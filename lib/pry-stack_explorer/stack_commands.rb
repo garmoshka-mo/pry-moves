@@ -88,13 +88,12 @@ module PryStackExplorer
     end
 
     def find_frame_by_direction(dir, step_into_vapid: false)
-      PryMoves.show_vapid_frames = true if step_into_vapid
       frame_index = find_frame_by_block(dir) do |b|
-          PryMoves.show_vapid_frames or
+        step_into_vapid or
             not frame_manager.bindings.vapid?(b)
         end
 
-      if !frame_index and !PryMoves.show_vapid_frames
+      if !frame_index and !step_into_vapid
         frame_index = find_frame_by_block(dir) {true}
       end
 

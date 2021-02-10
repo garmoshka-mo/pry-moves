@@ -12,11 +12,9 @@ class PryMoves::BindingsStack < Array
   end
 
   def suggest_initial_frame_index
-    return 0 if PryMoves.show_vapid_frames
     index{|b| not vapid? b} || 0
   end
   def initial_frame
-    return first if PryMoves.show_vapid_frames
     find{|b| not vapid? b}
   end
 

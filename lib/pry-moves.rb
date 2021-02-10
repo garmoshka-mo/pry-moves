@@ -35,7 +35,7 @@ module PryMoves
   extend self
   extend PryMoves::Restartable
 
-  attr_accessor :is_open, :trace, :show_vapid_frames,
+  attr_accessor :is_open, :trace,
     :stop_on_breakpoints, :launched_specs_examples
 
   def debug(message = nil)
