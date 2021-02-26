@@ -18,13 +18,14 @@ module PryMoves::Helpers
           name = (type == :block ? 'block' : "arg#{i + 1}")
         end
         name = case type
-               when :req   then name.to_s
-               when :opt   then "#{name}=?"
-               when :rest  then "*#{name}"
-               when :block then "&#{name}"
-               else '?'
-               end
-        show_value ? "#{name}: #{value}" : name
+          when :req   then "#{name} ="
+          when :key   then "#{name}:"
+          when :opt   then "#{name}=?"
+          when :rest  then "*#{name}"
+          when :block then "&#{name}"
+          else '?'
+        end
+        show_value ? "#{name} #{value}" : name
       end
       "#{meth_obj.name}(#{args.join(', ')})"
     end
