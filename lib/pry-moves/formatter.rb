@@ -1,6 +1,10 @@
-module PryMoves::Helpers
+class PryMoves::Formatter
 
-  extend self
+  attr_accessor :colorize
+
+  def initialize colorize = true
+    @colorize = colorize
+  end
 
   def method_signature(binding)
     meth = binding.eval('__method__')
@@ -58,8 +62,8 @@ module PryMoves::Helpers
     end
   end
 
-  def format_obj2(obj, monochrome: false)
-    if !monochrome
+  def format_obj2(obj)
+    if @colorize
       PryMoves::Painter.colorize obj
     else
       i = obj.inspect

@@ -49,7 +49,7 @@ module PryStackExplorer
       b_self = b.eval('self')
       type = b.frame_type ? "[#{b.frame_type}]".ljust(9) : ""
       desc = b.frame_description ? "#{b.frame_description}" : "#{frame_description(b)}"
-      sig = PryMoves::Helpers.method_signature b
+      sig = PryMoves::Formatter.new.method_signature b
 
       self_clipped = "#{Pry.view_clip(b_self)}"
       path = "@ #{b.eval('__FILE__')}:#{b.eval('__LINE__')}"

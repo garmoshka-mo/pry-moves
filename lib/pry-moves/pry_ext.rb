@@ -81,9 +81,10 @@ Pry::Command::Whereami.class_eval do
   def build_output
     lines = ['']
 
+    formatter = PryMoves::Formatter.new
     prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
-    lines << "#{prefix}#{PryMoves::Helpers.shorten_path location}"
-    lines << "   ." + PryMoves::Helpers.method_signature(target)
+    lines << "#{prefix}#{formatter.shorten_path location}"
+    lines << "   ." + formatter.method_signature(target)
     lines << ''
     lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
 

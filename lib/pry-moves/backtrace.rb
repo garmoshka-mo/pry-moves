@@ -21,15 +21,15 @@ class PryMoves::Backtrace
 
   end
 
-  include PryMoves::Helpers
-
   def initialize(pry)
-     @pry = pry
+    @pry = pry
+    @formatter = PryMoves::Formatter.new
   end
 
   def run_command(param, param2)
     if param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
+      @formatter.colorize = false
       write_to_file build, suffix
     elsif param and param.match /\d+/
       index = param.to_i
@@ -70,7 +70,7 @@ class PryMoves::Backtrace
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
       # Comparison of objects directly may raise exception
       if current_object.object_id != obj.object_id
-        result << "#{debug_snapshot || format_obj(obj)}:"
+        result << "#{debug_snapshot || @formatter.format_obj(obj)}:"
         current_object = obj
       end
 
@@ -83,9 +83,9 @@ class PryMoves::Backtrace
   end
 
   def build_line(binding)
-    file = shorten_path "#{binding.eval('__FILE__')}"
+    file = @formatter.shorten_path "#{binding.eval('__FILE__')}"
 
-    signature = method_signature binding
+    signature = @formatter.method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
     indent = if frame_manager.current_frame == binding
