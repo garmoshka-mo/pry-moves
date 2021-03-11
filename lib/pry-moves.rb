@@ -3,7 +3,7 @@ require 'pry' unless defined? Pry
 require 'pry-moves/version'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
-require 'pry-moves/traversing'
+require 'pry-moves/add_suffix'
 require 'pry-moves/pry_wrapper'
 require 'pry-moves/bindings_stack'
 require 'pry-moves/formatter'

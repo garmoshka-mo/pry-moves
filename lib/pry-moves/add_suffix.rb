@@ -1,6 +1,6 @@
 module PryMoves
 
-  class Traversing < Pry::ClassCommand
+  class AddSuffix < Pry::ClassCommand
 
     group 'Input and Output'
     description "Continue traversing of last object in history."
@@ -15,53 +15,67 @@ module PryMoves
 
     def process(cmd)
       last_cmd = Pry.history.to_a[-1]
-      cmd = "#{last_cmd}#{wrap_command(cmd)}"
+      cmd = "#{last_cmd}#{wrap_suffix(cmd)}"
       _pry_.pager.page "    > #{cmd}\n"
       _pry_.eval cmd
     end
 
     private
 
-
-  end
-
-  class Method < Traversing
-    match(/^\.(.+)$/)
-
-    def wrap_command(cmd)
-      ".#{cmd}"
+    def wrap_suffix(cmd)
+      cmd
     end
+
   end
 
-  class ArrayIndex < Traversing
+  class Method < AddSuffix
+    match(/^(\..+)$/)
+  end
+
+  class ArgumentCall < AddSuffix
+    match(/^(\(.*\).*)/)
+  end
+
+  class ArrayIndex < AddSuffix
     match(/^(\d+)$/)
 
-    def wrap_command(cmd)
+    def wrap_suffix(cmd)
       "[#{cmd}]"
     end
   end
 
-  class HashKey < Traversing
+  class ArrayCall < AddSuffix
+    match(/^(\[\d+\].*)/)
+  end
+
+  class HashKey < AddSuffix
     match(/^(:\w+)$/)
 
-    def wrap_command(cmd)
+    def wrap_suffix(cmd)
       "[#{cmd}]"
     end
   end
 
-  Pry::Commands.add_command(PryMoves::Method)
-  Pry::Commands.add_command(PryMoves::ArrayIndex)
-  Pry::Commands.add_command(PryMoves::HashKey)
 
+end
+
+SUFFIX_COMMANDS = [
+  PryMoves::Method,
+  PryMoves::ArgumentCall,
+  PryMoves::ArrayIndex,
+  PryMoves::ArrayCall,
+  PryMoves::HashKey
+]
+
+SUFFIX_COMMANDS.each do |cmd|
+  Pry::Commands.add_command(cmd)
 end
 
 Pry::History.class_eval do
 
-  EXCLUDE = [PryMoves::Method, PryMoves::ArrayIndex, PryMoves::HashKey]
-
   def <<(line)
     return if ["!"].include? line
-    return if EXCLUDE.any? do |cls|
+    return if SUFFIX_COMMANDS.any? do |cls|
       line.match(cls.match)
     end
     push line
