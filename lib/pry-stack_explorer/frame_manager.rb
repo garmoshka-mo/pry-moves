@@ -62,6 +62,10 @@ module PryStackExplorer
       end
     end
 
+    def goto_index index
+      change_frame_to bindings.index {|b| b.index == index }
+    end
+
     # Change active frame to the one indexed by `index`.
     # Note that indexing base is `0`
     # @param [Fixnum] index The index of the frame.

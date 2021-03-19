@@ -31,7 +31,7 @@ class PryMoves::BindingsStack < Array
   private
 
   def set_indices
-    each_with_index do |binding, index|
+    reverse.each_with_index do |binding, index|
       binding.index = index
     end
   end

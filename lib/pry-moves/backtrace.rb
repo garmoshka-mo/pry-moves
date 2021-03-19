@@ -33,7 +33,7 @@ class PryMoves::Backtrace
       write_to_file build, suffix
     elsif param and param.match /\d+/
       index = param.to_i
-      frame_manager.change_frame_to index
+      frame_manager.goto_index index
     else
       print_backtrace param
     end
@@ -90,7 +90,7 @@ class PryMoves::Backtrace
 
     indent = if frame_manager.current_frame == binding
       '==> '
-    elsif @lines_numbers
+    elsif true #@lines_numbers
       s = "#{binding.index}:".ljust(4, ' ')
       @colorize ? "\e[2;49;90m#{s}\e[0m" : s
     else
