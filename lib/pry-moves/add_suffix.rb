@@ -29,7 +29,11 @@ module PryMoves
   end
 
   class Method < AddSuffix
-    match(/^(\..+)$/)
+    match(/^\.(.+)$/) # when \. moved into group - match doesn't work because it overlaps with pry internal command
+
+    def wrap_suffix(cmd)
+      ".#{cmd}"
+    end
   end
 
   class ArgumentCall < AddSuffix
