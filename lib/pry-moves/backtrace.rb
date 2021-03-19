@@ -70,7 +70,7 @@ class PryMoves::Backtrace
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
       # Comparison of objects directly may raise exception
       if current_object.object_id != obj.object_id
-        result << "#{debug_snapshot || @formatter.format_obj(obj)}:"
+        result << "#{debug_snapshot || @formatter.format_obj(obj)}"
         current_object = obj
       end
 
