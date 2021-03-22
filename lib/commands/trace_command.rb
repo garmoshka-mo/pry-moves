@@ -7,16 +7,17 @@ class TraceCommand
   include PryMoves::TracedMethod
   include PryMoves::TraceHelpers
 
-  def self.trace(command, pry_start_options)
+  def self.trace(command, pry_start_options, &callback)
     cls = command[:action].to_s.split('_').collect(&:capitalize).join
     cls = Object.const_get "PryMoves::#{cls}"
-    cls.new command, pry_start_options
+    cls.new command, pry_start_options, callback
   end
 
-  def initialize(command, pry_start_options)
+  def initialize(command, pry_start_options, callback)
     @command = command
     @pry_start_options = pry_start_options
     @pry_start_options[:pry_moves_loop] = true
+    @callback = callback
 
     @action = @command[:action]
     #puts "COMMAND: #{@action}"
@@ -77,7 +78,7 @@ class TraceCommand
     if trace event, file, line, id, binding_
       @pry_start_options[:exit_from_method] = true if event == 'return'
       stop_tracing
-      Pry.start(binding_, @pry_start_options)
+      @callback.call binding_
     elsif event == "return" and within_current_method?(file, line, id)
       @call_depth -= 1
     end
