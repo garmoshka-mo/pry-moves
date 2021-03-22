@@ -24,13 +24,13 @@ describe 'PryMoves commands' do
       ['s', 'point to step inside'],
       ['s', 'some internal line'],
       ['up', 'point to step inside'],
-      ['up', nil ],
-      ['up', {output_includes: 'top of stack'} ],
-      ['down', nil ],
+      ['up', 'spec example beginning' ],
+      #['up', {output_includes: 'top of stack'} ],
+      ['down', 'point to step inside'],
       ['down', 'some internal line'],
       ['down', {output_includes: 'bottom of stack'} ],
     ]
-    Playground.new.step_into
+    Playground.new.step_into # spec example beginning
   end
 
   it 'should skip hidden implementation' do
