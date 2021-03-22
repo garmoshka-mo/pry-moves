@@ -155,6 +155,16 @@ class Playground
     dummy = 1 # after breakpoint 2
   end
 
+  def skip_level_a
+    binding.pry # stop in skip_level_a
+    skip_level_b.level_a # next step
+  end
+
+  def skip_level_b
+    pry_moves_skip = true # at skip_level_b
+    self # at skip_level_b
+  end
+
   private
 
   def iterator

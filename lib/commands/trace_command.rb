@@ -10,17 +10,15 @@ class TraceCommand
   def self.trace(command, pry_start_options, &callback)
     cls = command[:action].to_s.split('_').collect(&:capitalize).join
     cls = Object.const_get "PryMoves::#{cls}"
-    cls.new command, pry_start_options, callback
+    cls.new command, pry_start_options, &callback
   end
 
-  def initialize(command, pry_start_options, callback)
+  def initialize(command, pry_start_options, &callback)
     @command = command
     @pry_start_options = pry_start_options
     @pry_start_options[:pry_moves_loop] = true
     @callback = callback
 
-    @action = @command[:action]
-    #puts "COMMAND: #{@action}"
     binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
     unless binding_.instance_variable_get('@iseq')
       binding_ = PryMoves::BindingsStack.new.initial_frame

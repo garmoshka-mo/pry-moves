@@ -9,7 +9,7 @@ module PryMoves::TraceHelpers
   end
 
   def debug_info(file, line, id)
-    puts "📽  Action:#{@action}; recur:#{@call_depth}; #{@method[:file]}:#{file}"
+    puts "📽  call_depth:#{@call_depth} #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
 

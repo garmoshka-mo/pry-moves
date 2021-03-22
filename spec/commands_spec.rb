@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe 'PryMoves commands' do
 
-  it 'should make one step next' do
+  it 'should make one move next' do
     breakpoints [
       [nil, 'basic next stop'],
       ['n', 'next step'],
@@ -18,7 +18,7 @@ describe 'PryMoves commands' do
     Playground.new.continue
   end
 
-  it 'should step into func and walk over stack' do
+  it 'should walk over stack' do
     breakpoints [
       [nil, 'step_into stop'],
       ['s', 'point to step inside'],
@@ -31,33 +31,6 @@ describe 'PryMoves commands' do
       ['down', {output_includes: 'bottom of stack'} ],
     ]
     Playground.new.step_into # spec example beginning
-  end
-
-  it 'should skip hidden implementation' do
-    breakpoints [
-      [nil, 'skip_hidden_impl stop'],
-      ['s', 'point to step inside'],
-      ['s', 'some internal line']
-    ]
-    Playground.new.skip_hidden_impl
-  end
-
-  it 'should step into func by name' do
-    breakpoints [
-      [nil, 'stop in step_by_name'],
-      ['s level_c', 'stop in level_c'],
-      ['param', {output: '=> :target'}],
-      ['n', nil],
-    ]
-    Playground.new.step_by_name
-  end
-
-  it 'should stop after inability to step into func by name' do
-    breakpoints [
-      [nil, 'stop in step_by_name'],
-      ['s absent_function', 'after_step_by_name'],
-    ]
-    Playground.new.step_by_name_wrap
   end
 
   it 'should go next over recursion calls' do
