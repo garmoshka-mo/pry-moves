@@ -16,6 +16,14 @@ class PryMoves::Step < PryMoves::TraceCommand
   end
 
   def trace(event, file, line, method, binding_)
+    if binding_.local_variable_defined? :pry_moves_skip
+      finish_cmd = {binding: binding_}
+      PryMoves::Finish.new finish_cmd, @pry_start_options do |binding|
+        start_tracing
+      end
+      return
+    end
+
     @const_missing_level ||= 0
     if method == :const_missing
       if event == 'call'

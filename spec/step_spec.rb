@@ -31,11 +31,11 @@ describe 'step' do
 
   it 'should skip hidden method' do
     breakpoints [
-      [nil, 'stop in skip_level_a'],
+      [nil, 'stop in skip_test'],
       ['n', 'next step'],
-      ['s', 'inside of level_a']
+      ['s', 'at not_skipped_method']
     ]
-    Playground.new.skip_level_a
+    Playground.new.skip_test
   end
 
   

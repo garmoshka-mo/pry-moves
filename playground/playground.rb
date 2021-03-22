@@ -155,14 +155,18 @@ class Playground
     dummy = 1 # after breakpoint 2
   end
 
-  def skip_level_a
-    binding.pry # stop in skip_level_a
-    skip_level_b.level_a # next step
+  def skip_test
+    binding.pry # stop in skip_test
+    skipped_method.not_skipped_method # next step
   end
 
-  def skip_level_b
-    pry_moves_skip = true # at skip_level_b
-    self # at skip_level_b
+  def skipped_method
+    pry_moves_skip = true # at skipped_method
+    self # at skipped_method
+  end
+
+  def not_skipped_method
+    :not_skipped_method # at not_skipped_method
   end
 
   private
