@@ -1,7 +1,6 @@
 class PryMoves::Finish < PryMoves::TraceCommand
 
   def init(binding_)
-    @method_to_finish = @method
     @block_to_finish = frame_digest(binding_) if binding_.frame_type == :block
   end
 

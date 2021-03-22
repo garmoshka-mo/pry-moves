@@ -1,6 +1,6 @@
-def debug
+def debug *args
   pry_moves_stack_root = true
-  PryMoves.debug
+  PryMoves.debug *args
 end
 
 def error(msg, debug_object = nil)
