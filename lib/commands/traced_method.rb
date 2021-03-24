@@ -1,5 +1,10 @@
 class PryMoves::TracedMethod < Hash
 
+  @@last = nil
+  def self.last
+    @@last
+  end
+
   def initialize(binding_)
     super()
 
@@ -24,6 +29,10 @@ class PryMoves::TracedMethod < Hash
     return unless id.nil? or self[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
 
     true
+  end
+
+  def binding_inside?(binding)
+    within? *binding.eval('[__FILE__, __LINE__, __method__]')
   end
 
   def before_end?(line)
@@ -56,6 +65,7 @@ class PryMoves::TracedMethod < Hash
   def set_method(method)
     #puts "set_traced_method #{method}"
     merge! method
+    @@last = self
   end
 
 end

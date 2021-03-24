@@ -29,6 +29,16 @@ describe 'step' do
     Playground.new.skip_hidden_impl
   end
 
+  it 'should step down to hidden frame and resume there' do
+    breakpoints [
+      [nil, 'at root'],
+      ['down', 'hidden stop'],
+      ['n', 'hidden_stop for next'],
+      ['s', 'hidden_stop for step']
+    ]
+    Playground.new.hidden_stop # at root
+  end
+
   it 'should skip hidden method' do
     breakpoints [
       [nil, 'stop in skip_test'],
@@ -38,5 +48,4 @@ describe 'step' do
     Playground.new.skip_test
   end
 
-  
 end

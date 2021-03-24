@@ -22,6 +22,18 @@ class Playground
     hidden_self.something_inside # point to step inside
   end
 
+  def hidden_self
+    hide_from_stack = true # hidden_self 1
+    self # hidden_self 2
+  end
+
+  def hidden_stop
+    hide_from_stack = true
+    binding.pry # hidden stop
+    dummy = :ok_next # hidden_stop for next
+    dummy = :ok_step # hidden_stop for step
+  end
+
   def continue
     binding.pry # first stop
     dummy = :something
@@ -68,11 +80,6 @@ class Playground
     binding.pry # stop in level_c
     self
   end # exit from level_c
-
-  def hidden_self
-    hide_from_stack = true
-    self
-  end
 
   def nested_block(early_return: false)
     binding.pry # stop in nested_block

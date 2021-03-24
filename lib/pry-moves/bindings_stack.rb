@@ -12,6 +12,8 @@ class PryMoves::BindingsStack < Array
   end
 
   def suggest_initial_frame_index
+    m = PryMoves::TracedMethod.last
+    return 0 if m and m.binding_inside?(first)
     index{|b| not vapid? b} || 0
   end
   def initial_frame

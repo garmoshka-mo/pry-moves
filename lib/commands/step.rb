@@ -47,7 +47,8 @@ class PryMoves::Step < PryMoves::TraceCommand
       return false if keep_search_method? binding_
     elsif redirect_step? binding_
       return false
-    elsif binding_.local_variable_defined? :hide_from_stack
+    elsif binding_.local_variable_defined? :hide_from_stack and
+          not @method.within?(file, line, method)
       return false
     end
 
