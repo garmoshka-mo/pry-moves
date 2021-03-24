@@ -1,25 +1,36 @@
-module PryMoves::TracedMethod
+class PryMoves::TracedMethod < Hash
 
-  private
-
-  def set_traced_method(binding_)
-    @call_depth = 0
-    @c_stack_level = 0
-    @stay_at_frame = nil # reset tracked digest
+  def initialize(binding_)
+    super()
 
     method = find_method_definition binding_
     if method
       source = method.source_location
       set_method({
-                   file: source[0],
-                   start: source[1],
-                   name: method.name,
-                   end: (source[1] + method.source.count("\n") - 1)
-                 })
+        file: source[0],
+        start: source[1],
+        name: method.name,
+        end: (source[1] + method.source.count("\n") - 1)
+      })
     else
       set_method({file: binding_.eval('__FILE__')})
     end
   end
+
+  def within?(file, line, id = nil)
+    return unless self[:file] == file
+    return unless self[:start].nil? or
+      line.between?(self[:start], self[:end])
+    return unless id.nil? or self[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
+
+    true
+  end
+
+  def before_end?(line)
+    self[:end] and line < self[:end]
+  end
+
+  private
 
   def find_method_definition(binding)
     method_name, obj, file =
@@ -44,20 +55,7 @@ module PryMoves::TracedMethod
 
   def set_method(method)
     #puts "set_traced_method #{method}"
-    @method = method
-  end
-
-  def within_current_method?(file, line, id = nil)
-    return unless @method[:file] == file
-    return unless @method[:start].nil? or
-      line.between?(@method[:start], @method[:end])
-    return unless id.nil? or @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
-
-    true
-  end
-
-  def before_end?(line)
-    @method[:end] and line < @method[:end]
+    merge! method
   end
 
 end

@@ -14,7 +14,7 @@ class PryMoves::Next < PryMoves::TraceCommand
 
     return true if @call_depth < 0
 
-    return unless @call_depth == 0 and within_current_method?(file, line)
+    return unless @call_depth == 0 and @method.within?(file, line)
 
       if event == 'line'
         if @stay_at_frame
@@ -31,7 +31,7 @@ class PryMoves::Next < PryMoves::TraceCommand
       end
 
       true if event == 'return' and
-        method == @method[:name] and before_end?(line)
+        method == @method[:name] and @method.before_end?(line)
   end
 
 end

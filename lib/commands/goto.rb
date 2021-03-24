@@ -6,7 +6,7 @@ class PryMoves::Goto < PryMoves::TraceCommand
 
   def trace(event, file, line, method, binding_)
     if @call_depth < 0 or
-        @call_depth == 0 and event == 'return' and within_current_method?(file, line)
+        @call_depth == 0 and event == 'return' and @method.within?(file, line)
       PryMoves.messages << "⚠️  Unable to reach line #{@goto_line} in current frame"
       return true
     end

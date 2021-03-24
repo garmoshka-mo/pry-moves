@@ -4,7 +4,6 @@ require 'pry' unless defined? Pry
 module PryMoves
 class TraceCommand
 
-  include PryMoves::TracedMethod
   include PryMoves::TraceHelpers
 
   def self.trace(command, pry_start_options, &callback)
@@ -18,12 +17,14 @@ class TraceCommand
     @pry_start_options = pry_start_options
     @pry_start_options[:pry_moves_loop] = true
     @callback = callback
+    @call_depth = 0
+    @c_stack_level = 0
 
     binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
     unless binding_.instance_variable_get('@iseq')
       binding_ = PryMoves::BindingsStack.new.initial_frame
     end
-    set_traced_method binding_
+    @method = PryMoves::TracedMethod.new binding_
 
     if @pry_start_options.delete :exit_from_method
       @on_exit_from_method = true
@@ -63,7 +64,7 @@ class TraceCommand
     return unless binding_ # ignore strange cases
 
     # for cases when currently traced method called more times recursively
-    if event == "call" and within_current_method?(file, line, id)
+    if event == "call" and @method.within?(file, line, id)
       @call_depth += 1
     elsif %w(c-call c-return).include?(event)
       # todo: может быть, c-return тоже правильнее делать после trace
@@ -77,7 +78,7 @@ class TraceCommand
       @pry_start_options[:exit_from_method] = true if event == 'return'
       stop_tracing
       @callback.call binding_
-    elsif event == "return" and within_current_method?(file, line, id)
+    elsif event == "return" and @method.within?(file, line, id)
       @call_depth -= 1
     end
   end

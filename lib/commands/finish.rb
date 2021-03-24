@@ -12,13 +12,13 @@ class PryMoves::Finish < PryMoves::TraceCommand
 
     # early return:
     return true if event == 'return' and
-      @call_depth == 0 and within_current_method?(file, line) and
-      method == @method[:name] and before_end?(line)
+      @call_depth == 0 and @method.within?(file, line) and
+      method == @method[:name] and @method.before_end?(line)
 
     # for finishing blocks inside current method
     if @block_to_finish
       ((@call_depth == 0) ^ (event == 'return')) and
-        within_current_method?(file, line) and
+        @method.within?(file, line) and
         @block_to_finish != current_frame_digest
     end
   end
