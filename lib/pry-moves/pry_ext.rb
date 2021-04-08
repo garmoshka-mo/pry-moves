@@ -114,3 +114,16 @@ Pry::Code::LOC.class_eval do
   end
 
 end
+
+Pry::Output.class_eval do
+
+  alias pry_moves_origin_for_puts puts
+
+  def puts string
+    if string.start_with? "(pry) output error"
+      string = string[0..200]
+    end
+    pry_moves_origin_for_puts string
+  end
+
+end
