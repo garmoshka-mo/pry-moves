@@ -80,6 +80,7 @@ module PryMoves
   def locked?
     semaphore.locked?
   end
+  alias tracing? locked?
 
   def lock
     semaphore.lock unless semaphore.locked?

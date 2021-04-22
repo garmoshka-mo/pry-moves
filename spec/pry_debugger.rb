@@ -24,6 +24,7 @@ module PryDebugger
 
     def compare(step, label, binding_, output)
       exp = step[:expected]
+      puts "\nSTEP #{step[:index]}:\n#{output}" if ENV['PRINT']
       if exp.is_a? Proc
         exp.call binding_, output
       elsif exp.is_a? Hash

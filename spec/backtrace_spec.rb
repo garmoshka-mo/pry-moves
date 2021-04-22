@@ -21,7 +21,7 @@ describe 'backtrace' do
         expect(lines[1]).to end_with 'level_b()'
         expect(lines.count).to be 11
       }],
-      ['bt 33', lambda{|b, output|
+      ['up', lambda{|b, output|
         lines = output.split("\n").reverse
         expect(lines[1]).to end_with 'level_b # inside of level_a'
       }],

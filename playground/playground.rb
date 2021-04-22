@@ -133,7 +133,7 @@ class Playground
   end # exit from zaloop
 
   def method_with_redirection
-    debug_redirect = '=level_a' # at method_with_redirection
+    debug_redirect = :level_a # at method_with_redirection
     level_a
   end
 

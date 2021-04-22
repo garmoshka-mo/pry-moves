@@ -11,7 +11,7 @@ class PryMoves::Step < PryMoves::TraceCommand
     elsif func
       @find_straight_descendant = true
       @step_into_funcs = [func]
-      @step_into_funcs << '=initialize' if func == 'new' or func == '=new'
+      @step_into_funcs << '=initialize' if ['new', '=new'].include? func
     end
   end
 
@@ -56,8 +56,7 @@ class PryMoves::Step < PryMoves::TraceCommand
   end
 
   def keep_search_method? binding_
-    method = binding_.eval('__callee__').to_s
-    return true unless method_matches?(method)
+    return true unless method_matches? binding_.eval('__callee__')
 
     return true if @find_straight_descendant &&
       # if we want to step-in only into straight descendant
@@ -69,10 +68,14 @@ class PryMoves::Step < PryMoves::TraceCommand
 
   def method_matches?(method)
     @step_into_funcs.any? do |pattern|
-      if pattern.start_with? '='
+      if pattern.is_a? Symbol
+        method == pattern
+      elsif pattern.is_a? Regexp
+        method.to_s.match pattern
+      elsif pattern.start_with? '='
         "=#{method}" == pattern
       else
-        method.include? pattern
+        method.to_s.include? pattern
       end
     end
   end

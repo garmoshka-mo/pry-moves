@@ -4,7 +4,7 @@ module PryMoves::TraceHelpers
     return false unless binding_.local_variable_defined? :debug_redirect
 
     debug_redirect = binding_.local_variable_get(:debug_redirect)
-    @step_into_funcs = [debug_redirect.to_s] if debug_redirect
+    @step_into_funcs = [debug_redirect] if debug_redirect
     true
   end
 
