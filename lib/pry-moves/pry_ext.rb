@@ -20,9 +20,9 @@ Binding.class_eval do
   alias pry_forced pry
 
   def pry
-    unless Pry.config.disable_breakpoints
-      PryMoves.synchronize_threads ||
-        return # Don't start binding.pry when semaphore locked by current thread
+    if !Pry.config.disable_breakpoints and
+        # Don't start binding.pry when semaphore locked by current thread
+        PryMoves.synchronize_threads
       pry_forced
     end
   end
@@ -119,11 +119,12 @@ Pry::Output.class_eval do
 
   alias pry_moves_origin_for_puts puts
 
-  def puts string
-    if string.start_with? "(pry) output error"
-      string = string[0..200]
+  def puts *args
+    first = args[0]
+    if first.is_a? String and first.start_with? "(pry) output error"
+      first.slice! 200..-1
     end
-    pry_moves_origin_for_puts string
+    pry_moves_origin_for_puts *args
   end
 
-end
+end if defined? Pry::Output
