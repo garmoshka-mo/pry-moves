@@ -122,7 +122,7 @@ Pry::Output.class_eval do
   def puts *args
     first = args[0]
     if first.is_a? String and first.start_with? "(pry) output error"
-      first.slice! 200..-1
+      first.slice! 400..-1
     end
     pry_moves_origin_for_puts *args
   end
