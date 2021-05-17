@@ -66,7 +66,7 @@ module PryMoves
     end
     alias_command '#', 'reload'
 
-    block_command 'cmd', 'Execute command explicitly' do |param|
+    block_command /^\\(\w+)$/, 'Execute command explicitly' do |param|
       Pry.config.ignore_once_var_precedence = true
       run param
     end
@@ -104,7 +104,7 @@ module PryMoves
         input = Pry.config.original_user_input || action
         binding_value = target.eval(input) rescue nil
         unless binding_value.nil?
-          puts "ℹ️️  Variable \"#{input}\" found. To execute command type its alias or: cmd #{input}"
+          puts "ℹ️️  Variable \"#{input}\" found. To execute command type its alias or \\#{input}"
           puts PryMoves::Painter.colorize binding_value
           true
         end
