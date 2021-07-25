@@ -18,7 +18,8 @@ class PryMoves::TracedMethod < Hash
         end: (source[1] + method.source.count("\n") - 1)
       })
     else
-      set_method({file: binding_.eval('__FILE__')})
+      file, line = binding_.source_location
+      set_method({file: file})
     end
   end
 
