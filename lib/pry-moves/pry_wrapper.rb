@@ -2,22 +2,23 @@ require 'pry' unless defined? Pry
 
 module PryMoves
 class PryWrapper
-  def initialize(binding_, pry_start_options = {})
+  def initialize(binding_, pry_start_options, pry)
     @init_binding = binding_
     @pry_start_options = pry_start_options   # Options to use for Pry.start
+    @pry = pry
   end
 
-  def run(&block)
+  def run
     PryMoves.lock
 
+    initial_frame = PryMoves::BindingsStack.new.initial_frame
     if not @pry_start_options[:pry_moves_loop] and
-        @init_binding.local_variable_defined? :debug_redirect
-      debug_redirect = @init_binding.local_variable_get(:debug_redirect)
+        initial_frame.local_variable_defined? :debug_redirect
+      debug_redirect = initial_frame.local_variable_get(:debug_redirect)
       PryMoves.messages << "⏩ redirected to #{debug_redirect}"
-      @command = {action: :step,
-        binding: PryMoves::BindingsStack.new.initial_frame}
+      @command = {action: :step, binding: initial_frame}
     else
-      start_pry(&block)
+      start_pry
     end
 
     if @command
@@ -39,7 +40,7 @@ class PryWrapper
     PryMoves.is_open = true
 
     @command = catch(:breakout_nav) do      # Coordinates with PryMoves::Commands
-      @return_value = yield
+      @return_value = @pry.pry_moves_origin_start(@init_binding, @pry_start_options)
       nil    # Nothing thrown == no navigational command
     end
 
@@ -85,7 +86,9 @@ class PryWrapper
 
   def start_tracing
     @last_runtime_binding = @command[:binding]
-    PryMoves::TraceCommand.trace @command, @pry_start_options
+    PryMoves::TraceCommand.trace @command, @pry_start_options do |binding|
+      Pry.start(binding, @pry_start_options)
+    end
   end
 
 end

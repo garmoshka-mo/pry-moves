@@ -4,26 +4,32 @@ require 'pry' unless defined? Pry
 module PryMoves
 class TraceCommand
 
-  include PryMoves::TracedMethod
   include PryMoves::TraceHelpers
 
-  def self.trace(command, pry_start_options)
+  def self.trace(command, pry_start_options, &callback)
     cls = command[:action].to_s.split('_').collect(&:capitalize).join
     cls = Object.const_get "PryMoves::#{cls}"
-    cls.new command, pry_start_options
+    cls.new command, pry_start_options, &callback
   end
 
-  def initialize(command, pry_start_options)
+  def initialize(command, pry_start_options, &callback)
     @command = command
     @pry_start_options = pry_start_options
     @pry_start_options[:pry_moves_loop] = true
+    @callback = callback
+    @call_depth = 0
+    @c_stack_level = 0
 
-    @action = @command[:action]
-    #puts "COMMAND: #{@action}"
     binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
-    set_traced_method binding_
+    unless binding_.instance_variable_get('@iseq')
+      binding_ = PryMoves::BindingsStack.new.initial_frame
+    end
+    @method = PryMoves::TracedMethod.new binding_
 
-    @call_depth -= 1 if @pry_start_options.delete :exit_from_method
+    if @pry_start_options.delete :exit_from_method
+      @on_exit_from_method = true
+      @call_depth -= 1
+    end
     @pry_start_options.delete :initial_frame
 
     init binding_
@@ -52,27 +58,28 @@ class TraceCommand
   end
 
   def tracing_func(event, file, line, id, binding_, klass)
-    printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
     return unless binding_ # ignore strange cases
 
-    catch(:skip) do
-      if trace event, file, line, id, binding_
-        stop_tracing
-        Pry.start(binding_, @pry_start_options)
+    # for cases when currently traced method called more times recursively
+    if event == "call" and @method.within?(file, line, id)
+      @call_depth += 1
+    elsif %w(c-call c-return).include?(event)
+      # todo: может быть, c-return тоже правильнее делать после trace
+      delta = event == 'c-call' ? 1 : -1
+      @c_stack_level += delta
+    end
 
-        # for cases when currently traced method called more times recursively
-      elsif %w(call return).include?(event) and within_current_method?(file, line) and
-        @method[:name] == id # fix for bug in traced_method: return for dynamic methods has line number inside of caller
-        delta = event == 'call' ? 1 : -1
-        #puts "recursion #{event}: #{delta}; changed: #{@call_depth} => #{@call_depth + delta}"
-        @call_depth += delta
-      elsif %w(c-call c-return).include?(event)
-        delta = event == 'c-call' ? 1 : -1
-        @c_stack_level += delta
-      end
+    printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace # TRACE_MOVES=1
+
+    if trace event, file, line, id, binding_
+      @pry_start_options[:exit_from_method] = true if event == 'return'
+      stop_tracing
+      @callback.call binding_
+    elsif event == "return" and @method.within?(file, line, id)
+      @call_depth -= 1
     end
   end
 

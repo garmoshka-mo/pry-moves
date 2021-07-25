@@ -11,18 +11,18 @@ class PryMoves::BindingsStack < Array
     mark_vapid_frames
   end
 
-  def initial_frame_index
-    return 0 if PryMoves.show_vapid_frames
+  def suggest_initial_frame_index
+    m = PryMoves::TracedMethod.last
+    return 0 if m and m.binding_inside?(first)
     index{|b| not vapid? b} || 0
   end
   def initial_frame
-    return first if PryMoves.show_vapid_frames
     find{|b| not vapid? b}
   end
 
-  def filter_bindings(vapid_frames: false)
-    self.reject do |binding|
-      !vapid_frames and vapid? binding
+  def each_with_details
+    self.reverse.each do |binding|
+      yield binding, vapid?(binding)
     end
   end
 
@@ -33,7 +33,7 @@ class PryMoves::BindingsStack < Array
   private
 
   def set_indices
-    each_with_index do |binding, index|
+    reverse.each_with_index do |binding, index|
       binding.index = index
     end
   end
@@ -42,13 +42,15 @@ class PryMoves::BindingsStack < Array
     stepped_out = false
     actual_file, actual_method = nil, nil
 
+    # here calls checked in reverse order - from latest to parent:
     each do |binding|
       file, method, obj = binding.eval("[__FILE__, __method__, self]")
 
       if file.match PryMoves::Backtrace::filter
         @vapid_bindings << binding
       elsif stepped_out
-        if actual_file == file and actual_method == method
+        if actual_file == file and actual_method == method or
+            binding.local_variable_defined? :pry_moves_deferred_call
           stepped_out = false
         else
           @vapid_bindings << binding
@@ -74,7 +76,7 @@ class PryMoves::BindingsStack < Array
     #bindings.each_with_index do |b, index|
     #  puts "#{index}: #{b.eval("self.class")} #{b.eval("__method__")}"
     #end
-    #puts "FOUND top internal frame: #{bindings.size} => #{i}"
+    # puts "FOUND top internal frame in #{bindings.size} frames: [#{i}] #{bindings[i].ai}"
 
     bindings.drop i+1
   end
@@ -82,10 +84,12 @@ class PryMoves::BindingsStack < Array
   def top_internal_frame_index(bindings)
     bindings.rindex do |b|
       if b.frame_type == :method
-        self_, method = b.eval("self"), b.eval("__method__")
+        method, self_ = b.eval("[__method__, self]")
+
         self_.equal?(Pry) && method == :start ||
           self_.class == Binding && method == :pry ||
-          self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func
+          self_.is_a?(PryMoves::TraceCommand) && method == :tracing_func ||
+          b.local_variable_defined?(:pry_moves_stack_root)
       end
     end
   end

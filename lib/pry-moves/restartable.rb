@@ -9,8 +9,7 @@ module PryMoves::Restartable
     re_execution
   rescue PryMoves::Restart
     self.restart_requested = false
-    PryMoves.launched_specs_examples = 0
-    PryMoves.stop_on_breakpoints = true
+    PryMoves.reset
     trigger :restart
     retry
   rescue PryMoves::Reload

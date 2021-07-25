@@ -4,36 +4,31 @@ module PryMoves::TraceHelpers
     return false unless binding_.local_variable_defined? :debug_redirect
 
     debug_redirect = binding_.local_variable_get(:debug_redirect)
-    @step_into_funcs = [debug_redirect.to_s] if debug_redirect
+    @step_into_funcs = [debug_redirect] if debug_redirect
     true
   end
 
   def debug_info(file, line, id)
-    puts "📽  Action:#{@action}; recur:#{@call_depth}; #{@method[:file]}:#{file}"
+    puts "📽  call_depth:#{@call_depth} #{@method[:file]}:#{file}"
     puts "#{id} #{@method[:start]} > #{line} > #{@method[:end]}"
   end
-
-  def exit_from_method
-    @pry_start_options[:exit_from_method] = true
-    true
-  end
-
 
   def current_frame_digest(upward: 0)
     # binding_ from tracing_func doesn't have @iseq,
     # therefore binding should  be re-retrieved using 'binding_of_caller' lib
-    frame_digest(binding.of_caller(4 + upward))
+    frame_digest(binding.of_caller(3 + upward))
   end
 
   def frame_digest(binding_)
     #puts "frame_digest for: #{binding_.eval '__callee__'}"
-    Digest::MD5.hexdigest binding_.instance_variable_get('@iseq').disasm
+    iseq = binding_.instance_variable_get('@iseq')
+    Digest::MD5.hexdigest iseq.disasm
   end
 
   def current_frame_type(upward: 0)
     # binding_ from tracing_func doesn't have @iseq,
     # therefore binding should  be re-retrieved using 'binding_of_caller' lib
-    frame_type(binding.of_caller(4 + upward))
+    frame_type(binding.of_caller(3 + upward))
   end
 
   def frame_type(binding_)

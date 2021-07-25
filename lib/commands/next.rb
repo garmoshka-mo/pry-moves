@@ -11,15 +11,10 @@ class PryMoves::Next < PryMoves::TraceCommand
 
   def trace(event, file, line, method, binding_)
     @events_traced += 1
-    traced_method_exit = (@call_depth < 0 and %w(line call).include? event)
-    if traced_method_exit
-      # Set new traced method, because we left previous one
-      set_traced_method binding_
-      throw :skip if event == 'call'
-    end
 
-    if @call_depth == 0 and
-      within_current_method?(file, line)
+    return true if @call_depth < 0
+
+    return unless @call_depth == 0 and @method.within?(file, line)
 
       if event == 'line'
         if @stay_at_frame
@@ -35,9 +30,8 @@ class PryMoves::Next < PryMoves::TraceCommand
         end
       end
 
-      exit_from_method if event == 'return' and
-        method == @method[:name] and before_end?(line)
-    end
+      true if event == 'return' and
+        method == @method[:name] and @method.before_end?(line)
   end
 
 end

@@ -5,16 +5,25 @@ class PryMoves::Step < PryMoves::TraceCommand
     @start_line = binding_.eval('__LINE__')
     @caller_digest = frame_digest(binding_)
     func = @command[:param]
+    redirect_step? binding_ # set @step_into_funcs from initial binding
     if func == '+'
       @step_in_everywhere = true
     elsif func
       @find_straight_descendant = true
       @step_into_funcs = [func]
-      @step_into_funcs << '=initialize' if func == 'new' or func == '=new'
+      @step_into_funcs << '=initialize' if ['new', '=new'].include? func
     end
   end
 
   def trace(event, file, line, method, binding_)
+    if binding_.local_variable_defined? :pry_moves_skip
+      finish_cmd = {binding: binding_}
+      PryMoves::Finish.new finish_cmd, @pry_start_options do |binding|
+        start_tracing
+      end
+      return
+    end
+
     @const_missing_level ||= 0
     if method == :const_missing
       if event == 'call'
@@ -38,7 +47,8 @@ class PryMoves::Step < PryMoves::TraceCommand
       return false if keep_search_method? binding_
     elsif redirect_step? binding_
       return false
-    elsif binding_.local_variable_defined? :hide_from_stack
+    elsif binding_.local_variable_defined? :hide_from_stack and
+          not @method.within?(file, line, method)
       return false
     end
 
@@ -46,8 +56,7 @@ class PryMoves::Step < PryMoves::TraceCommand
   end
 
   def keep_search_method? binding_
-    method = binding_.eval('__callee__').to_s
-    return true unless method_matches?(method)
+    return true unless method_matches? binding_.eval('__callee__')
 
     return true if @find_straight_descendant &&
       # if we want to step-in only into straight descendant
@@ -59,10 +68,14 @@ class PryMoves::Step < PryMoves::TraceCommand
 
   def method_matches?(method)
     @step_into_funcs.any? do |pattern|
-      if pattern.start_with? '='
+      if pattern.is_a? Symbol
+        method == pattern
+      elsif pattern.is_a? Regexp
+        method.to_s.match pattern
+      elsif pattern.start_with? '='
         "=#{method}" == pattern
       else
-        method.include? pattern
+        method.to_s.include? pattern
       end
     end
   end

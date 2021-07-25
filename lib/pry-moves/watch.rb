@@ -1,4 +1,5 @@
 require 'singleton'
+require 'set'
 
 class PryMoves::Watch
 

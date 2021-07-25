@@ -3,10 +3,10 @@ require 'pry' unless defined? Pry
 require 'pry-moves/version'
 require 'pry-moves/pry_ext'
 require 'pry-moves/commands'
-require 'pry-moves/traversing'
+require 'pry-moves/add_suffix'
 require 'pry-moves/pry_wrapper'
 require 'pry-moves/bindings_stack'
-require 'pry-moves/helpers'
+require 'pry-moves/formatter'
 require 'pry-moves/backtrace'
 require 'pry-moves/watch'
 require 'pry-moves/painter'
@@ -35,13 +35,23 @@ module PryMoves
   extend self
   extend PryMoves::Restartable
 
-  attr_accessor :is_open, :trace, :show_vapid_frames,
-    :stop_on_breakpoints, :launched_specs_examples
+  attr_accessor :is_open, :trace,
+    :stop_on_breakpoints, :launched_specs_examples, :debug_called_times
 
-  def debug(message = nil)
-    hide_from_stack = true
+  def reset
+    self.launched_specs_examples = 0
+    self.stop_on_breakpoints = true
+    self.debug_called_times = 0
+  end
+
+  def debug(message = nil, at: nil)
+    pry_moves_stack_root = true
+    PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
-      PryMoves.re_execution
+      if at
+        self.debug_called_times += 1
+        return unless self.debug_called_times == at
+      end
       PryMoves.messages << message if message
       binding.pry
       PryMoves.re_execution
@@ -70,6 +80,7 @@ module PryMoves
   def locked?
     semaphore.locked?
   end
+  alias tracing? locked?
 
   def lock
     semaphore.lock unless semaphore.locked?
@@ -108,6 +119,5 @@ module PryMoves
   attr_accessor :current_remote_server
 end
 
-PryMoves.stop_on_breakpoints = true
-PryMoves.launched_specs_examples = 0
+PryMoves.reset
 PryMoves.trace = true if ENV['TRACE_MOVES']

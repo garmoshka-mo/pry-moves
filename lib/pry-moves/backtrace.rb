@@ -21,19 +21,19 @@ class PryMoves::Backtrace
 
   end
 
-  include PryMoves::Helpers
-
   def initialize(pry)
-     @pry = pry
+    @pry = pry
+    @formatter = PryMoves::Formatter.new
   end
 
   def run_command(param, param2)
     if param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
+      @formatter.colorize = false
       write_to_file build, suffix
     elsif param and param.match /\d+/
       index = param.to_i
-      frame_manager.change_frame_to index
+      frame_manager.goto_index index
     else
       print_backtrace param
     end
@@ -49,39 +49,48 @@ class PryMoves::Backtrace
   end
 
   def build
-    result = []
     show_vapid = %w(+ a all hidden vapid).include?(@filter)
-    stack = stack_bindings(show_vapid)
-    stack.reject! do |binding|
-      binding.eval('__FILE__').match self.class::filter
-    end unless %w(a all).include?(@filter)
-    build_result stack.reverse, result
-  end
+    show_all = %w(a all).include?(@filter)
+    result = []
+    current_object, vapid_count = nil, 0
 
-  def build_result(stack, result)
-    current_object = nil
-    stack.each_with_index do |binding|
+    frame_manager.bindings.each_with_details do |binding, vapid|
+      next if !show_all and binding.eval('__FILE__').match self.class::filter
+
+      if !show_vapid and vapid
+        vapid_count += 1
+        next
+      end
+
+      if vapid_count > 0
+        result << "👽  frames hidden: #{vapid_count}"
+        vapid_count = 0
+      end
+
       obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
       # Comparison of objects directly may raise exception
       if current_object.object_id != obj.object_id
-        result << "#{debug_snapshot || format_obj(obj)}:"
+        result << "#{debug_snapshot || @formatter.format_obj(obj)}"
         current_object = obj
       end
 
       result << build_line(binding)
     end
+
+    result << "👽  frames hidden: #{vapid_count}" if vapid_count > 0
+
     result
   end
 
   def build_line(binding)
-    file = shorten_path "#{binding.eval('__FILE__')}"
+    file = @formatter.shorten_path "#{binding.eval('__FILE__')}"
 
-    signature = method_signature binding
+    signature = @formatter.method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
 
     indent = if frame_manager.current_frame == binding
       '==> '
-    elsif @lines_numbers
+    elsif true #@lines_numbers
       s = "#{binding.index}:".ljust(4, ' ')
       @colorize ? "\e[2;49;90m#{s}\e[0m" : s
     else
@@ -94,10 +103,6 @@ class PryMoves::Backtrace
 
   def frame_manager
     PryStackExplorer.frame_manager(@pry)
-  end
-
-  def stack_bindings(vapid_frames)
-    frame_manager.bindings.filter_bindings vapid_frames: vapid_frames
   end
 
   def write_to_file(lines, file_suffix)
@@ -113,4 +118,25 @@ class PryMoves::Backtrace
     "#{root}/backtrace_#{file_suffix}.log"
   end
 
+end
+
+Pry.config.exception_handler = proc do |output, exception, _|
+  if Pry::UserError === exception && SyntaxError === exception
+    output.puts "SyntaxError: #{exception.message.sub(/.*syntax error, */m, '')}"
+  else
+
+    output.puts "#{exception.class}: #{exception.message}"
+    exception.backtrace.reject! {|l| l.match /sugar\.rb/}
+    output.puts "from #{exception.backtrace.first}"
+
+    if exception.respond_to? :cause
+      cause = exception.cause
+      while cause
+        output.puts "Caused by #{cause.class}: #{cause}\n"
+        cause.backtrace.reject! {|l| l.match /sugar\.rb/}
+        output.puts "from #{cause.backtrace.first}"
+        cause = cause.cause
+      end
+    end
+  end
 end

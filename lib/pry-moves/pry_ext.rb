@@ -1,21 +1,16 @@
 class << Pry
-  alias_method :start_without_pry_nav, :start
+  alias pry_moves_origin_start start
 
-  def start_with_pry_nav(target = TOPLEVEL_BINDING, options = {})
-    old_options = options.reject { |k, _| k == :pry_remote }
-
+  def start(target = TOPLEVEL_BINDING, options = {})
     if target.is_a?(Binding) && PryMoves.check_file_context(target)
       # Wrap the tracer around the usual Pry.start
-      PryMoves::PryWrapper.new(target, options).run do
-        start_without_pry_nav(target, old_options)
-      end
+      PryMoves::PryWrapper.new(target, options, self).run
     else
       # No need for the tracer unless we have a file context to step through
-      start_without_pry_nav(target, old_options)
+      pry_moves_origin_start(target, options)
     end
   end
 
-  alias_method :start, :start_with_pry_nav
 end
 
 Binding.class_eval do
@@ -25,9 +20,9 @@ Binding.class_eval do
   alias pry_forced pry
 
   def pry
-    unless Pry.config.disable_breakpoints
-      PryMoves.synchronize_threads ||
-        return # Don't start binding.pry when semaphore locked by current thread
+    if !Pry.config.disable_breakpoints and
+        # Don't start binding.pry when semaphore locked by current thread
+        PryMoves.synchronize_threads
       pry_forced
     end
   end
@@ -84,13 +79,19 @@ Pry::Command::Whereami.class_eval do
   end
 
   def build_output
-    lines = []
-    lines << "#{text.bold('From:')} #{PryMoves::Helpers.shorten_path location}"
+    lines = ['']
+
+    formatter = PryMoves::Formatter.new
+    prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
+    lines << "#{prefix}#{formatter.shorten_path location}"
+    lines << "   ." + formatter.method_signature(target)
+    lines << ''
+    lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+
     lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
     lines.concat PryMoves.messages
     PryMoves.messages.clear
-    lines << ''
-    lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+
     lines << ''
     lines.join "\n"
   end
@@ -113,3 +114,17 @@ Pry::Code::LOC.class_eval do
   end
 
 end
+
+Pry::Output.class_eval do
+
+  alias pry_moves_origin_for_puts puts
+
+  def puts *args
+    first = args[0]
+    if first.is_a? String and first.start_with? "(pry) output error"
+      first.slice! 200..-1
+    end
+    pry_moves_origin_for_puts *args
+  end
+
+end if defined? Pry::Output

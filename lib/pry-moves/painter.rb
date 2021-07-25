@@ -20,7 +20,7 @@ module PryMoves::Painter
     end
     colored_str.chomp
   rescue => e
-    "Inspect error: #{e}\n" +
+    "⛔️ Inspect error: #{e}\n" +
       "#{e.backtrace.first(3).join("\n")}"
   end
 

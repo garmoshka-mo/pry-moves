@@ -22,6 +22,18 @@ class Playground
     hidden_self.something_inside # point to step inside
   end
 
+  def hidden_self
+    hide_from_stack = true # hidden_self 1
+    self # hidden_self 2
+  end
+
+  def hidden_stop
+    hide_from_stack = true
+    binding.pry # hidden stop
+    dummy = :ok_next # hidden_stop for next
+    dummy = :ok_step # hidden_stop for step
+  end
+
   def continue
     binding.pry # first stop
     dummy = :something
@@ -67,12 +79,7 @@ class Playground
   def level_c(param = nil)
     binding.pry # stop in level_c
     self
-  end
-
-  def hidden_self
-    hide_from_stack = true
-    self
-  end
+  end # exit from level_c
 
   def nested_block(early_return: false)
     binding.pry # stop in nested_block
@@ -117,15 +124,16 @@ class Playground
 
   def zaloop(pass = :root)
     binding.pry if pass == :root # stop in zaloop
-    iterator do |i|
+    iterator do |i| # iterator line
       dummy = 1 # inside block
       zaloop i if pass == :root
+      return unless pass == :root # after sub-zaloop
     end
     :after_block # after block
-  end
+  end # exit from zaloop
 
   def method_with_redirection
-    debug_redirect = '=level_a' # at method_with_redirection
+    debug_redirect = :level_a # at method_with_redirection
     level_a
   end
 
@@ -154,6 +162,20 @@ class Playground
     dummy = 1 # after breakpoint 2
   end
 
+  def skip_test
+    binding.pry # stop in skip_test
+    skipped_method.not_skipped_method # next step
+  end
+
+  def skipped_method
+    pry_moves_skip = true # at skipped_method
+    self # at skipped_method
+  end
+
+  def not_skipped_method
+    :not_skipped_method # at not_skipped_method
+  end
+
   private
 
   def iterator
@@ -162,7 +184,7 @@ class Playground
       yield i
       :post_yield # post_yield
     end
-  end
+  end # exit from iterator
   
   def debug_
     :something # inside of debug method

@@ -1,27 +1,38 @@
-def debug
-  hide_from_stack = true
-  PryMoves.debug
+def debug *args
+  pry_moves_stack_root = true
+  PryMoves.debug *args
 end
 
-def error(msg)
-  hide_from_stack = true
+def error(msg, debug_object = nil)
+  pry_moves_stack_root = true
   err = "😱  #{msg}"
-  if PryMoves.stop_on_breakpoints
-    PryMoves.debug err.red
-  else
-    unless PryMoves.open?
+  unless PryMoves.open?
+    if PryMoves.stop_on_breakpoints
+      lines = [err.red]
+      lines.prepend debug_object.ai if debug_object
+      PryMoves.debug lines.join("\n")
+    else
+      STDERR.puts debug_object.ai if debug_object
       STDERR.puts err.ljust(80, ' ').red
     end
   end
   raise msg
 end
 
-def shit!(err = 'Oh, shit!')
-  hide_from_stack = true
+def shit!(err = 'Oh, shit!', debug_object = nil)
+  pry_moves_stack_root = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
-  PryMoves.debug message.red
+  lines = [message.red]
+  lines.prepend debug_object.ai if debug_object
+  PryMoves.debug lines.join("\n")
   nil
+end
+
+def required(var)
+  pry_moves_stack_root = true
+  error("required parameter is missing") if var.nil?
+  var
 end
 
 RSpec.configure do |config|
