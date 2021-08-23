@@ -69,4 +69,4 @@ Rake::Task.class_eval do
     load rake_task_path
   end
 
-end if defined? Rake
+end if defined? Rake and defined? Rake::Task

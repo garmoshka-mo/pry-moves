@@ -4,7 +4,10 @@ class << Pry
   def start(target = TOPLEVEL_BINDING, options = {})
     if target.is_a?(Binding) && PryMoves.check_file_context(target)
       # Wrap the tracer around the usual Pry.start
+      original_verbosity = $VERBOSE
+      $VERBOSE = nil # Disable warnings for pry-moves
       PryMoves::PryWrapper.new(target, options, self).run
+      $VERBOSE = original_verbosity
     else
       # No need for the tracer unless we have a file context to step through
       pry_moves_origin_start(target, options)

@@ -1,3 +1,5 @@
+$VERBOSE = nil # Disable warnings for whole specs
+
 require 'pry'
 require_relative 'pry_debugger'
 require_relative '../playground/playground.rb'
