@@ -2,6 +2,7 @@
 
 ```
 be ruby sand.rb
+be ruby test.rb
 ```
 
 ## Conditions to be met
