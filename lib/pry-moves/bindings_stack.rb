@@ -44,8 +44,7 @@ class PryMoves::BindingsStack < Array
 
     # here calls checked in reverse order - from latest to parent:
     each do |binding|
-      file, line = binding.source_location
-      method, obj = binding.eval("[__method__, self]")
+      file, method, obj = binding.eval("[__FILE__, __method__, self]")
 
       if file.match PryMoves::Backtrace::filter
         @vapid_bindings << binding

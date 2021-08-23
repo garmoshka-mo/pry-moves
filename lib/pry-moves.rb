@@ -61,7 +61,7 @@ module PryMoves
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
   def check_file_context(target)
-    file, line = target.source_location
+    file = target.eval('__FILE__')
     file == Pry.eval_path || (file !~ /(\(.*\))|<.*>/ && file != '' && file != '-e')
   end
 
