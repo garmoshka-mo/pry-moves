@@ -65,7 +65,6 @@ end
 
 SUFFIX_COMMANDS = [
   PryMoves::Method,
-  PryMoves::ArgumentCall,
   PryMoves::ArrayIndex,
   PryMoves::ArrayCall,
   PryMoves::HashKey
