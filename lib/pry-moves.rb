@@ -48,8 +48,8 @@ module PryMoves
     pry_moves_stack_root = true
     PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
+      self.debug_called_times += 1
       if at
-        self.debug_called_times += 1
         return unless self.debug_called_times == at
       end
       PryMoves.messages << message if message
