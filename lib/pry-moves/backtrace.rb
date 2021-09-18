@@ -49,10 +49,12 @@ class PryMoves::Backtrace
   end
 
   def build
-    show_vapid = %w(+ a all hidden vapid).include?(@filter)
     show_all = %w(a all).include?(@filter)
+    show_vapid = %w(+ hidden vapid).include?(@filter) || show_all
     result = []
     current_object, vapid_count = nil, 0
+
+    recursion = PryMoves::Recursion::Holder.new
 
     frame_manager.bindings.each_with_details do |binding, vapid|
       next if !show_all and binding.eval('__FILE__').match self.class::filter
@@ -74,16 +76,20 @@ class PryMoves::Backtrace
         current_object = obj
       end
 
-      result << build_line(binding)
+      file, line = binding.eval('[__FILE__, __LINE__]')
+      recursion.track file, line, result.count, binding.index unless show_vapid
+      result << build_line(binding, file, line)
     end
+
+    recursion.each { |t| t.apply result }
 
     result << "👽  frames hidden: #{vapid_count}" if vapid_count > 0
 
     result
   end
 
-  def build_line(binding)
-    file = @formatter.shorten_path "#{binding.eval('__FILE__')}"
+  def build_line(binding, file, line)
+    file = @formatter.shorten_path "#{file}"
 
     signature = @formatter.method_signature binding
     signature = ":#{binding.frame_type}" if !signature or signature.length < 1
@@ -97,7 +103,6 @@ class PryMoves::Backtrace
       '    '
     end
 
-    line = binding.eval('__LINE__')
     "#{indent}#{file}:#{line} #{signature}"
   end
 
