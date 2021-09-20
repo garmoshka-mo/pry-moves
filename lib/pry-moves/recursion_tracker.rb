@@ -36,7 +36,7 @@ module PryMoves::Recursion
         @recursion_size = 0
         @missing_lines.concat @currently_missing
         @repetitions_end = bt_index
-      elsif prev_index &&! prev_index > @last_index
+      elsif prev_index && prev_index > @last_index
         @last_index = prev_index + 1
         @recursion_size += 1
         # todo: finish tracking and debug multi-line recursions
@@ -56,11 +56,15 @@ module PryMoves::Recursion
       @is_finished
     end
 
+    def good?
+      @repetitions_start and @repetitions_end
+    end
+
     def apply result
       label = "♻️  recursion with #{@loops} loops"
       label += " Ⓜ️  #{@missing} missing lines #{@missing_lines}" if @missing_lines.present?
       label = "...(#{label})..."
-      puts "#{@repetitions_start}..#{@repetitions_end}"
+      # puts "#{@repetitions_start}..#{@repetitions_end}"
       result[@repetitions_start..@repetitions_end] = [label]
     end
 
@@ -80,7 +84,7 @@ module PryMoves::Recursion
     def track *args
       @tracker.track *args
       if @tracker.finished?
-        self << @tracker
+        self << @tracker if @tracker.good?
         new_tracker
       end
     end
