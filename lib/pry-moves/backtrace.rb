@@ -2,10 +2,12 @@ require 'fileutils'
 
 class PryMoves::Backtrace
 
+  FILTERS = %w[/gems/ /rubygems/ /bin/ /lib/ruby/]
+
   class << self
 
     def filter
-      @filter || /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/)/
+      @filter ||= Regexp.new FILTERS.join("|")
     end
     def filter=(f); @filter = f; end
 
