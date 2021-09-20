@@ -45,6 +45,7 @@ class PryMoves::Formatter
   end
 
   def cut_string str
+    return str unless str
     str.length > 50 ? "#{str.first 50}..." : str
   end
 
