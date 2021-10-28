@@ -116,6 +116,11 @@ module PryStackExplorer
 
 
   Commands = Pry::CommandSet.new do
+
+    block_command '%', 'Print current stack frame' do
+      run 'whereami'
+    end
+
     create_command "up", "Go up to the caller's context." do
       include FrameHelpers
 

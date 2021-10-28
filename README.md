@@ -29,6 +29,8 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
 * `up`/`down`/`top`/`bottom` - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
+* `%` - print current frame of call stack (alias to `whereami`)
+* `$` - fully print current function without line numbers
 * `debug some_method(some_param)` - call `some_method(some_param)` and interactively step into it. This way you can virtually "step back" by executing previous pieces of code from current method
 * `.method` or `123` or `:hash_key` - Continue traversing of last object in history. E.g. `orders` will list array, then `3` will enter `orders[3]`, then `.price` will enter `orders[3].price`
 * `watch variable` - display variable's value on each step

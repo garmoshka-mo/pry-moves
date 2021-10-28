@@ -3,7 +3,7 @@ def debug *args
   PryMoves.debug *args
 end
 
-def error(msg, debug_object = nil)
+def error(msg = "Error", debug_object = nil)
   pry_moves_stack_root = true
   err = "😱  #{msg}"
   unless PryMoves.open?
