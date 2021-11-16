@@ -121,5 +121,5 @@ end
 Pry.config.hooks.add_hook(:when_started, :save_caller_bindings, PryStackExplorer::WhenStartedHook.new)
 
 # Import the StackExplorer commands
-Pry.config.commands.import PryStackExplorer::Commands
+Pry.config.commands.import PryStackExplorer::COMMANDS
 
