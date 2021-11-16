@@ -1,5 +1,6 @@
 require 'pry' unless defined? Pry
 require 'colorize'
+require 'diffy'
 
 require 'pry-moves/version'
 require 'pry-moves/pry_ext'

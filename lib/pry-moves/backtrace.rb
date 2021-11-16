@@ -29,10 +29,15 @@ class PryMoves::Backtrace
   end
 
   def run_command(param, param2)
-    if param.is_a?(String) and (match = param.match /^>(.*)/)
+    if param == 'save'
+      @@backtrace = build_backtrace
+      @pry.output.puts "💾 Backtrace saved (#{@@backtrace.count} lines)"
+    elsif param == 'diff'
+      diff
+    elsif param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
       @formatter.colorize = false
-      write_to_file build, suffix
+      write_to_file build_backtrace, suffix
     elsif param and param.match /\d+/
       index = param.to_i
       frame_manager.goto_index index
@@ -47,10 +52,10 @@ class PryMoves::Backtrace
     @colorize = true
     @lines_numbers = true
     @filter = filter if filter.is_a? String
-    @pry.output.puts build
+    @pry.output.puts build_backtrace
   end
 
-  def build
+  def build_backtrace
     show_all = %w(a all).include?(@filter)
     show_vapid = %w(+ hidden vapid).include?(@filter) || show_all
     result = []
@@ -123,6 +128,14 @@ class PryMoves::Backtrace
     root += '/log'
     FileUtils.mkdir_p root
     "#{root}/backtrace_#{file_suffix}.log"
+  end
+
+  def diff
+    return STDERR.puts "No backtrace saved. Use `bt save` first".yellow unless defined? @@backtrace
+
+    diff = Diffy::Diff.new(@@backtrace.join("\n"), build_backtrace.join("\n")).to_s "color"
+    diff = 'Backtraces are equal' if diff.strip.empty?
+    @pry.output.puts diff
   end
 
 end
