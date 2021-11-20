@@ -62,7 +62,7 @@ _Demo class source [here](https://github.com/garmoshka-mo/pry-moves/issues/1)_
 
 ## Backtrace and call stack
 
-You can explicitly hide frames from backtrace and call stack by defining `hide_from_stack` variable:
+You can explicitly hide frames from call stack by defining variables like this:
 
 ```ruby
 def insignificant_method
@@ -71,6 +71,10 @@ def insignificant_method
   yield
 end
 ```
+
+* `hide_from_stack` - hide this function from stack
+* `pry_moves_stack_tip` -  stop on first frame above this function  
+* `pry_moves_stack_end` - limits stack from bottom, not possible to step below this frame  
 
 ## Configuration
 

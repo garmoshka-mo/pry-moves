@@ -18,7 +18,7 @@ end
 
 Binding.class_eval do
 
-  attr_accessor :index
+  attr_accessor :index, :hidden
 
   alias pry_forced pry
 

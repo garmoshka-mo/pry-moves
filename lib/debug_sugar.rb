@@ -1,10 +1,10 @@
 def debug *args
-  pry_moves_stack_root = true
+  pry_moves_stack_end = true
   PryMoves.debug *args
 end
 
 def error(msg = "Error", debug_object = nil)
-  pry_moves_stack_root = true
+  pry_moves_stack_end = true
   err = "😱  #{msg}"
   unless PryMoves.open?
     if PryMoves.stop_on_breakpoints
@@ -20,7 +20,7 @@ def error(msg = "Error", debug_object = nil)
 end
 
 def shit!(err = 'Oh, shit!', debug_object = nil)
-  pry_moves_stack_root = true
+  pry_moves_stack_end = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
   lines = [message.red]
@@ -30,7 +30,7 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
 end
 
 def required(var)
-  pry_moves_stack_root = true
+  pry_moves_stack_end = true
   error("required parameter is missing") if var.nil?
   var
 end

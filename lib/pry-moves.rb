@@ -48,7 +48,7 @@ module PryMoves
   end
 
   def debug(message = nil, at: nil)
-    pry_moves_stack_root = true
+    pry_moves_stack_end = true
     PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
       self.debug_called_times += 1
