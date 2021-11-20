@@ -36,7 +36,6 @@ class PryMoves::BindingsStack < Array
   def mark_vapid_frames
     stepped_out = false
     actual_file, actual_method = nil, nil
-    stack_tip_met = false
 
     # here calls checked in reverse order - from latest to parent:
     each do |binding|
@@ -62,6 +61,14 @@ class PryMoves::BindingsStack < Array
       if binding.local_variable_defined? :hide_from_stack
         binding.hidden = true
       end
+    end
+
+    stack_tip_met = false
+    reverse.each do |binding|
+      if binding.local_variable_defined? :pry_moves_stack_tip
+        stack_tip_met = true
+      end
+      binding.hidden = true if stack_tip_met
     end
   end
 
