@@ -86,8 +86,10 @@ class PryMoves::BindingsStack < Array
 
   def top_internal_frame_index(bindings)
     bindings.rindex do |b|
-      if b.frame_type == :method
-        method, self_ = b.eval("[__method__, self]")
+      if b.frame_type == :eval
+        true
+      elsif b.frame_type == :method
+        method, self_ = b.eval("[__method__, self, __FILE__]")
 
         self_.equal?(Pry) && method == :start ||
           self_.class == Binding && method == :pry ||
