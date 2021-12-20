@@ -143,9 +143,9 @@ end
 Pry.config.exception_handler = proc do |output, exception, _|
 
   def print_error message, exception, output
-    output.puts message
+    output.puts message.red
     exception.backtrace.reject! {|l| l.match /sugar\.rb/}
-    exception.backtrace.first(10).each { output.puts _1 }
+    exception.backtrace.first(3).each { output.puts _1.white }
   end
 
   if Pry::UserError === exception && SyntaxError === exception
