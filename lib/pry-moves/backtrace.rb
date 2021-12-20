@@ -141,20 +141,23 @@ class PryMoves::Backtrace
 end
 
 Pry.config.exception_handler = proc do |output, exception, _|
+
+  def print_error message, exception, output
+    output.puts message
+    exception.backtrace.reject! {|l| l.match /sugar\.rb/}
+    exception.backtrace.first(10).each { output.puts _1 }
+  end
+
   if Pry::UserError === exception && SyntaxError === exception
     output.puts "SyntaxError: #{exception.message.sub(/.*syntax error, */m, '')}"
   else
 
-    output.puts "#{exception.class}: #{exception.message}"
-    exception.backtrace.reject! {|l| l.match /sugar\.rb/}
-    output.puts "from #{exception.backtrace.first}"
+    print_error "#{exception.class}: #{exception.message}", exception, output
 
     if exception.respond_to? :cause
       cause = exception.cause
       while cause
-        output.puts "Caused by #{cause.class}: #{cause}\n"
-        cause.backtrace.reject! {|l| l.match /sugar\.rb/}
-        output.puts "from #{cause.backtrace.first}"
+        print_error "Caused by #{cause.class}: #{cause}\n", exception, output
         cause = cause.cause
       end
     end
