@@ -87,8 +87,9 @@ class PryMoves::BindingsStack < Array
   end
 
   def top_internal_frame_index(bindings)
+    pry_moves_debug = Thread.current[:pry_moves_debug]
     bindings.rindex do |b|
-      if b.frame_type == :eval
+      if not pry_moves_debug and b.frame_type == :eval
         true
       elsif b.frame_type == :method
         method, self_ = b.eval("[__method__, self, __FILE__]")
