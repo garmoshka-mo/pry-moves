@@ -38,7 +38,7 @@ module PryMoves
   extend self
   extend PryMoves::Restartable
 
-  attr_accessor :is_open, :trace,
+  attr_accessor :is_open, :trace, :stack_tips,
     :stop_on_breakpoints, :launched_specs_examples, :debug_called_times
 
   def reset

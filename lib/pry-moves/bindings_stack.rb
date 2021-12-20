@@ -64,8 +64,10 @@ class PryMoves::BindingsStack < Array
     end
 
     stack_tip_met = false
+    stack_tips = PryMoves.stack_tips || []
     reverse.each do |binding|
-      if binding.local_variable_defined? :pry_moves_stack_tip
+      if binding.local_variable_defined?(:pry_moves_stack_tip) ||
+          stack_tips.include?(binding.eval("__method__"))
         stack_tip_met = true
       end
       binding.hidden = true if stack_tip_met
