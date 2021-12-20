@@ -20,6 +20,7 @@ def error(msg = "Error", debug_object = nil)
 end
 
 def shit!(err = 'Oh, shit!', debug_object = nil)
+  return if ENV['NO_SHIT']
   pry_moves_stack_end = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints
