@@ -45,7 +45,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each) do |example|
-    PryMoves.restartable do
+    PryMoves.restartable(rspec_example: example) do
       example.run
     end
   end
@@ -58,7 +58,7 @@ Rake::Task.class_eval do
 
   def execute(args=nil)
     args ||= EMPTY_TASK_ARGS
-    PryMoves.restartable do
+    PryMoves.restartable(rake_args: args) do
       reload_actions if PryMoves.reload_rake_tasks
       execute_origin_for_pry_moves args
     end

@@ -104,8 +104,8 @@ module PryMoves
     true
   end
 
-  def trigger(event)
-    triggers[event].each &:call
+  def trigger(event, context)
+    triggers[event].each {|t| t.call context}
   end
 
   def triggers

@@ -3,14 +3,14 @@ module PryMoves::Restartable
   attr_accessor :restart_requested, :reload_requested,
     :reload_rake_tasks
 
-  def restartable
-    trigger :new_run
+  def restartable context
+    trigger :new_run, context
     yield
     re_execution
   rescue PryMoves::Restart
     self.restart_requested = false
     PryMoves.reset
-    trigger :restart
+    trigger :restart, context
     retry
   rescue PryMoves::Reload
     puts "🔮  try to use @ with reload"
