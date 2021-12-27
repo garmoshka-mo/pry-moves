@@ -30,9 +30,11 @@ class PryMoves::Backtrace
 
   def run_command(param, param2)
     if param == 'save'
+      @filter = 'hidden'
       @@backtrace = build_backtrace
       @pry.output.puts "💾 Backtrace saved (#{@@backtrace.count} lines)"
     elsif param == 'diff'
+      @filter = 'hidden'
       diff
     elsif param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
