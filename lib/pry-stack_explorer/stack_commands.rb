@@ -55,6 +55,7 @@ module PryStackExplorer
         frame_manager.change_frame_to 0
       end
     end
+    alias_command 'bm', 'bottom'
 
     create_command "frame", "Switch to a particular frame." do
       include FrameHelpers
