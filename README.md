@@ -28,7 +28,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
   * `bt save` - save backtrace to memory
   * `bt diff` - diff with saved backtrace
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
-* `up`/`down`/`top`/`bottom` - move over call stack
+* `up`/`down`/`top`/`bottom` (`bm`) - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
 * `%` - print current frame of call stack (alias to `whereami`)
