@@ -6,6 +6,7 @@ class PryMoves::Formatter
     @colorize = colorize
   end
 
+  MAX_PARAMS = 5
   def method_signature(binding)
     meth = binding.eval('__method__')
     meth_obj = meth ? Pry::Method.from_binding(binding) : nil
@@ -30,6 +31,9 @@ class PryMoves::Formatter
           else '?'
         end
         show_value ? "#{name} #{value}" : name
+      end
+      if args.count > MAX_PARAMS
+        args = args.first(MAX_PARAMS) + ["(#{args.count - MAX_PARAMS} more params)…"]
       end
       "#{meth_obj.name}(#{args.join(', ')})"
     end
