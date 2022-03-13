@@ -76,7 +76,7 @@ class PryWrapper
         @command[:binding].eval @command[:param]
       rescue StandardError, SyntaxError => e
         Thread.current.set_trace_func nil
-        puts "❌️ #{e}"
+        puts "❌️ Error during #{"debug".yellow} execution: #{e}"
       end
       tracer.stop_tracing
     end.join
