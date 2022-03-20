@@ -90,7 +90,7 @@ class PryMoves::Backtrace
       result << build_line(binding, file, line)
     end
 
-    recursion.each { |t| t.apply result }
+    # recursion.each { |t| t.apply result }
 
     result << "👽  frames hidden: #{vapid_count}" if vapid_count > 0
 
