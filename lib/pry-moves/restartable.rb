@@ -8,6 +8,7 @@ module PryMoves::Restartable
     yield
     re_execution
   rescue PryMoves::Restart
+    puts "🔄️  Restarting execution"
     self.restart_requested = false
     PryMoves.reset
     trigger :restart, context
