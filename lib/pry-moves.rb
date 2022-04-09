@@ -55,7 +55,9 @@ module PryMoves
       if at
         return unless self.debug_called_times == at
       end
-      PryMoves.messages << message if message
+      if message
+        PryMoves.messages << (message.is_a?(String) ? message : message.ai)
+      end
       binding.pry
       PryMoves.re_execution
     end
@@ -114,7 +116,9 @@ module PryMoves
     end
   end
 
+  TRIGGERS = [:each_new_run, :restart]
   def on(trigger, &block)
+    error "Invalid trigger, possible triggers: #{TRIGGERS}", trigger unless trigger.in? TRIGGERS
     triggers[trigger] << block
   end
 

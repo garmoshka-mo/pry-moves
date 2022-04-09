@@ -4,7 +4,7 @@ module PryMoves::Restartable
     :reload_rake_tasks
 
   def restartable context
-    trigger :new_run, context
+    trigger :each_new_run, context
     yield
     re_execution
   rescue PryMoves::Restart
