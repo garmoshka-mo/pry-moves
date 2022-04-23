@@ -19,12 +19,6 @@ class PryMoves::BindingsStack < Array
     find{|b| not b.hidden}
   end
 
-  def each_with_details
-    self.reverse.each do |binding|
-      yield binding, binding.hidden
-    end
-  end
-
   private
 
   def set_indices

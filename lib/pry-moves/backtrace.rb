@@ -65,10 +65,10 @@ class PryMoves::Backtrace
 
     recursion = PryMoves::Recursion::Holder.new
 
-    frame_manager.bindings.each_with_details do |binding, vapid|
+    frame_manager.bindings.reverse.each do |binding|
       next if !show_all and binding.eval('__FILE__').match self.class::filter
 
-      if !show_vapid and vapid
+      if !show_vapid and binding.hidden
         vapid_count += 1
         next
       end
