@@ -11,7 +11,7 @@ class PryWrapper
   def run
     PryMoves.lock
 
-    initial_frame = PryMoves::BindingsStack.new.initial_frame
+    initial_frame = PryMoves::BindingsStack.new(@pry_start_options).initial_frame
     if not @pry_start_options[:pry_moves_loop] and
         initial_frame.local_variable_defined? :debug_redirect
       debug_redirect = initial_frame.local_variable_get(:debug_redirect)

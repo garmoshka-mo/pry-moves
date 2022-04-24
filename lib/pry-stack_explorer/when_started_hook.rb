@@ -22,7 +22,7 @@ module PryStackExplorer
           raise ArgumentError, ":call_stack must be an array of bindings"
         end
       else
-        bindings = PryMoves::BindingsStack.new
+        bindings = PryMoves::BindingsStack.new options
         initial_frame ||= bindings.suggest_initial_frame_index
         # if Thread.current[:pry_moves_debug] and initial_frame > 0
         if initial_frame > 0

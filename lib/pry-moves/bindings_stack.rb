@@ -1,6 +1,7 @@
 class PryMoves::BindingsStack < Array
 
-  def initialize
+  def initialize options
+    @options = options
     bindings = binding.callers # binding_of_caller has bug and always returns callers of current binding,
       # no matter at which binding method is called. So no need to pass here binding
     pre_callers = Thread.current[:pre_callers]
@@ -20,7 +21,9 @@ class PryMoves::BindingsStack < Array
   end
 
   def for_for_initial_frame b
-    not b.hidden and b.eval("__method__") != :initialize
+    not b.hidden and (
+      @options[:is_error] or b.eval("__method__") != :initialize
+    )
   end
 
   private

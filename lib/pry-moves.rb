@@ -47,7 +47,7 @@ module PryMoves
     self.debug_called_times = 0
   end
 
-  def debug(message = nil, at: nil)
+  def debug(message = nil, at: nil, options: nil)
     pry_moves_stack_end = true
     PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
@@ -58,14 +58,13 @@ module PryMoves
       if message
         PryMoves.messages << (message.is_a?(String) ? message : message.ai)
       end
-      binding.pry
+      binding.pry options
       PryMoves.re_execution
     end
   end
 
   def error(message)
-
-    debug message
+    debug message, options: {is_error: true}
   end
 
   # Checks that a binding is in a local file context. Extracted from
