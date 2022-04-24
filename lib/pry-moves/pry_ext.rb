@@ -22,11 +22,11 @@ Binding.class_eval do
 
   alias pry_forced pry
 
-  def pry
+  def pry options = nil
     if !Pry.config.disable_breakpoints and
         # Don't start binding.pry when semaphore locked by current thread
         PryMoves.synchronize_threads
-      pry_forced
+      pry_forced options
     end
   end
 

@@ -10,7 +10,7 @@ def error(msg = "Error", debug_object = nil)
     if PryMoves.stop_on_breakpoints
       lines = [err.red]
       lines.prepend debug_object.ai if debug_object
-      PryMoves.debug lines.join("\n")
+      PryMoves.error lines.join("\n")
     else
       STDERR.puts debug_object.ai if debug_object
       STDERR.puts err.ljust(80, ' ').red
@@ -26,7 +26,7 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
   raise err unless PryMoves.stop_on_breakpoints
   lines = [message.red]
   lines.prepend debug_object.ai if debug_object
-  PryMoves.debug lines.join("\n")
+  PryMoves.error lines.join("\n")
   nil
 end
 

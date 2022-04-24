@@ -63,6 +63,11 @@ module PryMoves
     end
   end
 
+  def error(message)
+
+    debug message
+  end
+
   # Checks that a binding is in a local file context. Extracted from
   # https://github.com/pry/pry/blob/master/lib/pry/default_commands/context.rb
   def check_file_context(target)
