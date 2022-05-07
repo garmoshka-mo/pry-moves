@@ -22,6 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'pry', '>= 0.10.4', '< 0.13'
   gem.add_runtime_dependency 'binding_of_caller', '~> 0.7'
   gem.add_runtime_dependency 'colorize', '~> 0.8'
-  gem.add_runtime_dependency 'diffy'
+  gem.add_runtime_dependency 'diffy', '~> 3.4.0'
   gem.add_development_dependency 'pry-remote', '~> 0.1.6'
 end

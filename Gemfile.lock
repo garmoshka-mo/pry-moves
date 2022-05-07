@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    pry-moves (1.0.1)
+    pry-moves (1.0.2)
       binding_of_caller (~> 0.7)
       colorize (~> 0.8)
-      diffy
+      diffy (~> 3.4.0)
       pry (>= 0.10.4, < 0.13)
 
 GEM
