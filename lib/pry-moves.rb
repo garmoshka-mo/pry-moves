@@ -14,6 +14,7 @@ require 'pry-moves/watch'
 require 'pry-moves/painter'
 require 'pry-moves/restartable'
 require 'pry-moves/recursion_tracker'
+require 'pry-moves/error_with_data'
 
 require 'commands/traced_method'
 require 'commands/trace_helpers'

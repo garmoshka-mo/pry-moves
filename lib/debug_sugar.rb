@@ -16,7 +16,7 @@ def error(msg = "Error", debug_object = nil)
       STDERR.puts err.ljust(80, ' ').red
     end
   end
-  raise msg
+  raise PryMoves::ErrorWithData.new(msg, debug_object)
 end
 
 def shit!(err = 'Oh, shit!', debug_object = nil)
