@@ -41,7 +41,7 @@ RSpec.configure do |config|
   config.before(:each) do
     PryMoves.launched_specs_examples += 1
     PryMoves.stop_on_breakpoints =
-      PryMoves.launched_specs_examples < 2
+      RSpec.configuration.world.example_count == 1
   end
 
   config.around(:each) do |example|
