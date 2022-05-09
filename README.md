@@ -18,7 +18,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
   * `s +` - step into function, including hidden frames
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `c` - **continue**
-* `b` - go to next breakpoint (breakpoints currently are methods which contain "debug" in their name)
+* `b` - go to next breakpoint (methods marked with `pry_breakpoint = :some_scope` variable)
 * `iterate` - go to next iteration of current block
 * `g 10` - **goto** line 10
 * `bt` - show backtrace, excluding hidden frames
