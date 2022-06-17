@@ -14,13 +14,13 @@ class PryMoves::BindingsStack < Array
   def suggest_initial_frame_index
     m = PryMoves::TracedMethod.last
     return 0 if m and m.binding_inside?(first)
-    index {|b| for_for_initial_frame b} || 0
+    index {|b| fits_for_initial_frame b} || 0
   end
   def initial_frame
-    find {|b| for_for_initial_frame b}
+    find {|b| fits_for_initial_frame b}
   end
 
-  def for_for_initial_frame b
+  def fits_for_initial_frame b
     not b.hidden and (
       @options[:is_error] or b.eval("__method__") != :initialize
     )
