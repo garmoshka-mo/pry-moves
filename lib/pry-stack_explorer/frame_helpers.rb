@@ -88,6 +88,7 @@ module PryStackExplorer::FrameHelpers
   end
 
   def find_frame_by_direction(dir, step_into_vapid: false)
+    PryMoves.step_in_everywhere = true if step_into_vapid
     frame_index = find_frame_by_block(dir) do |b|
       step_into_vapid or not b.hidden
     end

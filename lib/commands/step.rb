@@ -7,7 +7,7 @@ class PryMoves::Step < PryMoves::TraceCommand
     func = @command[:param]
     redirect_step? binding_ # set @step_into_funcs from initial binding
     if func == '+'
-      @step_in_everywhere = true
+      PryMoves.step_in_everywhere = true
     elsif func
       @find_straight_descendant = true
       @step_into_funcs = [func]
@@ -36,7 +36,7 @@ class PryMoves::Step < PryMoves::TraceCommand
 
     return unless event == 'line'
 
-    if @step_in_everywhere
+    if PryMoves.step_in_everywhere
       return true
     elsif @step_into_funcs
       if @call_depth < 0

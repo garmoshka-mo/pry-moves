@@ -40,12 +40,14 @@ module PryMoves
   extend PryMoves::Restartable
 
   attr_accessor :is_open, :trace, :stack_tips,
-    :stop_on_breakpoints, :launched_specs_examples, :debug_called_times
+    :stop_on_breakpoints, :launched_specs_examples,
+    :debug_called_times, :step_in_everywhere
 
   def reset
     self.launched_specs_examples = 0
     self.stop_on_breakpoints = true
     self.debug_called_times = 0
+    self.step_in_everywhere = false
   end
 
   def debug(message = nil, at: nil, options: nil)

@@ -21,9 +21,10 @@ class PryMoves::BindingsStack < Array
   end
 
   def fits_for_initial_frame b
-    not b.hidden and (
-      @options[:is_error] or b.eval("__method__") != :initialize
-    )
+    PryMoves.step_in_everywhere or
+      not b.hidden and (
+        @options[:is_error] or b.eval("__method__") != :initialize
+      )
   end
 
   private
