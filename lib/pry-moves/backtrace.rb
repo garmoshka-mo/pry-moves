@@ -25,16 +25,19 @@ class PryMoves::Backtrace
 
   def initialize(pry)
     @pry = pry
+    @lines_numbers = true
     @formatter = PryMoves::Formatter.new
   end
 
   def run_command(param, param2)
     if param == 'save'
       @filter = 'hidden'
+      @lines_numbers = false
       @@backtrace = build_backtrace
       @pry.output.puts "💾 Backtrace saved (#{@@backtrace.count} lines)"
     elsif param == 'diff'
       @filter = 'hidden'
+      @lines_numbers = false
       diff
     elsif param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
@@ -52,7 +55,6 @@ class PryMoves::Backtrace
 
   def print_backtrace filter
     @colorize = true
-    @lines_numbers = true
     @filter = filter if filter.is_a? String
     @pry.output.puts build_backtrace
   end
@@ -105,7 +107,7 @@ class PryMoves::Backtrace
 
     indent = if frame_manager.current_frame == binding
       '==> '
-    elsif true #@lines_numbers
+    elsif @lines_numbers
       s = "#{binding.index}:".ljust(4, ' ')
       @colorize ? "\e[2;49;90m#{s}\e[0m" : s
     else
