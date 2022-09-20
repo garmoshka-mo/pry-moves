@@ -56,7 +56,9 @@ class PryMoves::Formatter
   PATH_TRASH = defined?(Rails) ? Rails.root.to_s : Dir.pwd
 
   def shorten_path(path)
-    path.gsub( /^#{PATH_TRASH}\//, '')
+    path = path.gsub( /^#{PATH_TRASH}\//, '')
+    PryMoves::Backtrace.trim_path ?
+      File.basename(path, ".*") : path
   end
 
   def format_obj(obj)

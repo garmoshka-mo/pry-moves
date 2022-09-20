@@ -5,6 +5,7 @@ class PryMoves::Backtrace
   FILTERS = %w[/gems/ /rubygems/ /bin/ /lib/ruby/]
 
   class << self
+    attr_accessor :trim_path
 
     def filter
       @filter ||= Regexp.new FILTERS.join("|")
