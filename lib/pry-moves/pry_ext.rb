@@ -87,7 +87,7 @@ Pry::Command::Whereami.class_eval do
     formatter = PryMoves::Formatter.new
     prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
     lines << "🦆 step_in_everywhere" if PryMoves.step_in_everywhere
-    lines << "#{prefix}#{formatter.shorten_path location}"
+    lines << "#{prefix}#{formatter.shorten_path location}:#{@line} #{me}"
     lines << "   ." + formatter.method_signature(target)
     lines << ''
     lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
@@ -100,11 +100,14 @@ Pry::Command::Whereami.class_eval do
     lines.join "\n"
   end
 
-  def location
+  def me
     me = target.eval 'self' rescue nil
     me = PryMoves::Painter.colorize me if me
-    file = defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
-    "#{file}:#{@line} #{me}"
+    me
+  end
+
+  def location
+    defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
   end
 end
 
