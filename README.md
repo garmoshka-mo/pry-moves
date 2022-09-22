@@ -135,9 +135,10 @@ Please note that debugging functionality is implemented through
 ## Testing
 
 ```
-bundle exec rspec
+bin/rspec
+bin/rspec -f d # Output result of each spec example
 
-DEBUG=true bundle exec rspec -e 'backtrace should backtrace'
+DEBUG=true bin/rspec -e 'backtrace should backtrace'
 ```
 
 ## ToDo

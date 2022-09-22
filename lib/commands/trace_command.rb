@@ -57,14 +57,14 @@ class TraceCommand
       Thread.current : Kernel
   end
 
-  def tracing_func(event, file, line, id, binding_, klass)
+  def tracing_func(event, file, line, method, binding_, klass)
 
     # Ignore traces inside pry-moves code
     return if file && TRACE_IGNORE_FILES.include?(File.expand_path(file))
     return unless binding_ # ignore strange cases
 
     # for cases when currently traced method called more times recursively
-    if event == "call" and @method.within?(file, line, id)
+    if event == "call" and traced_method?(file, line, method, binding_)
       @call_depth += 1
     elsif %w(c-call c-return).include?(event)
       # todo: может быть, c-return тоже правильнее делать после trace
@@ -72,15 +72,19 @@ class TraceCommand
       @c_stack_level += delta
     end
 
-    printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, id, klass if PryMoves.trace # TRACE_MOVES=1
+    printf "👟 %8s %s:%-2d %10s %8s dep:#{@call_depth} c_st:#{@c_stack_level}\n", event, file, line, method, klass if PryMoves.trace # TRACE_MOVES=1
 
-    if trace event, file, line, id, binding_
+    if trace event, file, line, method, binding_
       @pry_start_options[:exit_from_method] = true if event == 'return'
       stop_tracing
       @callback.call binding_
-    elsif event == "return" and @method.within?(file, line, id)
+    elsif event == "return" and traced_method?(file, line, method, binding_)
       @call_depth -= 1
     end
+  end
+
+  def traced_method?(file, line, method, binding_)
+    @method.within?(file, line, method)
   end
 
 end
