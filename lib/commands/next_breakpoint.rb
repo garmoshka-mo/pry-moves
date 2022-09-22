@@ -6,7 +6,7 @@ class PryMoves::NextBreakpoint < PryMoves::TraceCommand
   def trace(event, file, line, method, binding_)
     if binding_.local_variable_defined?(:pry_breakpoint) and
         binding_.local_variable_get(:pry_breakpoint)
-      binding_.local_variable_set :pry_breakpoint, nil # reset breakpoint at visited method
+      binding_.local_variable_set :pry_breakpoint, nil # reset breakpoint at visited method instance
       true
     end
 

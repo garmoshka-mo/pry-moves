@@ -17,7 +17,7 @@ RSpec.configure do |config|
   config.after(:example) do |example|
     unless example.exception
       expect(PryDebugger.breakpoints.count).to be(0),
-        "not all breakpoints launched, left to launch: #{PryDebugger.breakpoints.count}"
+        "not all breakpoints launched, left to launch: #{PryDebugger.breakpoints.count}. All following specs may fail."
     end
   end
 

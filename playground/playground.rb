@@ -155,11 +155,16 @@ class Playground
   def method_with_breakpoints
     binding.pry # method_with_breakpoints host
     dummy = 1 # some internal line
-    debug_ # breakpoint
+    method_with_breakpoint # breakpoint
     dummy = 1 # after breakpoint
     dummy = 1 # after after breakpoint
-    debug_ # breakpoint 2
+    method_with_breakpoint # breakpoint 2
     dummy = 1 # after breakpoint 2
+  end
+
+  def method_with_breakpoint
+    pry_breakpoint = true
+    hide_from_stack = true
   end
 
   def skip_test
