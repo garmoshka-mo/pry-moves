@@ -22,7 +22,7 @@ class TraceCommand
 
     binding_ = @command[:binding] # =Command.target - more rich, contains required @iseq
     unless binding_.instance_variable_get('@iseq')
-      binding_ = PryMoves::BindingsStack.new.initial_frame
+      binding_ = PryMoves::BindingsStack.new(@pry_start_options).initial_frame
     end
     @method = PryMoves::TracedMethod.new binding_
 

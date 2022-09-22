@@ -12,6 +12,7 @@ RSpec.configure do |config|
 
   config.before(:example) do
     PryMoves.unlock if PryMoves.semaphore.locked?
+    PryMoves.step_in_everywhere = false
   end
 
   config.after(:example) do |example|
