@@ -50,14 +50,13 @@ module PryMoves
     self.step_in_everywhere = false
   end
 
-  def debug(message = nil, at: nil, options: nil)
+  def debug(message = nil, at: nil, from: nil, options: nil)
     pry_moves_stack_end = true
     PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
       self.debug_called_times += 1
-      if at
-        return unless self.debug_called_times == at
-      end
+      return if at and self.debug_called_times != at
+      return if from and self.debug_called_times < from
       if message
         PryMoves.messages << (message.is_a?(String) ? message : message.ai)
       end
