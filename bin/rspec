@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+
+require 'rspec/core'
+
+RSpec::Core::Parser.class_eval do
+
+  alias original_parser parser
+
+  def parser(options)
+    parser = original_parser(options)
+    parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING (may be",
+      "  used more than once)") do |str|
+
+      str = str.split(" ").reject do |piece|
+        if (m = piece.match(/(\w+)=(.*)/))
+          ENV[m[1]] = m[2]
+          true
+        end
+      end.join(" ")
+
+      r = Regexp.compile(Regexp.escape(str), Regexp::IGNORECASE)
+      (options[:full_description] ||= []) << r
+    end
+    parser
+  end
+
+end
+
+load Gem.bin_path('rspec-core', 'rspec')

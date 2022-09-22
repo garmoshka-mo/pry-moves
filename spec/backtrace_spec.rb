@@ -17,6 +17,9 @@ describe 'backtrace' do
       }],
       ['bt hidden', lambda{|b, output|
         lines = output.split("\n").reverse
+        2.times do
+          lines.pop if lines.last.end_with? "main" # remove tech frames from bin/rspec
+        end
         # show hidden frame
         expect(lines[1]).to end_with 'level_b()'
         expect(lines.count).to be 11
