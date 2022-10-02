@@ -29,6 +29,7 @@ module PryMoves
     block_command 'iterate', 'Go to next iteration of current block' do |param|
       breakout_navigation :iterate, param
     end
+    alias_command 'ir', 'iterate'
 
     block_command 'goto', 'goto line' do |param|
       breakout_navigation :goto, param

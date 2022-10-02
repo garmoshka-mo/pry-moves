@@ -35,8 +35,8 @@ class PryMoves::Next < PryMoves::TraceCommand
       method == @method[:name] and @method.before_end?(line)
   end
 
-  def traced_method?(file, line, id, binding_)
-    @method.within?(file, line, id) and @receiver == binding_.receiver
+  def traced_method?(file, line, method, binding_)
+    super and @receiver == binding_.receiver
   end
 
 end
