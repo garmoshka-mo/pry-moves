@@ -19,6 +19,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
 * `f` - **finish** execution of current frame (block or method) and stop at next line on higher level
 * `c` - **continue**
 * `b` - go to next breakpoint (methods marked with `pry_breakpoint = :some_scope` variable)
+* `add-bp var_name` - add to script in this place conditional breakpoint: `debug if var_name == <it's value>`
 * `ir` - **iterate**, go to next iteration of current block
 * `g 10` - **goto** line 10
 * `bt` - show backtrace, excluding hidden frames
