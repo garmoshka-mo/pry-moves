@@ -26,8 +26,9 @@ module PryMoves
     end
     alias_command 'b', 'next_breakpoint'
 
-    block_command 'add-bp', 'Add conditional breakpoint to script' do |var_name|
-      PryMoves::Tools.new(_pry_).add_breakpoint var_name, target
+    block_command 'add-bp', 'Add conditional breakpoint to script' do |var_name, line_number|
+      PryMoves::Tools.new(_pry_).add_breakpoint var_name, line_number&.to_i, target
+      run 'restart'
     end
 
     block_command 'iterate', 'Go to next iteration of current block' do |param|
