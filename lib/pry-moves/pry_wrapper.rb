@@ -12,7 +12,7 @@ class PryWrapper
     PryMoves.lock
 
     initial_frame = PryMoves::BindingsStack.new(@pry_start_options).initial_frame
-    if not @pry_start_options[:pry_moves_loop] and
+    if not @pry_start_options[:pry_moves_loop] and initial_frame and
         initial_frame.local_variable_defined? :debug_redirect
       debug_redirect = initial_frame.local_variable_get(:debug_redirect)
       PryMoves.messages << "⏩ redirected to #{debug_redirect}"
