@@ -50,6 +50,21 @@ class PryMoves::BacktraceBuilder
     result
   end
 
+  def objects_of_class class_pattern
+    result = []
+    last_object = nil
+    class_pattern.downcase!
+    @frame_manager.bindings.reverse.each do |binding|
+      obj = binding.eval 'self'
+      next if !obj.class.to_s.downcase.include?(class_pattern) ||
+        last_object.object_id == obj.object_id
+
+      result << @formatter.format_obj(obj)
+      last_object = obj
+    end
+    result
+  end
+
   private
 
   def build_line(binding, file, line)

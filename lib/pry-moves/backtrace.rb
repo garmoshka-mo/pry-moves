@@ -39,8 +39,9 @@ class PryMoves::Backtrace
       @builder.filter = 'hidden'
       @builder.lines_numbers = false
       diff
-    elsif param and (match = param.match /^\^(\w*)/)
-      print_objects_of_class match[1]
+    elsif param and (match = param.match /^::(\w*)/)
+      @builder.colorize = true
+      @pry.output.puts @builder.objects_of_class match[1]
     elsif param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
       write_to_file @builder.build_backtrace, suffix

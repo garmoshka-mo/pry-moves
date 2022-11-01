@@ -29,6 +29,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
   * `bt save` - save backtrace to memory
   * `bt diff` - diff with saved backtrace
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
+  * `bt ::ClassName` - list objects in backtrace which class name contains "ClassName"
 * `up`/`down`/`top`/`bottom` (`bm`) - move over call stack
   * `up +` - move up, including vapid frames (block callers, hidden frames)
   * `up pattern` - move up till first frame which method name or file position in format `folder/script.rb:12` matches regexp pattern
@@ -170,7 +171,6 @@ file an [issue][issues].
 [set_trace_func]: http://www.ruby-doc.org/core-1.9.3/Kernel.html#method-i-set_trace_func
 [pullrequests]:   https://github.com/garmoshka-mo/pry-moves/pulls
 [issues]:         https://github.com/garmoshka-mo/pry-moves/issues
-[changelog]:      https://github.com/garmoshka-mo/pry-moves/blob/master/CHANGELOG.md
 [debug.rb]:       https://github.com/ruby/ruby/blob/trunk/lib/debug.rb
 [Mon-Ouie]:       https://github.com/Mon-Ouie
 [pry_debug]:      https://github.com/Mon-Ouie/pry_debug
