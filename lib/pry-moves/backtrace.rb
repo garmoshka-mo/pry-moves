@@ -26,24 +26,24 @@ class PryMoves::Backtrace
 
   def initialize(pry)
     @pry = pry
-    @lines_numbers = true
-    @formatter = PryMoves::Formatter.new
+    @builder = PryMoves::BacktraceBuilder.new frame_manager
   end
 
   def run_command(param, param2)
     if param == 'save'
-      @filter = 'hidden'
-      @lines_numbers = false
-      @@backtrace = build_backtrace
+      @builder.filter = 'hidden'
+      @builder.lines_numbers = false
+      @@backtrace = @builder.build_backtrace
       @pry.output.puts "💾 Backtrace saved (#{@@backtrace.count} lines)"
     elsif param == 'diff'
-      @filter = 'hidden'
-      @lines_numbers = false
+      @builder.filter = 'hidden'
+      @builder.lines_numbers = false
       diff
+    elsif param and (match = param.match /^\^(\w*)/)
+      print_objects_of_class match[1]
     elsif param.is_a?(String) and (match = param.match /^>(.*)/)
       suffix = match[1].size > 0 ? match[1] : param2
-      @formatter.colorize = false
-      write_to_file build_backtrace, suffix
+      write_to_file @builder.build_backtrace, suffix
     elsif param and param.match /\d+/
       index = param.to_i
       frame_manager.goto_index index
@@ -55,67 +55,9 @@ class PryMoves::Backtrace
   private
 
   def print_backtrace filter
-    @colorize = true
-    @filter = filter if filter.is_a? String
-    @pry.output.puts build_backtrace
-  end
-
-  def build_backtrace
-    show_all = %w(a all).include?(@filter)
-    show_vapid = %w(+ hidden vapid).include?(@filter) || show_all
-    result = []
-    current_object, vapid_count = nil, 0
-
-    recursion = PryMoves::Recursion::Holder.new
-
-    frame_manager.bindings.reverse.each do |binding|
-      next if !show_all and binding.eval('__FILE__').match self.class::filter
-
-      if !show_vapid and binding.hidden
-        vapid_count += 1
-        next
-      end
-
-      if vapid_count > 0
-        result << "👽  frames hidden: #{vapid_count}"
-        vapid_count = 0
-      end
-
-      obj, debug_snapshot = binding.eval '[self, (debug_snapshot rescue nil)]'
-      # Comparison of objects directly may raise exception
-      if current_object.object_id != obj.object_id
-        result << "#{debug_snapshot || @formatter.format_obj(obj)}"
-        current_object = obj
-      end
-
-      file, line = binding.eval('[__FILE__, __LINE__]')
-      recursion.track file, line, result.count, binding.index unless show_vapid
-      result << build_line(binding, file, line)
-    end
-
-    # recursion.each { |t| t.apply result }
-
-    result << "👽  frames hidden: #{vapid_count}" if vapid_count > 0
-
-    result
-  end
-
-  def build_line(binding, file, line)
-    file = @formatter.shorten_path "#{file}"
-
-    signature = @formatter.method_signature binding
-    signature = ":#{binding.frame_type}" if !signature or signature.length < 1
-
-    indent = if frame_manager.current_frame == binding
-      '==> '
-    elsif @lines_numbers
-      s = "#{binding.index}:".ljust(4, ' ')
-      @colorize ? "\e[2;49;90m#{s}\e[0m" : s
-    else
-      '    '
-    end
-
-    "#{indent}#{file}:#{line} #{signature}"
+    @builder.colorize = true
+    @builder.filter = filter if filter.is_a? String
+    @pry.output.puts @builder.build_backtrace
   end
 
   def frame_manager
@@ -138,7 +80,10 @@ class PryMoves::Backtrace
   def diff
     return STDERR.puts "No backtrace saved. Use `bt save` first".yellow unless defined? @@backtrace
 
-    diff = Diffy::Diff.new(@@backtrace.join("\n"), build_backtrace.join("\n")).to_s "color"
+    diff = Diffy::Diff.new(
+      @@backtrace.join("\n"),
+      @builder.build_backtrace.join("\n")
+    ).to_s "color"
     diff = 'Backtraces are equal' if diff.strip.empty?
     @pry.output.puts diff
   end
@@ -167,4 +112,5 @@ Pry.config.exception_handler = proc do |output, exception, _|
       end
     end
   end
+
 end
