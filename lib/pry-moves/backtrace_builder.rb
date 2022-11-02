@@ -59,13 +59,18 @@ class PryMoves::BacktraceBuilder
       next if !obj.class.to_s.downcase.include?(class_pattern) ||
         last_object.object_id == obj.object_id
 
-      result << @formatter.format_obj(obj)
+      result << "#{line_num binding}#{@formatter.format_obj(obj)}"
       last_object = obj
     end
     result
   end
 
   private
+
+  def line_num binding
+    num = "#{binding.index}:".ljust(4, ' ')
+    @colorize ? "\e[2;49;90m#{num}\e[0m" : num
+  end
 
   def build_line(binding, file, line)
     file = @formatter.shorten_path "#{file}"
@@ -76,8 +81,7 @@ class PryMoves::BacktraceBuilder
     indent = if @frame_manager.current_frame == binding
       '==> '
     elsif @lines_numbers
-      s = "#{binding.index}:".ljust(4, ' ')
-      @colorize ? "\e[2;49;90m#{s}\e[0m" : s
+      line_num binding
     else
       '    '
     end
