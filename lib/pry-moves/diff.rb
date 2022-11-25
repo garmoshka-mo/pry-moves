@@ -26,5 +26,5 @@ class PryMoves::Diff
   def eval_cmd cmd
     "#{@binding.eval(cmd)}"
   end
-  
+
 end

@@ -127,7 +127,9 @@ Pry::Output.class_eval do
   alias pry_moves_origin_for_puts puts
 
   def puts *args
+    # <first> formatted by Pry.config.print = proc do |output, value|
     first = args[0]
+    # Kernel.puts  "Pry::Output.puts: #{first}"
     if first.is_a? String and first.start_with? "(pry) output error"
       first.slice! 400..-1
     end
