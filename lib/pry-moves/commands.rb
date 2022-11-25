@@ -51,6 +51,11 @@ module PryMoves
       PryMoves::Watch.instance.process_cmd param, target
     end
 
+    block_command 'diff', 'Display difference' do
+      cmd = arg_string.gsub(/^diff/, '').strip
+      PryMoves::Diff.new(_pry_, target).run_command cmd
+    end
+
     block_command 'bt', 'Backtrace' do |param, param2|
       PryMoves::Backtrace.new(_pry_).run_command param, param2
     end

@@ -13,6 +13,7 @@ require 'pry-moves/backtrace'
 require 'pry-moves/backtrace_builder'
 require 'pry-moves/tools'
 require 'pry-moves/watch'
+require 'pry-moves/diff'
 require 'pry-moves/painter'
 require 'pry-moves/restartable'
 require 'pry-moves/recursion_tracker'
@@ -68,6 +69,7 @@ module PryMoves
   end
 
   def error(message)
+    pry_moves_stack_end = true
     debug message, options: {is_error: true}
   end
 
