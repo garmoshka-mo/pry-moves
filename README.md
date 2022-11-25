@@ -26,8 +26,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
   * `bt +` `bt hidden` - show backtrace including hidden frames
   * `bt a` `bt all` - full backtrace with system and hidden frames
   * `bt 10` - go to backtrace line 10
-  * `bt save` - save backtrace to memory
-  * `bt diff` - diff with saved backtrace
+  * `bt diff` - diff of backtraces (`bt save` for persistent save of 1st backtrace)
   * `bt > foo` - write backtrace to file `log/backtrace_foo.log`
   * `bt ::ClassName` - list objects in backtrace which class name contains "ClassName"
 * `up`/`down`/`top`/`bottom` (`bm`) - move over call stack

@@ -3,6 +3,7 @@ require 'fileutils'
 class PryMoves::Backtrace
 
   FILTERS = %w[/gems/ /rubygems/ /bin/ /lib/ruby/]
+  @@backtrace = nil
 
   class << self
     attr_accessor :trim_path
@@ -30,7 +31,8 @@ class PryMoves::Backtrace
   end
 
   def run_command(param, param2)
-    if param == 'save'
+    if param == 'save' || param == 'diff' && @@backtrace.nil?
+      @@hard_saved = param == 'save'
       @builder.filter = 'hidden'
       @builder.lines_numbers = false
       @@backtrace = @builder.build_backtrace
@@ -39,6 +41,7 @@ class PryMoves::Backtrace
       @builder.filter = 'hidden'
       @builder.lines_numbers = false
       diff
+      @@backtrace = nil unless @@hard_saved
     elsif param and (match = param.match /^::(\w*)/)
       @builder.colorize = true
       @pry.output.puts @builder.objects_of_class match[1]
@@ -81,12 +84,10 @@ class PryMoves::Backtrace
   def diff
     return STDERR.puts "No backtrace saved. Use `bt save` first".yellow unless defined? @@backtrace
 
-    diff = Diffy::Diff.new(
+    @pry.output.puts Diffy.diff(
       @@backtrace.join("\n"),
       @builder.build_backtrace.join("\n")
-    ).to_s "color"
-    diff = 'Backtraces are equal' if diff.strip.empty?
-    @pry.output.puts diff
+    )
   end
 
 end

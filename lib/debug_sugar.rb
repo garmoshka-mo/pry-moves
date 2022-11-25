@@ -72,3 +72,17 @@ Rake::Task.class_eval do
   end
 
 end if defined? Rake and defined? Rake::Task
+
+Diffy.module_eval do
+
+  class << self
+    def diff text1, text2
+      diff = Diffy::Diff.new(
+        text1 + "\n", text2 + "\n"
+      ).to_s "color"
+      diff = 'Outputs are equal' if diff.strip.empty?
+      diff
+    end
+  end
+
+end
