@@ -81,7 +81,6 @@ end
 ## Configuration
 
 Here is default configuration, you can reassign it:
-
 ```ruby
 PryMoves.reload_ruby_scripts = {
   monitor: %w(app spec),
@@ -90,6 +89,12 @@ PryMoves.reload_ruby_scripts = {
 PryMoves.reload_rake_tasks = true
 PryMoves::Backtrace::filter =
   /(\/gems\/|\/rubygems\/|\/bin\/|\/lib\/ruby\/|\/pry-moves\/)/
+```
+
+Turn off features with environment variables:
+```bash
+PRY_MOVES_DEBUG_MISSING=off
+PRY_MOVES_RELOADER=off
 ```
 
 ## Threads, helpers

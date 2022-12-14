@@ -43,6 +43,20 @@ module PryMoves
     end
   end
 
+  def runtime_debug(instance)
+    do_debug = (
+      stop_on_breakpoints and
+        not [RubyVM::InstructionSequence].include?(instance) and
+        not open?
+    )
+    if do_debug
+      hide_from_stack = true
+      err = yield
+      # HINT: when pry failed to start use: caller.reverse
+      PryMoves.error err
+    end
+  end
+
   def error(message)
     pry_moves_stack_end = true
     debug message, options: {is_error: true}
