@@ -59,8 +59,8 @@ Rake::Task.class_eval do
 
   def execute(args=nil)
     args ||= EMPTY_TASK_ARGS
-    PryMoves.restartable(rake_args: args) do
-      reload_actions if PryMoves.reload_rake_tasks
+    PryMoves.restartable(rake_args: args) do |context|
+      reload_actions if PryMoves.reload_rake_tasks and context[:retry] > 0
       execute_origin_for_pry_moves args
     end
   end

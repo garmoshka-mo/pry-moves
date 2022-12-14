@@ -1,17 +1,21 @@
 module PryMoves::Restartable
 
   attr_accessor :restart_requested, :reload_requested,
+    :reload_ruby_scripts, :reloader,
     :reload_rake_tasks
 
   def restartable context
     trigger :each_new_run, context
-    yield
+    context[:retry] ||= 0
+    yield context
     re_execution
   rescue PryMoves::Restart
     puts "🔄️  Restarting execution"
     self.restart_requested = false
     PryMoves.reset
+    PryMoves.reloader&.reload
     trigger :restart, context
+    context[:retry] += 1
     retry
   rescue PryMoves::Reload
     puts "🔮  try to use @ with reload"
