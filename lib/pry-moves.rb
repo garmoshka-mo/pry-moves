@@ -49,7 +49,7 @@ module PryMoves
     do_debug = (
       stop_on_breakpoints and
         not open? and
-        caller[1].start_with?(ROOT_DIR) and
+        is_project_file? and
         not [RubyVM::InstructionSequence].include?(instance)
     )
     if do_debug
@@ -59,6 +59,11 @@ module PryMoves
       PryMoves.debug_error err
       true
     end
+  end
+
+  def is_project_file?
+    file = caller[2] # -2 steps upside: runtime_debug, debug sugar function
+    !file.start_with?("/") || file.start_with?(ROOT_DIR)
   end
 
   def debug_error(message)
