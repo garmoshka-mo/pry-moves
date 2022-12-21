@@ -21,14 +21,6 @@ Object.class_eval do
     super
   end
 
-  def should_be *classes
-    hide_from_stack = true
-    if self && !classes.some?{self.is_a?(_1)}
-      error("Expected class #{classes.join ", "}, got #{self.class.ai}", self)
-    end
-    self
-  end
-
   def self.const_missing(name)
     super
   rescue => e

@@ -39,6 +39,14 @@ Object.class_eval do
     self
   end
 
+  def should_be *classes
+    hide_from_stack = true
+    if self && !classes.some?{self.is_a?(_1)}
+      error("Expected class #{classes.join ", "}, got #{self.class.ai}", self)
+    end
+    self
+  end
+
 end
 
 RSpec.configure do |config|
