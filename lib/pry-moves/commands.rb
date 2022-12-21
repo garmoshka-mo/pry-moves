@@ -112,8 +112,14 @@ module PryMoves
           return
         end
 
-        input = Pry.config.original_user_input || action
-        binding_value = target.eval(input.to_s) rescue nil
+        input = Pry.config.original_user_input || action.to_s
+        return if input == 'next' # ruby keyword
+        binding_value = target.eval(input) rescue nil
+        # begin # for debug
+        #   binding_value = target.eval(input)
+        # rescue => e
+        #   puts (e.backtrace.reverse + ["var_precedence exception:".red, "#{e}".red]).join "\n"
+        # end
         unless binding_value.nil?
           puts "ℹ️️  Variable \"#{input}\" found. To execute command type its alias or \\#{input}"
           puts PryMoves::Painter.colorize binding_value

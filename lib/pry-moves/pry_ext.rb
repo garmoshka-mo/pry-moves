@@ -42,9 +42,9 @@ Pry::Command.class_eval do
   alias run_origin_for_pry_moves run
   def run(command_string, *args)
     Pry.config.original_user_input = self.class.original_user_input
-    result = run_origin_for_pry_moves command_string, *args
+    run_origin_for_pry_moves command_string, *args
+  ensure
     Pry.config.original_user_input = nil
-    result
   end
 end
 
