@@ -5,7 +5,7 @@ Object.class_eval do
     pry_cancel_debug = true
 
     debug_missing_method = (
-      not method.in?([:begin, :to_s, :to_str, :to_int, :to_ary, :to_io, :to_hash]) and
+      not ([:begin, :to_s, :to_str, :to_int, :to_ary, :to_io, :to_hash].include? method) and
         not caller[0].match PryMoves::Backtrace::filter
     )
 
@@ -35,7 +35,7 @@ Object.class_eval do
     unless PryMoves.open?
       hide_from_stack = true
       message = "😱  \e[31m#{e.to_s}\e[0m"
-      PryMoves.error message
+      PryMoves.debug_error message
     end
     raise
   end unless defined?(Rails)

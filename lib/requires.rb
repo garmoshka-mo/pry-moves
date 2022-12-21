@@ -33,7 +33,6 @@ require 'commands/step'
 
 require 'pry-stack_explorer/pry-stack_explorer'
 require 'sugar/debug_sugar'
-require 'sugar/debug_of_missing'
 
 # Optionally load pry-remote monkey patches
 require 'pry-moves/pry_remote_ext' if defined? PryRemote
