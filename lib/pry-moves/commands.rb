@@ -113,7 +113,7 @@ module PryMoves
         end
 
         input = Pry.config.original_user_input || action
-        binding_value = target.eval(input) rescue nil
+        binding_value = target.eval(input.to_s) rescue nil
         unless binding_value.nil?
           puts "ℹ️️  Variable \"#{input}\" found. To execute command type its alias or \\#{input}"
           puts PryMoves::Painter.colorize binding_value
