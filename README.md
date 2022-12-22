@@ -93,6 +93,7 @@ PryMoves::Backtrace::filter =
 
 Turn off features with environment variables:
 ```bash
+PRY_MOVES=off
 PRY_MOVES_DEBUG_MISSING=off
 PRY_MOVES_RELOADER=off
 ```

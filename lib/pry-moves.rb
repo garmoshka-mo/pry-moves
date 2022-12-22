@@ -23,7 +23,7 @@ module PryMoves
 
   def reset
     self.launched_specs_examples = 0
-    self.stop_on_breakpoints = true
+    self.stop_on_breakpoints = true unless ENV['PRY_MOVES'] == 'off'
     self.debug_called_times = 0
     self.step_in_everywhere = false
   end
