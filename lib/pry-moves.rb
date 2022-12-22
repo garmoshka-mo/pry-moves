@@ -43,21 +43,30 @@ module PryMoves
     end
   end
 
+  ROOT_DIR = File.expand_path(".")
+
   def runtime_debug(instance)
     do_debug = (
       stop_on_breakpoints and
-        not [RubyVM::InstructionSequence].include?(instance) and
-        not open?
+        not open? and
+        is_project_file? and
+        not [RubyVM::InstructionSequence].include?(instance)
     )
     if do_debug
       hide_from_stack = true
       err = yield
       # HINT: when pry failed to start use: caller.reverse
-      PryMoves.error err
+      PryMoves.debug_error err
+      true
     end
   end
 
-  def error(message)
+  def is_project_file?
+    file = caller[2] # -2 steps upside: runtime_debug, debug sugar function
+    !file.start_with?("/") || file.start_with?(ROOT_DIR)
+  end
+
+  def debug_error(message)
     pry_moves_stack_end = true
     debug message, options: {is_error: true}
   end
@@ -117,7 +126,7 @@ module PryMoves
 
   TRIGGERS = [:each_new_run, :restart]
   def on(trigger, &block)
-    error "Invalid trigger, possible triggers: #{TRIGGERS}", trigger unless trigger.in? TRIGGERS
+    error "Invalid trigger, possible triggers: #{TRIGGERS}", trigger unless TRIGGERS.include? trigger
     triggers[trigger] << block
   end
 
@@ -126,3 +135,5 @@ module PryMoves
 end
 
 PryMoves.init
+
+require 'sugar/debug_of_missing' # After PryMoves loaded

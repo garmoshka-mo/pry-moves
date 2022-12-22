@@ -11,7 +11,7 @@ def error(msg = "Error", debug_object = nil)
     if PryMoves.stop_on_breakpoints
       lines = [err.red]
       lines.prepend debug_object.ai if debug_object
-      PryMoves.error lines.join("\n")
+      PryMoves.debug_error lines.join("\n")
     else
       STDERR.puts debug_object.ai if debug_object
       STDERR.puts err.ljust(80, ' ').red
@@ -27,14 +27,26 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
   raise err unless PryMoves.stop_on_breakpoints
   lines = [message.red]
   lines.prepend debug_object.ai if debug_object
-  PryMoves.error lines.join("\n")
+  PryMoves.debug_error lines.join("\n")
   nil
 end
 
-def required(var)
-  pry_moves_stack_end = true
-  error("required parameter is missing") if var.nil?
-  var
+Object.class_eval do
+
+  def required!
+    pry_moves_stack_end = true
+    error("required parameter is missing") if self.nil?
+    self
+  end
+
+  def should_be *classes
+    hide_from_stack = true
+    if self && !classes.some?{self.is_a?(_1)}
+      error("Expected class #{classes.join ", "}, got #{self.class.ai}", self)
+    end
+    self
+  end
+
 end
 
 RSpec.configure do |config|
