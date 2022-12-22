@@ -45,11 +45,11 @@ module PryMoves
 
   ROOT_DIR = File.expand_path(".")
 
-  def runtime_debug(instance)
+  def runtime_debug(instance, external: false)
     do_debug = (
       stop_on_breakpoints and
         not open? and
-        is_project_file? and
+        (external or is_project_file?) and
         not [RubyVM::InstructionSequence].include?(instance)
     )
     if do_debug
