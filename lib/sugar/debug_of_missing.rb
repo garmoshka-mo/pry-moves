@@ -40,5 +40,5 @@ Object.class_eval do
     raise
   end unless defined?(Rails)
 
-end if ENV['PRY_MOVES_DEBUG_MISSING'] != 'off' and
+end if ENV['PRY_MOVES_DEBUG_MISSING'] != 'off' and ENV['PRY_MOVES'] != 'off' and
   not (defined?(Rails) and Rails.env.production?)

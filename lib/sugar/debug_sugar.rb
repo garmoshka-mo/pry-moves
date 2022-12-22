@@ -51,7 +51,7 @@ RSpec.configure do |config|
     end
   end
 
-end if defined? RSpec
+end if ENV['PRY_MOVES'] != 'off' and defined? RSpec
 
 Rake::Task.class_eval do
 
@@ -71,7 +71,7 @@ Rake::Task.class_eval do
     load rake_task_path
   end
 
-end if defined? Rake and defined? Rake::Task
+end if ENV['PRY_MOVES'] != 'off' and defined? Rake and defined? Rake::Task
 
 Diffy.module_eval do
 
