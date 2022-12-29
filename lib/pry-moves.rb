@@ -64,7 +64,7 @@ module PryMoves
 
   def is_project_file?
     files = caller[2..3] # -2 steps upside: runtime_debug, debug sugar function
-    files.some? do |file|
+    files.any? do |file|
       !file.start_with?("/") || file.start_with?(ROOT_DIR)
     end
   end
