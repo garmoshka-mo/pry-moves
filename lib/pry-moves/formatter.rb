@@ -40,7 +40,11 @@ class PryMoves::Formatter
   end
 
   def format_arg binding, arg_name
-    arg = binding.eval(arg_name.to_s)
+    arg = begin
+      binding.eval(arg_name.to_s)
+    rescue Exception
+      "?"
+    end
     format_obj arg
   end
 

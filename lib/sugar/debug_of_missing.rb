@@ -13,9 +13,7 @@ Object.class_eval do
       message = self.nil? ?
         "\e[31mCalling \e[1m#{method}\e[0m\e[31m on nil\e[0m" :
         "\e[31mMethod \e[1m#{method}\e[0m\e[31m missing\e[0m"
-      subject = self.ai rescue "#{self.class} #{self}"
-      "#{subject}\n" +
-        "😱  #{message}"
+      [message, self]
     end if debug_missing_method
 
     super

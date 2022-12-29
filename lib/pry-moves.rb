@@ -54,20 +54,32 @@ module PryMoves
     )
     if do_debug
       hide_from_stack = true
-      err = yield
+      err, obj = yield
       # HINT: when pry failed to start use: caller.reverse
-      PryMoves.debug_error err
+      PryMoves.debug_error err, obj
       true
     end
   end
 
   def is_project_file?
-    file = caller[2] # -2 steps upside: runtime_debug, debug sugar function
-    !file.start_with?("/") || file.start_with?(ROOT_DIR)
+    files = caller[2..3] # -2 steps upside: runtime_debug, debug sugar function
+    files.some? do |file|
+      !file.start_with?("/") || file.start_with?(ROOT_DIR)
+    end
   end
 
-  def debug_error(message)
+  MAX_MESSAGE_CHARS = 520
+  def format_debug_object obj
+    output = obj.ai rescue "#{obj.class} #{obj}"
+    output.length > MAX_MESSAGE_CHARS ?
+      output[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : output
+  end
+
+  def debug_error(message, debug_object=nil)
     pry_moves_stack_end = true
+    if debug_object
+      message = [format_debug_object(debug_object), message].join "\n"
+    end
     debug message, options: {is_error: true}
   end
 

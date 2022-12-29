@@ -81,8 +81,6 @@ Pry::Command::Whereami.class_eval do
     _pry_.pager.page build_output
   end
 
-  MAX_MESSAGE_CHARS = 500
-
   def build_output
     lines = ['']
 
@@ -96,8 +94,9 @@ Pry::Command::Whereami.class_eval do
 
     lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
     lines.concat(PryMoves.messages.map do |message|
-      message.length > MAX_MESSAGE_CHARS ?
-        message[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : message
+      message
+      # message.length > MAX_MESSAGE_CHARS ?
+      #   message[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : message
     end)
     PryMoves.messages.clear
 

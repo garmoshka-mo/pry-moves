@@ -9,11 +9,9 @@ def error(msg = "Error", debug_object = nil)
   err = "😱  #{msg}"
   unless PryMoves.open?
     if PryMoves.stop_on_breakpoints
-      lines = [err.red]
-      lines.prepend debug_object.ai if debug_object
-      PryMoves.debug_error lines.join("\n")
+      PryMoves.debug_error err.red, debug_object
     else
-      STDERR.puts debug_object.ai if debug_object
+      STDERR.puts PryMoves.format_debug_object(debug_object) if debug_object
       STDERR.puts err.ljust(80, ' ').red
     end
   end
