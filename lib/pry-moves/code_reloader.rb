@@ -11,13 +11,20 @@ class CodeReloader
     traverse_files do |path|
       if @timestamps[path] != File.mtime(path)
         @timestamps[path] = File.mtime(path)
-        load path
+        reload_file path
         # Log.info "⚡️ file reloaded #{path}"
       end
     end
   end
 
   private
+
+  def reload_file path
+    hide_from_stack = true
+    load path
+  rescue SyntaxError => e
+    PryMoves.debug_error ["🛠  Syntax error:".red, e.message].join "\n"
+  end
 
   def traverse_files
     paths = PryMoves.reload_ruby_scripts[:monitor]
