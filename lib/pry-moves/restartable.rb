@@ -7,13 +7,13 @@ module PryMoves::Restartable
   def restartable context
     trigger :each_new_run, context
     context[:retry] ||= 0
+    PryMoves.reloader&.reload if context[:retry] > 0
     yield context
     re_execution
   rescue PryMoves::Restart
     puts "🔄️  Restarting execution"
     self.restart_requested = false
     PryMoves.reset
-    PryMoves.reloader&.reload
     trigger :restart, context
     context[:retry] += 1
     retry

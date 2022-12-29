@@ -10,9 +10,10 @@ class CodeReloader
   def reload
     traverse_files do |path|
       if @timestamps[path] != File.mtime(path)
-        @timestamps[path] = File.mtime(path)
-        reload_file path
-        # Log.info "⚡️ file reloaded #{path}"
+        if reload_file path
+          @timestamps[path] = File.mtime(path)
+          # Log.info "⚡️ file reloaded #{path}"
+        end
       end
     end
   end
@@ -22,8 +23,10 @@ class CodeReloader
   def reload_file path
     hide_from_stack = true
     load path
+    true
   rescue SyntaxError => e
     PryMoves.debug_error ["🛠  Syntax error:".red, e.message].join "\n"
+    false
   end
 
   def traverse_files
