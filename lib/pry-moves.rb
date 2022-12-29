@@ -23,7 +23,8 @@ module PryMoves
 
   def reset
     self.launched_specs_examples = 0
-    self.stop_on_breakpoints = true unless ENV['PRY_MOVES'] == 'off'
+    self.stop_on_breakpoints = true unless ENV['PRY_MOVES'] == 'off' ||
+      (defined?(Rails) and Rails.env.production?)
     self.debug_called_times = 0
     self.step_in_everywhere = false
   end
