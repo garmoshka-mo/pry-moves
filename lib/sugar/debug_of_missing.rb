@@ -5,8 +5,8 @@ Object.class_eval do
     pry_cancel_debug = true
 
     debug_missing_method = (
-      not ([:begin, :to_s, :to_str, :to_int, :to_ary, :to_io, :to_hash].include? method) and
-        not caller[0].match PryMoves::Backtrace::filter
+      not ([:begin, :to_s, :to_str, :to_int, :to_r, :to_ary, :to_io, :to_hash].include? method)
+      #   not caller[0].match PryMoves::Backtrace::filter
     )
 
     PryMoves.runtime_debug(self) do
