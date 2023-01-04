@@ -3,6 +3,7 @@ require 'fileutils'
 class PryMoves::Backtrace
 
   FILTERS = %w[/gems/ /rubygems/ /bin/ /lib/ruby/]
+  FILTERS << File.expand_path('..', __dir__)
   @@backtrace = nil
 
   class << self
