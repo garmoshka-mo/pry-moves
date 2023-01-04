@@ -12,7 +12,6 @@ module PryMoves::Restartable
     re_execution
   rescue PryMoves::Restart
     puts "🔄️  Restarting execution"
-    self.restart_requested = false
     PryMoves.reset
     trigger :restart, context
     context[:retry] += 1
@@ -23,7 +22,10 @@ module PryMoves::Restartable
   end
 
   def re_execution
-    raise PryMoves::Restart if restart_requested
+    if restart_requested
+      self.restart_requested = false
+      raise PryMoves::Restart
+    end
     raise PryMoves::Reload if reload_requested
   end
 
