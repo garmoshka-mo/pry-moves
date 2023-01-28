@@ -2,6 +2,8 @@ require_relative 'spec_helper'
 
 describe 'PryMoves commands' do
 
+  # todo: test sugars: method_missing, etc...
+
   it 'should make one move next' do
     breakpoints [
       [nil, 'basic next stop'],

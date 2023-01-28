@@ -9,7 +9,7 @@ module PryMoves::Restartable
     context[:retry] ||= 0
     PryMoves.reloader&.reload if context[:retry] > 0
     yield context
-    re_execution
+    re_execution # todo: maybe mark restart_request for thread? not globally?
   rescue PryMoves::Restart
     puts "🔄️  Restarting execution"
     PryMoves.reset

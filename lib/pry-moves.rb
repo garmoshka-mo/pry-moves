@@ -14,7 +14,7 @@ module PryMoves
     reset
     self.trace = true if ENV['TRACE_MOVES']
     self.reload_ruby_scripts = {
-      monitor: %w(app spec),
+      monitor: %w(app test spec),
       except: %w(app/assets app/views)
     }
     self.reloader = CodeReloader.new unless ENV['PRY_MOVES_RELOADER'] == 'off'
