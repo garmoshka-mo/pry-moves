@@ -86,6 +86,7 @@ Pry::Command::Whereami.class_eval do
 
     formatter = PryMoves::Formatter.new
     prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
+    # lines << "🍱 #{PryMoves.test_example}" if PryMoves.test_example
     lines << "🦆 step_in_everywhere" if PryMoves.step_in_everywhere
     lines << "#{prefix}#{formatter.shorten_path location}:#{@line} #{me}"
     lines << "   ." + formatter.method_signature(target)

@@ -7,7 +7,8 @@ module PryMoves
   extend PryMoves::Restartable
 
   attr_accessor :is_open, :trace, :stack_tips,
-    :stop_on_breakpoints, :launched_specs_examples,
+    :stop_on_breakpoints,
+    :test_example, :launched_specs_examples,
     :debug_called_times, :step_in_everywhere
 
   def init
@@ -23,8 +24,10 @@ module PryMoves
 
   def reset
     self.launched_specs_examples = 0
-    self.stop_on_breakpoints = true unless ENV['PRY_MOVES'] == 'off' ||
-      (defined?(Rails) and Rails.env.production?)
+    unless ENV['PRY_MOVES'] == 'off' ||
+        (defined?(Rails) and Rails.env.production?)
+      self.stop_on_breakpoints = STDIN.tty? && STDOUT.tty?
+    end
     self.debug_called_times = 0
     self.step_in_everywhere = false
   end
