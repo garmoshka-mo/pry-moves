@@ -32,8 +32,9 @@ module PryMoves
     self.step_in_everywhere = false
   end
 
-  def debug(message = nil, at: nil, from: nil, options: nil)
+  def debug(message = nil, data: nil, at: nil, from: nil, options: nil)
     pry_moves_stack_end = true
+    message ||= data
     PryMoves.re_execution
     if PryMoves.stop_on_breakpoints
       self.debug_called_times += 1
