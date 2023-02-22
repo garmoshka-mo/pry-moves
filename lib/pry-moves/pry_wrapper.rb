@@ -44,6 +44,7 @@ class PryWrapper
       nil    # Nothing thrown == no navigational command
     end
 
+  ensure
     PryMoves.is_open = false
     Pry.config.marker = "=>"
   end
