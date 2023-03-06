@@ -33,7 +33,7 @@ Object.class_eval do
 
   def required!
     pry_moves_stack_end = true
-    error("required parameter is missing") if self.nil?
+    error("required parameter is missing", self) if self.nil?
     self
   end
 
