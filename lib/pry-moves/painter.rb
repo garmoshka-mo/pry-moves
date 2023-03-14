@@ -12,10 +12,20 @@ module PryMoves::Painter
 
   end
 
+  class ShortInspector
+    def initialize obj
+      @obj = obj
+    end
+    def inspect
+      @obj.short_inspect
+    end
+  end
+
   def self.colorize(obj)
     colored_str = Canvas.new
     i = obj.inspect
     obj = obj.class if i.is_a?(String) && i.start_with?("#<")
+    obj = ShortInspector.new(obj) if obj.respond_to?(:short_inspect)
     catch (:cut) do
       Pry::ColorPrinter.pp obj, colored_str
     end
