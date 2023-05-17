@@ -11,6 +11,14 @@ module PryMoves
     :test_example, :launched_specs_examples,
     :debug_called_times, :step_in_everywhere
 
+  def loop
+    Kernel.loop do
+      result = yield
+      debug "⏸  execution loop complete\n#{result}"
+      PryMoves.reloader&.reload
+    end
+  end
+
   def init
     reset
     self.trace = true if ENV['TRACE_MOVES']
