@@ -1,5 +1,5 @@
 def debug *args
-  return binding.pry_forced if args.first == :forced
+  return binding.pry_forced if [:force, :forced].include? args.first
   pry_moves_stack_end = true
   PryMoves.debug *args
 end
