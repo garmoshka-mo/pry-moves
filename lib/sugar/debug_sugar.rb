@@ -4,18 +4,20 @@ def debug *args
   PryMoves.debug *args
 end
 
-def error(msg = "Error", debug_object = nil)
+def error(err = "Error", debug_object = nil)
   pry_moves_stack_end = true
-  err = "😱  #{msg}"
+  message = "😱  #{err}"
+  debug_object ||= err.metadata if err.respond_to? :metadata
   unless PryMoves.open?
     if PryMoves.stop_on_breakpoints
-      PryMoves.debug_error err.red, debug_object
+      PryMoves.debug_error message.red, debug_object
     else
       STDERR.puts PryMoves.format_debug_object(debug_object) if debug_object
-      STDERR.puts err.ljust(80, ' ').red
+      STDERR.puts message.ljust(80, ' ').red
     end
   end
-  raise PryMoves::ErrorWithData.new(msg, debug_object)
+  err = PryMoves::ErrorWithData.new(err, debug_object) unless err.is_a? Exception
+  raise err
 end
 
 def shit!(err = 'Oh, shit!', debug_object = nil)
