@@ -45,6 +45,7 @@ module PryStackExplorer
     create_command "top", "Top" do
       include FrameHelpers
       def process
+        return if PryMoves::Vars.var_precedence "top", target
         frame_manager.change_frame_to frame_manager.bindings.size - 1
       end
     end
@@ -52,6 +53,7 @@ module PryStackExplorer
     create_command "bottom", "Bottom" do
       include FrameHelpers
       def process
+        return if PryMoves::Vars.var_precedence "bottom", target
         frame_manager.change_frame_to 0
       end
     end
@@ -72,6 +74,7 @@ module PryStackExplorer
       BANNER
 
       def process
+        return if PryMoves::Vars.var_precedence "frame", target
         if !frame_manager
           raise Pry::CommandError, "nowhere to go!"
         else

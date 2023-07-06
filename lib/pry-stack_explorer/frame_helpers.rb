@@ -102,6 +102,7 @@ module PryStackExplorer::FrameHelpers
   end
 
   def move(direction, param)
+    return if PryMoves::Vars.var_precedence direction, target
     raise Pry::CommandError, "Nowhere to go" unless frame_manager
 
     if param == '+' or param.nil?
