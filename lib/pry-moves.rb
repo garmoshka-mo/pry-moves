@@ -7,7 +7,7 @@ module PryMoves
   extend PryMoves::Restartable
 
   attr_accessor :is_open, :trace, :stack_tips,
-    :stop_on_breakpoints,
+    :stop_on_breakpoints, :dont_print_errors,
     :test_example, :launched_specs_examples,
     :debug_called_times, :step_in_everywhere
 

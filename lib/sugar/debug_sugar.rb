@@ -11,7 +11,7 @@ def error(err = "Error", debug_object = nil)
   unless PryMoves.open? or err.is_a? PryMoves::Restart
     if PryMoves.stop_on_breakpoints
       PryMoves.debug_error message.red, debug_object
-    else
+    elsif !PryMoves.dont_print_errors
       STDERR.puts PryMoves.format_debug_object(debug_object) if debug_object
       STDERR.puts message.ljust(80, ' ').red
     end
