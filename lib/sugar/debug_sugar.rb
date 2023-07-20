@@ -8,7 +8,7 @@ def error(err = "Error", debug_object = nil)
   pry_moves_stack_end = true
   message = "😱  #{err}"
   debug_object ||= err.metadata if err.respond_to? :metadata
-  unless PryMoves.open?
+  unless PryMoves.open? or err.is_a? PryMoves::Restart
     if PryMoves.stop_on_breakpoints
       PryMoves.debug_error message.red, debug_object
     else

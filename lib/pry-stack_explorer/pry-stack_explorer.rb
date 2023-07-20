@@ -123,3 +123,4 @@ Pry.config.hooks.add_hook(:when_started, :save_caller_bindings, PryStackExplorer
 # Import the StackExplorer commands
 Pry.config.commands.import PryStackExplorer::COMMANDS
 
+Pry.config.commands.delete 'stat'

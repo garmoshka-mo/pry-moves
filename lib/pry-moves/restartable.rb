@@ -32,9 +32,9 @@ module PryMoves::Restartable
 
 end
 
-class PryMoves::Restart < RuntimeError
+class PryMoves::Restart < Exception
 end
-class PryMoves::Reload < RuntimeError
+class PryMoves::Reload < Exception
 end
 RSpec::Support::AllExceptionsExceptOnesWeMustNotRescue::AVOID_RESCUING.concat [PryMoves::Restart, PryMoves::Reload] if defined? RSpec
 
