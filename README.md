@@ -98,6 +98,12 @@ PRY_MOVES_DEBUG_MISSING=off
 PRY_MOVES_RELOADER=off
 ```
 
+Debug:
+```bash
+TRACE_MOVES=on
+```
+
+
 ## Threads, helpers
 
 To allow traveling to parent thread, use:
