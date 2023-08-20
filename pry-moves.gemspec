@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   # Dependencies
   gem.required_ruby_version = '>= 1.8.7', '< 3'
   gem.add_runtime_dependency 'pry', '>= 0.10.4', '< 0.13'
+  gem.add_runtime_dependency 'pry-coolline', '~> 0.2.5'
   gem.add_runtime_dependency 'binding_of_caller', '~> 0.7'
   gem.add_runtime_dependency 'colorize', '~> 0.8'
   gem.add_runtime_dependency 'awesome_print', '>= 1.8.0'
