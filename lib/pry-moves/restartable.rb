@@ -29,7 +29,10 @@ module PryMoves::Restartable
     raise PryMoves::Reload if reload_requested
   end
 
-
+  def reload_sources
+    PryMoves.reloader&.reload
+  end
+  
 end
 
 class PryMoves::Restart < Exception

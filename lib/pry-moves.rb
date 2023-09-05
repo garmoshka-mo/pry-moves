@@ -15,10 +15,10 @@ module PryMoves
     Kernel.loop do
       result = yield
       debug "⏸  execution loop complete\n#{result}"
-      PryMoves.reloader&.reload
+      PryMoves.reload_sources
     end
   end
-
+  
   def init
     reset
     self.trace = true if ENV['TRACE_MOVES']
