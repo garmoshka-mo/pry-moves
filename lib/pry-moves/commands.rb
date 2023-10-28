@@ -65,6 +65,11 @@ module PryMoves
       breakout_navigation :debug, cmd
     end
 
+    block_command 'off', '' do
+      PryMoves.switch if PryMoves.stop_on_breakpoints?
+      run 'continue'
+    end
+
     block_command :restart, '' do
       PryMoves.restart_requested = true
       run 'continue'
