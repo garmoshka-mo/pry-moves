@@ -9,7 +9,7 @@ def error(err = "Error", debug_object = nil)
   message = "😱  #{err}"
   debug_object ||= err.metadata if err.respond_to? :metadata
   unless PryMoves.open? or err.is_a? PryMoves::Restart
-    if PryMoves.stop_on_breakpoints
+    if PryMoves.stop_on_breakpoints?
       PryMoves.debug_error message.red, debug_object
     elsif !PryMoves.dont_print_errors
       STDERR.puts PryMoves.format_debug_object(debug_object) if debug_object
@@ -24,7 +24,7 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
   return if ENV['NO_SHIT']
   pry_moves_stack_end = true
   message = "💩  #{err.is_a?(String) ? err : err.message}"
-  raise err unless PryMoves.stop_on_breakpoints
+  raise err unless PryMoves.stop_on_breakpoints?
   lines = [message.red]
   lines.prepend debug_object.ai if debug_object
   PryMoves.debug_error lines.join("\n")
@@ -33,9 +33,9 @@ end
 
 Object.class_eval do
 
-  def required!
+  def required! param = nil
     pry_moves_stack_end = true
-    error("required parameter is missing", self) if self.nil?
+    error("required parameter is missing", param) if self.nil?
     self
   end
 

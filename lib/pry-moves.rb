@@ -18,7 +18,42 @@ module PryMoves
       PryMoves.reload_sources
     end
   end
-  
+
+  def stop_on_breakpoints?
+    stop_on_breakpoints
+  end
+
+  def switch
+    self.stop_on_breakpoints = !self.stop_on_breakpoints
+    if self.stop_on_breakpoints
+      puts '🪲  Debugging is turned on'
+    else
+      puts '🐞 Debugging is turned off'
+    end
+  end
+
+  # can be conditionally:
+  # Signal.trap 'INFO' do
+  #   switch
+  # end
+
+  def debug_window_attached?
+    if !@last_attachment_check or Time.now - @last_attachment_check > 2
+      @is_debug_window_attached = begin
+        @last_attachment_check = Time.now
+        if `echo $STY` # is in screen
+          my_window = `echo $WINDOW`.strip
+          windows_list = `screen -Q windows`
+          windows_list.include? " #{my_window}*" # process is in currently active window
+        else
+          true
+        end
+      end
+    else
+      @is_debug_window_attached
+    end
+  end
+
   def init
     reset
     self.trace = true if ENV['TRACE_MOVES']
@@ -44,7 +79,7 @@ module PryMoves
     pry_moves_stack_end = true
     message ||= data
     PryMoves.re_execution
-    if PryMoves.stop_on_breakpoints
+    if PryMoves.stop_on_breakpoints?
       self.debug_called_times += 1
       return if at and self.debug_called_times != at
       return if from and self.debug_called_times < from
@@ -60,7 +95,7 @@ module PryMoves
 
   def runtime_debug(instance, external: false)
     do_debug = (
-      stop_on_breakpoints and
+      stop_on_breakpoints? and
         not open? and
         (external or is_project_file?) and
         not [RubyVM::InstructionSequence].include?(instance)
