@@ -1,12 +1,13 @@
 PATH
   remote: .
   specs:
-    pry-moves (1.0.8)
+    pry-moves (1.0.9)
       awesome_print (>= 1.8.0)
       binding_of_caller (~> 0.7)
       colorize (~> 0.8)
       diffy (~> 3.4.0)
       pry (>= 0.10.4, < 0.13)
+      pry-coolline (~> 0.2.5)
 
 GEM
   remote: https://rubygems.org/
@@ -16,6 +17,8 @@ GEM
       debug_inspector (>= 0.0.1)
     coderay (1.1.2)
     colorize (0.8.1)
+    coolline (0.5.0)
+      unicode_utils (~> 1.4)
     debug_inspector (1.1.0)
     diff-lcs (1.3)
     diffy (3.4.2)
@@ -23,6 +26,8 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-coolline (0.2.5)
+      coolline (~> 0.5)
     pry-remote (0.1.8)
       pry (~> 0.9)
       slop (~> 3.0)
@@ -40,6 +45,7 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     slop (3.6.0)
+    unicode_utils (1.4.0)
 
 PLATFORMS
   ruby
