@@ -52,6 +52,7 @@ module PryMoves
     end
 
     block_command 'diff', 'Display difference' do
+      next if PryMoves::Vars.var_precedence :diff, target
       cmd = arg_string.gsub(/^diff/, '').strip
       PryMoves::Diff.new(_pry_, target).run_command cmd
     end

@@ -31,7 +31,7 @@ class CodeReloader
 
   def traverse_files
     paths = PryMoves.reload_ruby_scripts[:monitor]
-    except = PryMoves.reload_ruby_scripts[:except]
+    except = PryMoves.reload_ruby_scripts[:except] + rails_path_exceptions
     paths.each do |root|
       files = Dir.glob("#{root}/**/*")
       files.each do |path|
@@ -41,6 +41,14 @@ class CodeReloader
         end
       end
     end
+  end
+
+  def rails_path_exceptions
+    Rails.autoloaders.main.ignore.map do
+      _1.to_s.gsub /^#{Rails.root.to_s}\//, ""
+    end
+  rescue
+    []
   end
 
 end

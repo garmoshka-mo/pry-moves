@@ -32,10 +32,19 @@ module PryMoves
     end
   end
 
-  # can be conditionally:
-  # Signal.trap 'INFO' do
-  #   switch
-  # end
+  def listen_signal_to_switch use_signals = %w[INFO QUIT]
+    # signals list in bash: stty -a
+    signal = use_signals.find {Signal.list[_1]}
+    unless signal
+      puts "No signals supported for PryMoves switch: #{use_signals}"
+      return
+    end
+
+    puts "🚥 Overriding #{signal} signal for PryMoves debug switch"
+    Signal.trap 'INFO' do
+      PryMoves.switch
+    end
+  end
 
   def debug_window_attached?
     if !@last_attachment_check or Time.now - @last_attachment_check > 2

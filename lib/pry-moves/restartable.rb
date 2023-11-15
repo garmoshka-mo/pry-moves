@@ -32,7 +32,7 @@ module PryMoves::Restartable
   def reload_sources
     PryMoves.reloader&.reload
   end
-  
+
 end
 
 class PryMoves::Restart < Exception
