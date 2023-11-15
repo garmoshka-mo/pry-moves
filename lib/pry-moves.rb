@@ -41,7 +41,7 @@ module PryMoves
     end
 
     puts "🚥 Overriding #{signal} signal for PryMoves debug switch"
-    Signal.trap 'INFO' do
+    Signal.trap signal do
       PryMoves.switch
     end
   end

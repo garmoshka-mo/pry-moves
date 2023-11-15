@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pry-moves (1.0.9)
+    pry-moves (1.0.11)
       awesome_print (>= 1.8.0)
       binding_of_caller (~> 0.7)
       colorize (~> 0.8)
