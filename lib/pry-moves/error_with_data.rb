@@ -1,10 +1,11 @@
 class PryMoves::ErrorWithData < StandardError
 
-  attr_reader :metadata
+  attr_reader :data
+  alias metadata data
 
-  def initialize(msg, metadata)
+  def initialize(msg, data)
     super msg
-    @metadata = metadata
+    @data = data
   end
-
+  
 end
