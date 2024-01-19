@@ -44,8 +44,12 @@ class CodeReloader
   end
 
   def rails_path_exceptions
-    Rails.autoloaders.main.ignore.map do
-      _1.to_s.gsub /^#{Rails.root.to_s}\//, ""
+    if defined?(Rails)
+      Rails.autoloaders.main.ignore.map do
+        _1.to_s.gsub /^#{Rails.root.to_s}\//, ""
+      end
+    else
+      []
     end
   rescue
     []
