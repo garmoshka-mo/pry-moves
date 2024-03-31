@@ -42,7 +42,7 @@ module PryMoves
     alias_command 'g', 'goto'
 
     block_command 'continue', 'Continue program execution and end the Pry session' do
-      check_file_context
+      _check_file_context
       run 'exit-all'
     end
     alias_command 'c', 'continue'
@@ -64,6 +64,10 @@ module PryMoves
     block_command 'debug', '' do
       cmd = arg_string.gsub(/^debug/, '').strip
       breakout_navigation :debug, cmd
+    end
+
+    block_command 'profile', '' do |param|
+      breakout_navigation :profile, param
     end
 
     block_command 'off', '' do
@@ -103,7 +107,7 @@ module PryMoves
       def breakout_navigation(action, param)
         return if PryMoves::Vars.var_precedence action, target
 
-        check_file_context
+        _check_file_context
         _pry_.binding_stack.clear     # Clear the binding stack.
         throw :breakout_nav, {        # Break out of the REPL loop and
           action: action,          #   signal the tracer.
@@ -113,7 +117,7 @@ module PryMoves
       end
 
       # Ensures that a command is executed in a local file context.
-      def check_file_context
+      def _check_file_context
         unless PryMoves.check_file_context(target)
           raise Pry::CommandError, 'Cannot find local context. Did you use `binding.pry`?'
         end

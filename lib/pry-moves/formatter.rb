@@ -57,12 +57,9 @@ class PryMoves::Formatter
     str.length > 50 ? "#{str.first 50}..." : str
   end
 
-  def path_trash
-    @path_trash ||= defined?(Rails) ? Rails.root.to_s : Dir.pwd
-  end
-
   def shorten_path(path)
-    path = path.gsub( /^#{path_trash}\//, '')
+    project_root = PryMoves.project_root
+    path = path.gsub( /^#{project_root}\//, '')
     PryMoves::Backtrace.trim_path ?
       File.basename(path, ".*") : path
   end

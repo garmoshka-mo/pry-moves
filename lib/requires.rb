@@ -31,6 +31,7 @@ require 'commands/iterate'
 require 'commands/next'
 require 'commands/next_breakpoint'
 require 'commands/step'
+require 'commands/profile'
 
 require 'pry-stack_explorer/pry-stack_explorer'
 require 'sugar/debug_sugar'

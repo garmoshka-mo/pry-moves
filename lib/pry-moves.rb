@@ -199,6 +199,10 @@ module PryMoves
     triggers[trigger] << block
   end
 
+  def project_root
+    @project_root ||= defined?(Rails) ? Rails.root.to_s : Dir.pwd
+  end
+
   # Reference to currently running pry-remote server. Used by the tracer.
   attr_accessor :current_remote_server
 end
