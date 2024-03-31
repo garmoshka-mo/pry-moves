@@ -112,7 +112,7 @@ Pry::Command::Whereami.class_eval do
   end
 
   def location
-    defined?(Rails) ? @file.gsub(Rails.root.to_s, '') : @file
+    @file
   end
 end
 
