@@ -81,6 +81,9 @@ class TraceCommand
     elsif event == "return" and traced_method?(file, line, method, binding_)
       @call_depth -= 1
     end
+  rescue => err
+    puts err.backtrace.reverse
+    puts "PryMoves Tracing error: #{err}".red
   end
 
   def traced_method?(file, line, method, binding_)
