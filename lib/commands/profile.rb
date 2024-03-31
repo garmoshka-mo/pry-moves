@@ -8,7 +8,7 @@ class PryMoves::Profile < PryMoves::TraceCommand
     return unless file.start_with? PryMoves.project_root
 
     stop = false
-    place = [file, line, method].join ":"
+    place = "#{method} @ #{file}:#{line}"
     if @last_place != place
       if @last_start_at
         took = Time.now - @last_start_at
