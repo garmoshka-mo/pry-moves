@@ -2,10 +2,17 @@ class PryMoves::Profile < PryMoves::TraceCommand
 
   def init(binding_)
     @start_line = binding_.eval('__LINE__')
+    @profiling_start_at = Time.now
+    @timeout = (@command[:param]&.to_i || 3).seconds
   end
 
   def trace(event, file, line, method, binding_)
     return unless file.start_with? PryMoves.project_root
+
+    if Time.now - @profiling_start_at > @timeout
+      PryMoves.messages << "Profiling timeout: #{@timeout} seconds"
+      return true
+    end
 
     stop = false
     place = "#{method} @ #{file}:#{line}"

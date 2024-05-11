@@ -38,7 +38,7 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
 * `.method` or `123` or `:hash_key` - Continue traversing of last object in history. E.g. `orders` will list array, then `3` will enter `orders[3]`, then `.price` will enter `orders[3].price`
 * `watch variable` - display variable's value on each step
 * `diff expression` - display difference between saved expression (on first run) and expression 2
-* `profile` - profile most time-consuming code 
+* `profile [timeout]` - profile time-consuming code and infinite loops/recursion
 * `off` - Turn off debugging (don't stop on breakpoints)
 * `@` - restart and reload scripts (in app/ & spec/ by default), reload rake tasks. Configurable.
 * `#` - exit with code 3, can be wrapped in bash script to fully reload ruby scripts
