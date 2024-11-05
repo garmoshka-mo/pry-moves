@@ -159,6 +159,13 @@ module PryMoves
     Pry.commands.block_command command, "", &block
   end
 
+  def custom_command command, &block
+    cmd = Pry::Commands.create_command command, "", :shellwords => false do; end
+    cmd.define_method(:process) do
+      block.call
+    end
+  end
+
   def locked?
     semaphore.locked?
   end

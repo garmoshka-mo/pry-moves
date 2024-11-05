@@ -82,6 +82,8 @@ Pry::History.class_eval do
       line.match(cls.match)
     end
     push line
+  rescue => error
+    puts "Pry::History << error: #{error}"
   end
 
 end
