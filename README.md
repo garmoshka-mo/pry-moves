@@ -45,7 +45,14 @@ Documentation for latest version. For [v0.1.12 see documentation here](https://g
 * `!` - exit
 
 Variable & methods names takes precedence over commands. 
-So if you have variable named `step`, to execute command `step` type `cmd step` or command's alias, e.g. `s` 
+So if you have variable named `step`, to execute command `step` type `cmd step` or command's alias, e.g. `s`
+
+Custom commands:
+```ruby
+PryMoves.custom_command "say" do |args, output|
+  output.puts "Pry says: #{args}"
+end
+```
 
 ## Examples
 

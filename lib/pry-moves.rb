@@ -160,9 +160,14 @@ module PryMoves
   end
 
   def custom_command command, &block
-    cmd = Pry::Commands.create_command command, "", :shellwords => false do; end
-    cmd.define_method(:process) do
-      block.call
+    cls = Pry::Commands.create_command command, "", :shellwords => false do; end
+    cls.define_method(:process_block) do |args, output|
+      block.call args, output
+    end
+    cls.class_eval do
+      def process
+        process_block args, output
+      end
     end
   end
 
