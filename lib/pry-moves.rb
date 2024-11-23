@@ -127,9 +127,10 @@ module PryMoves
 
   MAX_MESSAGE_CHARS = 520
   def format_debug_object obj
-    output = obj.ai rescue "#{obj.class} #{obj}"
-    output.length > MAX_MESSAGE_CHARS ?
-      output[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : output
+    result = obj.is_a?(String) ? obj :
+      obj.ai rescue "#{obj.class} #{obj}"
+    result.length > MAX_MESSAGE_CHARS ?
+      result[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : result
   end
 
   def debug_error(message, debug_object=nil)

@@ -26,7 +26,7 @@ def shit!(err = 'Oh, shit!', debug_object = nil)
   message = "💩  #{err.is_a?(String) ? err : err.message}"
   raise err unless PryMoves.stop_on_breakpoints?
   lines = [message.red]
-  lines.prepend debug_object.ai if debug_object
+  lines.prepend PryMoves.format_debug_object(debug_object) if debug_object
   PryMoves.debug_error lines.join("\n")
   nil
 end
