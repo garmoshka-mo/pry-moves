@@ -96,6 +96,7 @@ module PryMoves
         PryMoves.messages << (message.is_a?(String) ? message : message.ai)
       end
       binding.pry options
+      trigger :after_debug, nil
       PryMoves.re_execution
     end
   end
@@ -206,7 +207,7 @@ module PryMoves
     end
   end
 
-  TRIGGERS = [:each_new_run, :restart]
+  TRIGGERS = [:each_new_run, :restart, :after_debug]
   def on(trigger, &block)
     error "Invalid trigger, possible triggers: #{TRIGGERS}", trigger unless TRIGGERS.include? trigger
     triggers[trigger] << block
