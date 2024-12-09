@@ -93,7 +93,7 @@ module PryMoves
       return if at and self.debug_called_times != at
       return if from and self.debug_called_times < from
       if message
-        PryMoves.messages << (message.is_a?(String) ? message : message.ai)
+        PryMoves.messages << format_debug_object(message)
       end
       binding.pry options
       trigger :after_debug, nil
@@ -128,8 +128,14 @@ module PryMoves
 
   MAX_MESSAGE_CHARS = 520
   def format_debug_object obj
-    result = obj.is_a?(String) ? obj :
-      obj.ai rescue "#{obj.class} #{obj}"
+    result = case obj
+    when String
+      obj
+    when Hash
+      result = obj.map {"#{_1}:#{_2}"}.join " "
+      result if result.length < 100
+    end
+    result ||= obj.ai rescue "#{obj.class} #{obj}"
     result.length > MAX_MESSAGE_CHARS ?
       result[0 .. MAX_MESSAGE_CHARS] + "... (cut)" : result
   end
