@@ -45,6 +45,7 @@ class PryWrapper
     end
 
   ensure
+    PryMoves.trigger :after_debug, nil
     PryMoves.is_open = false
     Pry.config.marker = "=>"
   end

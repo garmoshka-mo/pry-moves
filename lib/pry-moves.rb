@@ -96,7 +96,6 @@ module PryMoves
         PryMoves.messages << format_debug_object(message)
       end
       binding.pry options
-      trigger :after_debug, nil
       PryMoves.re_execution
     end
   end
@@ -205,6 +204,8 @@ module PryMoves
 
   def trigger(event, context)
     triggers[event].each {|t| t.call context}
+  rescue => err
+    puts "PryMoves :#{event} Trigger error: #{err}".red
   end
 
   def triggers
