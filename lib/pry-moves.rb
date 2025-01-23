@@ -9,7 +9,7 @@ module PryMoves
   attr_accessor :is_open, :trace, :stack_tips,
     :stop_on_breakpoints, :dont_print_errors,
     :test_example, :launched_specs_examples,
-    :debug_called_times, :step_in_everywhere
+    :debug_called_times, :step_in_everywhere, :hide_code
 
   def loop
     Kernel.loop do
@@ -84,7 +84,7 @@ module PryMoves
     self.step_in_everywhere = false
   end
 
-  def debug(message = nil, data: nil, at: nil, from: nil, options: nil)
+  def debug(message = nil, data: nil, at: nil, from: nil, options: {})
     pry_moves_stack_end = true
     message ||= data
     PryMoves.re_execution
@@ -95,6 +95,7 @@ module PryMoves
       if message
         PryMoves.messages << format_debug_object(message)
       end
+      self.hide_code = true if data
       binding.pry options
       PryMoves.re_execution
     end

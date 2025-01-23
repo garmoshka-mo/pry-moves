@@ -84,14 +84,17 @@ Pry::Command::Whereami.class_eval do
   def build_output
     lines = ['']
 
-    formatter = PryMoves::Formatter.new
-    prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
-    # lines << "🍱 #{PryMoves.test_example}" if PryMoves.test_example
-    lines << "🦆 step_in_everywhere" if PryMoves.step_in_everywhere
-    lines << "#{prefix}#{formatter.shorten_path location}:#{@line} #{me}"
-    lines << "   ." + formatter.method_signature(target)
-    lines << ''
-    lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+    unless PryMoves.hide_code
+      formatter = PryMoves::Formatter.new
+      prefix = Thread.current[:pry_moves_debug] ? "👾 " : ""
+      # lines << "🍱 #{PryMoves.test_example}" if PryMoves.test_example
+      lines << "🦆 step_in_everywhere" if PryMoves.step_in_everywhere
+      lines << "#{prefix}#{formatter.shorten_path location}:#{@line} #{me}"
+      lines << "   ." + formatter.method_signature(target)
+      lines << ''
+      lines << "#{code.with_line_numbers(use_line_numbers?).with_marker(marker).highlighted}"
+    end
+    PryMoves.hide_code = false
 
     lines << PryMoves::Watch.instance.output(target) unless PryMoves::Watch.instance.empty?
     lines.concat(PryMoves.messages.map do |message|
