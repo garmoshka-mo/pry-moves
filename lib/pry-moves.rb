@@ -215,9 +215,15 @@ module PryMoves
     end
   end
 
+  # Alos: PryMoves.on(each_new_run: [:skip_on_init])
   TRIGGERS = [:each_new_run, :restart, :after_debug]
   def on(trigger, &block)
     error "Invalid trigger, possible triggers: #{TRIGGERS}", trigger unless TRIGGERS.include? trigger
+    if trigger.is_a? Hash
+      skip_on_init = trigger.values.first.include? :skip_on_init
+      trigger = trigger.keys.first
+    end
+    block.call if trigger == :each_new_run and !skip_on_init
     triggers[trigger] << block
   end
 
