@@ -84,7 +84,7 @@ module PryMoves
     self.step_in_everywhere = false
   end
 
-  def debug(message = nil, data: nil, at: nil, from: nil, options: {})
+  def debug(message = nil, data: nil, show_code: nil, at: nil, from: nil, options: {})
     pry_moves_stack_end = true
     message ||= data
     PryMoves.re_execution
@@ -95,7 +95,7 @@ module PryMoves
       if message
         PryMoves.messages << format_debug_object(message)
       end
-      self.hide_code = true if data
+      self.hide_code = true if data and !show_code
       binding.pry options
       PryMoves.re_execution
     end
